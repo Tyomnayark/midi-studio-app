@@ -4,6 +4,7 @@
 *.bak
 
 .idea/
+.gradle/
 
 local.properties
 
