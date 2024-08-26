@@ -1,0 +1,10 @@
+
+*.tmp
+*.swp
+*.bak
+
+.idea/
+
+local.properties
+
+
