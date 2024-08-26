@@ -5,9 +5,9 @@ import com.tyom.domain.repository.InitRepository
 import javax.inject.Inject
 
 class CheckHaveConnectedInstrumentUseCase @Inject constructor(
-    private val authorizationRepository: InitRepository
+    private val initRepository: InitRepository
 ) {
     suspend fun checkHaveConnectedInstrument(): Instrument? {
-        return authorizationRepository.checkHaveConnectedInstrument()
+        return initRepository.checkHaveConnectedInstrument()
     }
 }

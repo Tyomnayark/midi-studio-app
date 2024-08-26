@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.tyom.model"
+    namespace = "com.tyom.di"
     compileSdk = 34
 
     defaultConfig {
@@ -36,8 +36,9 @@ android {
 }
 
 dependencies {
+    implementation(project(":model"))
     implementation(project(":domain"))
-    implementation(libs.com.google.code.gson)
+
     implementation(libs.dagger.hilt)
     kapt(libs.dagger.hilt.compiler)
 }
