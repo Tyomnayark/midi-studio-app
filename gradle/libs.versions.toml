@@ -13,6 +13,11 @@ material = "1.11.0"
 viewbinding = "8.5.2"
 
 hilt = "2.44"
+navigation = "2.7.7"
+navigationRuntimeKtx = "2.7.7"
+navigationCompose = "2.7.7"
+gson = "2.10.1"
+lifecycleRuntimeComposeAndroid = "2.8.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -35,10 +40,15 @@ androidx-viewbinding = { group = "androidx.databinding", name = "viewbinding", v
 
 dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 dagger-hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+androidx-navigation = { group = "androidx.navigation",  name = "navigation-compose", version.ref = "navigation" }
+androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
+com-google-code-gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson"}
+androidx-lifecycle-runtime-compose-android = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose-android", version.ref = "lifecycleRuntimeComposeAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+
 

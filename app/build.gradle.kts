@@ -64,7 +64,11 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    implementation(libs.androidx.navigation)
+    implementation(libs.androidx.navigation.runtime.ktx)
+
     implementation(libs.dagger.hilt)
+    implementation(libs.androidx.lifecycle.runtime.compose.android)
     kapt(libs.dagger.hilt.compiler)
 
     testImplementation(libs.junit)
@@ -77,4 +81,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(project(":utils"))
+    implementation(project(":domain"))
 }
