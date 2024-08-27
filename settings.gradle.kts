@@ -21,8 +21,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "NoteStudio"
 include(":app")
-include(":utils")
-include(":model")
+include(":core_utils")
+include(":data")
 include(":domain")
 include(":feature_main")
-include(":ui_tools")
+include(":core_ui")

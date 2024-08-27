@@ -82,7 +82,6 @@ fun Spanned.toAnnotatedString(): AnnotatedString = buildAnnotatedString {
     }
 }
 
-// Modifier Extension
 fun Modifier.stampedBorder(strokeWidth: Dp, color: Color, cornerRadiusDp: Dp) = composed(
     factory = {
         val density = LocalDensity.current
@@ -201,7 +200,6 @@ fun Modifier.shadow(
     }
 )
 
-// он клик для модифаера без эффекта нажатия при тапе
 fun Modifier.noRippleClickable(onClick: () -> Unit): Modifier = composed {
     clickable(indication = null,
         interactionSource = remember { MutableInteractionSource() }) {
@@ -245,7 +243,6 @@ fun Boolean?.IfFalse(func: @Composable () -> Unit) =
         Unit
     }
 
-// TODO: @Vladislav Belyaev [02.02.2024] [test]{test}
 fun Modifier.shimmerLoadingAnimation(
     isShowShimmer: Boolean = false, // <-- start/stop.
     isLightModeActive: Boolean = true, // <-- display mode.

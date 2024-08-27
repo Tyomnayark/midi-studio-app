@@ -23,6 +23,12 @@ android {
             useSupportLibrary = true
         }
     }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -39,12 +45,6 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -54,13 +54,20 @@ android {
 }
 
 dependencies {
-    implementation(project(":utils"))
+    implementation(project(":core_utils"))
     implementation(project(":domain"))
-    implementation(project(":model"))
+    implementation(project(":data"))
     implementation(project(":feature_main"))
 
     kapt(libs.dagger.hilt.compiler)
     implementation(libs.dagger.hilt)
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.lifecycle.runtime.compose.android)
+    implementation(libs.androidx.appcompat)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
