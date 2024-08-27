@@ -12,10 +12,10 @@ appcompat = "1.6.1"
 material = "1.11.0"
 viewbinding = "8.5.2"
 
-hilt = "2.44"
+kapt = "1.9.0"
+hilt = "2.52"
 navigation = "2.7.7"
 navigationRuntimeKtx = "2.7.7"
-navigationCompose = "2.7.7"
 gson = "2.10.1"
 lifecycleRuntimeComposeAndroid = "2.8.4"
 
@@ -50,5 +50,5 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-
+jetbrains-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kapt" }
 

@@ -1,4 +1,4 @@
-package com.tyom.model.di
+package com.tyom.notestudio.di
 
 import com.tyom.domain.repository.InitRepository
 import com.tyom.model.repository.InitRepositoryImpl

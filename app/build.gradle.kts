@@ -1,12 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.dagger.hilt)
     id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
-    kotlin("kapt")
 }
 
 android {
+
     namespace = "com.tyom.notestudio"
     compileSdk = 34
 
@@ -23,7 +23,6 @@ android {
             useSupportLibrary = true
         }
     }
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -50,10 +49,14 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+        exclude(  "META-INF/gradle/incremental.annotation.processors")
     }
 }
 
 dependencies {
+    implementation(project(":utils"))
+    implementation(project(":domain"))
+    implementation(project(":model"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -67,9 +70,10 @@ dependencies {
     implementation(libs.androidx.navigation)
     implementation(libs.androidx.navigation.runtime.ktx)
 
-    implementation(libs.dagger.hilt)
     implementation(libs.androidx.lifecycle.runtime.compose.android)
+
     kapt(libs.dagger.hilt.compiler)
+    implementation(libs.dagger.hilt)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -79,7 +83,8 @@ dependencies {
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
 
-    implementation(project(":utils"))
-    implementation(project(":domain"))
+kapt {
+    correctErrorTypes = true
 }
