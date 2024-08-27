@@ -41,6 +41,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":core_utils"))
+
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)

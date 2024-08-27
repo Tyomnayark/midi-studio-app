@@ -1,13 +1,17 @@
-package com.tyom.model
+package com.tyom.data
 
 import android.content.Context
 import java.lang.reflect.Type
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tyom.data.PrefsDictionary.NAME
+
+internal object PrefsDictionary {
+    const val NAME = "preferences"
+    const val INSTRUMENT = "instrument"
+}
 
 object Preferences {
-    private const val NAME = "preferences"
-
     fun <T> putObject(context: Context, key: String?, `object`: T) {
         val sharedPreferences = context.getSharedPreferences(NAME, 0)
         val sharedPreferencesEditor = sharedPreferences.edit()

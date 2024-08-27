@@ -1,0 +1,7 @@
+<resources>
+    <string name="common_empty">""</string>
+
+    <!--    Screen tab names-->
+    <string name="home_screen">Home</string>
+    <string name="settings_screen">Settings</string>
+</resources>

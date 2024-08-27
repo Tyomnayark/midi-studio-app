@@ -1,7 +1,7 @@
 package com.tyom.notestudio.di
 
-import com.tyom.domain.repository.InitRepository
-import com.tyom.data.repository.InitRepositoryImpl
+import android.app.Application
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,10 +10,8 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class RepositoryModule {
+class AppModule {
     @Provides
     @Singleton
-    fun provideInitRepository(initRepositoryImpl: InitRepositoryImpl): InitRepository {
-        return initRepositoryImpl
-    }
+    fun provideAppContext(application: Application): Context = application.applicationContext
 }

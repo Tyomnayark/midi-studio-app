@@ -10,16 +10,10 @@ import com.tyom.ui_tools.extensions.FigmaLargePreview
 
 @Composable
 fun HomePage() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.primary)
-    ) {
 
-    }
 }
 
-@com.tyom.ui_tools.extensions.FigmaLargePreview
+@FigmaLargePreview
 @Composable
 fun MainMenuPreview() {
     HomePage()
