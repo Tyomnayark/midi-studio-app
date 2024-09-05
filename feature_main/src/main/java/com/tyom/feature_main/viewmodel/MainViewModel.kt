@@ -2,6 +2,7 @@ package com.tyom.feature_main.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.tyom.domain.usecases.CheckHaveConnectedInstrumentUseCase
+import com.tyom.domain.usecases.GetBluetoothInstrumentsUseCase
 import com.tyom.feature_main.models.BottomNavigationItem
 import com.tyom.feature_main.models.ScreensEnum
 import com.tyom.utils.launchOnDefault
@@ -14,14 +15,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val checkHaveConnectedInstrumentUseCase: CheckHaveConnectedInstrumentUseCase
+    private val checkHaveConnectedInstrumentUseCase: CheckHaveConnectedInstrumentUseCase,
+    private val getBluetoothInstrumentsUseCase: GetBluetoothInstrumentsUseCase
 ) : ViewModel() {
+
     val _uiState = MutableStateFlow(MainUIState())
     val uiState: StateFlow<MainUIState> = _uiState.asStateFlow()
 
     init {
         launchOnDefault {
-            val instrument = checkHaveConnectedInstrumentUseCase.checkHaveConnectedInstrument()
+            val instrument = checkHaveConnectedInstrumentUseCase.execute()
+            val listInstruments = getBluetoothInstrumentsUseCase.execute()
+
             val bottomItems = listOf(
                 BottomNavigationItem(
                     screen = ScreensEnum.HOME,
@@ -36,7 +41,8 @@ class MainViewModel @Inject constructor(
             _uiState.update { state ->
                 state.copy(
                     selectedInstrument = instrument,
-                    bottomItems = bottomItems
+                    bottomItems = bottomItems,
+                    instruments = listInstruments
                 )
             }
         }

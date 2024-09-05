@@ -4,16 +4,23 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.tyom.feature_main.ui.views.home.HomePage
-import com.tyom.ui_tools.interfaces.UIState
 import com.tyom.feature_main.models.Routes.HOME_ROUTE
 import com.tyom.feature_main.models.Routes.SETTINGS_ROUTE
+import com.tyom.feature_main.ui.views.home.HomePage
+import com.tyom.feature_main.viewmodel.MainUIState
+import com.tyom.feature_main.viewmodel.MainViewModel
 
 @Composable
-fun NavGraph(navController: NavHostController, state: UIState) {
+fun NavGraph(
+    navController: NavHostController,
+    state: MainUIState,
+    viewModel: MainViewModel
+) {
     NavHost(navController = navController, startDestination = HOME_ROUTE) {
         composable(HOME_ROUTE) {
-            HomePage()
+            HomePage(
+                instruments = state.instruments
+            )
         }
         composable(SETTINGS_ROUTE) {
             // TODO:  @Tyom [8/26/24] { добавить позже }

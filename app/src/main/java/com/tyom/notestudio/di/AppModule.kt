@@ -1,10 +1,10 @@
 package com.tyom.notestudio.di
 
-import android.app.Application
 import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -13,5 +13,5 @@ import javax.inject.Singleton
 class AppModule {
     @Provides
     @Singleton
-    fun provideAppContext(application: Application): Context = application.applicationContext
+    fun provideAppContext(@ApplicationContext context: Context): Context = context
 }

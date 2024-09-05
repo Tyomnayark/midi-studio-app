@@ -7,5 +7,6 @@ import com.tyom.ui_tools.interfaces.UIState
 
 data class MainUIState(
     val selectedInstrument: Instrument? = null,
-    val bottomItems: List<BottomNavigationItem> = emptyList()
+    val bottomItems: List<BottomNavigationItem> = emptyList(),
+    val instruments: List<Instrument> = emptyList()
 ): UIState

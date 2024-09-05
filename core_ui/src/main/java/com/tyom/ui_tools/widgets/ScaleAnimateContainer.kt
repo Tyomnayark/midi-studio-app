@@ -31,17 +31,18 @@ private const val PREVIEW_TARGET_VALUE = 1.1f
 private const val PREVIEW_DURATION_MILLIS = 500
 private const val PREVIEW_START_DURATION_MILLIS = 300L
 private const val CLICK_INITIAL_VALUE = 1f
-private const val CLICK_TARGET_VALUE = 0f
-const val ANIMATE_DURATION_DEFAULT = 125
-const val TIMEOUT = 400L
+private const val CLICK_TARGET_VALUE = 0.95f
+private const val ANIMATE_DURATION_125 = 125
+private const val TIMEOUT = 400L
 
 @Composable
-fun SpinAnimateContainer(
+fun ScaleAnimateContainer(
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
     isEnabledState: MutableState<Boolean> = mutableStateOf(true),
     isAnimateScalePreviewShow: Boolean = false,
-    animateDurationMillis: Int = ANIMATE_DURATION_DEFAULT,
+    scale: Float = CLICK_TARGET_VALUE,
+    animateDurationMillis: Int = ANIMATE_DURATION_125,
     transformOrigin: TransformOrigin = TransformOrigin.Center,
     onStartClick: (() -> Unit)? = null,
     onFinishClick: () -> Unit = {},
@@ -76,7 +77,7 @@ fun SpinAnimateContainer(
     val scalePreview = if (anim) scalePreviewAnimate else PREVIEW_INITIAL_VALUE
 
     val scaleClick by animateFloatAsState(
-        targetValue = if (isBoxClicked) CLICK_TARGET_VALUE else CLICK_INITIAL_VALUE,
+        targetValue = if (isBoxClicked) scale else CLICK_INITIAL_VALUE,
         animationSpec = tween(animateDurationMillis, easing = FastOutSlowInEasing),
         finishedListener = {
             if (isBoxClicked) {
@@ -111,7 +112,7 @@ fun SpinAnimateContainer(
             }
             .graphicsLayer(
                 scaleY = scalePreview,
-                transformOrigin = transformOrigin
+                transformOrigin = transformOrigin,
             )
             .graphicsLayer(
                 scaleY = scaleClick,

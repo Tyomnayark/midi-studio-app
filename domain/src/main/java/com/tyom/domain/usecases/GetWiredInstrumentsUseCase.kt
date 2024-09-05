@@ -4,10 +4,10 @@ import com.tyom.domain.models.Instrument
 import com.tyom.domain.repository.InitRepository
 import javax.inject.Inject
 
-class CheckHaveConnectedInstrumentUseCase @Inject constructor(
+class GetWiredInstrumentsUseCase @Inject constructor(
     private val initRepository: InitRepository
 ) {
-    suspend fun execute(): Instrument? {
-        return initRepository.checkHaveConnectedInstrument()
+    suspend fun execute(): List<Instrument> {
+        return initRepository.getWiredInstruments()
     }
 }
