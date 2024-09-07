@@ -1,0 +1,75 @@
+pipeline {
+    agent any
+
+    environment {
+        GITHUB_STATUS_URL = "https://api.github.com/repos/Tyomnayark/midi-studio-app/statuses/${env.GIT_COMMIT}"
+    }
+    
+    stages {
+        stage('Setup SSH Agent') {
+            steps {
+                script {
+                    sshagent(['13156436-fa59-45dc-be3b-2f2698e6be1d']) {
+                        sh 'echo "SSH Agent setup complete"'
+                        sh 'ssh-add -l'
+                    }
+                }
+            }
+        }
+        stage('Cleanup') {
+            steps {
+                script {
+                    sh 'rm -rf midi-studio-app'
+                }
+            }
+        }
+        stage('Checkout') {
+            steps {
+                script {
+                    // Используем стандартный checkout для инициализации GIT_COMMIT
+                    checkout([$class: 'GitSCM',
+                              branches: [[name: '*/main']], // Укажите ветку, которую хотите клонировать
+                              userRemoteConfigs: [[url: 'git@github.com:Tyomnayark/midi-studio-app.git', credentialsId: '13156436-fa59-45dc-be3b-2f2698e6be1d']]
+                    ])
+                env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+                echo "GIT_COMMIT set to: ${env.GIT_COMMIT}"
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                dir('midi-studio-app') {
+                    sh 'gradle build'
+                }
+            }
+        }
+    }
+    post {
+        success {
+            script {
+                   echo "GIT_COMMIT: ${env.GIT_COMMIT}"
+                if (env.GIT_COMMIT == null || env.GIT_COMMIT == '') {
+                    echo 'Error: GIT_COMMIT is null or empty. Skipping GitHub status update.'
+                } else {
+                    withCredentials([string(credentialsId: 'github-token-id', variable: 'GITHUB_TOKEN')]) {
+                        httpRequest(
+                            url: "https://api.github.com/repos/Tyomnayark/midi-studio-app/statuses/${env.GIT_COMMIT}",
+                            httpMode: 'POST',
+                            contentType: 'APPLICATION_JSON',
+                            requestBody: """
+                            {
+                                "state": "success",
+                                "target_url": "${env.BUILD_URL}",
+                                "description": "Build succeeded",
+                                "context": "continuous-integration/jenkins"
+                            }
+                            """,
+                            customHeaders: [[name: 'Authorization', value: "Bearer ${GITHUB_TOKEN}"]]
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
