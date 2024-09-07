@@ -4,9 +4,6 @@
 *.bak
 
 .idea/
-.gradle/
 
 local.properties
-gradlew
-gradlew.bat
 
