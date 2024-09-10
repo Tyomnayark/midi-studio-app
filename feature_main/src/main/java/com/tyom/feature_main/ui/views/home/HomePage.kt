@@ -20,11 +20,12 @@ import com.tyom.ui_tools.extensions.noRippleClickable
 @Composable
 fun HomePage(
     instruments: List<Instrument>,
-    notes: List<Int>,
+    notes:  List<Pair<Int, Int>>,
 
     onClickRefreshInstruments: () -> Unit,
     onClickSelectInstrument: (Instrument) -> Unit
 ) {
+    PianoKeyboard(notes = notes)
     Column {
         Icon(imageVector = Icons.Default.Refresh, contentDescription = null, Modifier
             .size(40.dp)

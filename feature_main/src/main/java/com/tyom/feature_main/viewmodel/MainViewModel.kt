@@ -15,6 +15,7 @@ import com.tyom.feature_main.models.BottomNavigationItem
 import com.tyom.feature_main.models.ScreensEnum
 import com.tyom.feature_main.utils.hasBluetoothPermissions
 import com.tyom.feature_main.utils.hasLocationPermissions
+import com.tyom.feature_main.utils.toPianoPair
 import com.tyom.utils.BuildConfig
 import com.tyom.utils.constants.BuildTypeConstants.DEBUG_TYPE
 import com.tyom.utils.extensions.launchOnDefault
@@ -38,26 +39,6 @@ class MainViewModel @Inject constructor(
 
     val _uiState = MutableStateFlow(MainUIState())
     val uiState: StateFlow<MainUIState> = _uiState.asStateFlow()
-
-    object ReceiverImpl : MidiReceiver() {
-        override fun onSend(msg: ByteArray, offset: Int, count: Int, timestamp: Long) {
-
-            val status = msg[0].toInt() and 0xFF
-            val velocity = msg[1].toInt() and 0xFF
-            val note = msg[2].toInt() and 0xFF
-
-            if (BuildConfig.BUILD_TYPE == DEBUG_TYPE) {
-                Log.d(
-                    "MidiProvider",
-                    "MIDI message: Status=$status, Note=$note, Velocity=$velocity"
-                )
-                Log.d(
-                    "MidiProvider",
-                    "MIDI message: msg=$msg, offset=$offset, count=$count, timestamp=$timestamp"
-                )
-            }
-        }
-    }
 
     init {
         launchOnDefault {
@@ -149,12 +130,13 @@ class MainViewModel @Inject constructor(
                                     "MIDI message: msg=$msg, offset=$offset, count=$count, timestamp=$timestamp"
                                 )
                             }
+                            val pianoPair = note.toPianoPair()
 
                             val updatedList = _uiState.value.currentNotes.toMutableList()
-                            if (updatedList.contains(note)) {
-                                updatedList.remove(note)
+                            if (updatedList.contains(pianoPair)) {
+                                updatedList.remove(pianoPair)
                             } else {
-                                updatedList.add(note)
+                                updatedList.add(pianoPair)
                             }
                             _uiState.update { state ->
                                 state.copy(
