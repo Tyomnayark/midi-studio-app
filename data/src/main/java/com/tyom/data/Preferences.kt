@@ -1,10 +1,10 @@
 package com.tyom.data
 
 import android.content.Context
-import java.lang.reflect.Type
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.tyom.data.PrefsDictionary.NAME
+import java.lang.reflect.Type
 
 internal object PrefsDictionary {
     const val NAME = "preferences"

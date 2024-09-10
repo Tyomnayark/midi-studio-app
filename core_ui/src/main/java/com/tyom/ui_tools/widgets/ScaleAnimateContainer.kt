@@ -22,7 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
-import com.tyom.utils.empty
+import com.tyom.utils.extensions.empty
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

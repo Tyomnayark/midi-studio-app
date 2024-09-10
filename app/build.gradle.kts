@@ -4,11 +4,22 @@ plugins {
     alias(libs.plugins.dagger.hilt)
     alias(libs.plugins.jetbrains.kotlin.kapt)
 }
+val debug = "debug"
+val release = "release"
 
 android {
 
     namespace = "com.tyom.notestudio"
     compileSdk = 34
+
+    signingConfigs {
+        register("for_release") {
+            keyAlias = project.findProperty("KEY_ALIAS") as String
+            keyPassword = project.findProperty("KEY_PASSWORD") as String
+            storeFile = file(project.findProperty("STORE_FILE") as String)
+            storePassword = project.findProperty("STORE_PASSWORD") as String
+        }
+    }
 
     defaultConfig {
         applicationId = "com.tyom.notestudio"
@@ -31,11 +42,22 @@ android {
     }
     buildTypes {
         release {
+//            isMinifyEnabled = false
+//            postprocessing.isRemoveUnusedCode = false
+//            postprocessing.isRemoveUnusedResources = false
+//            postprocessing.isObfuscate = false
+//            postprocessing.isOptimizeCode = true
+            proguardFiles("proguard-rules.pro")
+            buildConfigField("String", "TYPE", "\"${release}\"")
+            signingConfig = signingConfigs.getByName("for_release")
+        }
+        debug {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            isShrinkResources = false
+            isJniDebuggable = true
+            isDebuggable = true
+            proguardFiles("proguard-rules.pro")
+            buildConfigField("String", "TYPE", "\"${debug}\"")
         }
     }
     compileOptions {
@@ -51,6 +73,17 @@ android {
         }
         exclude(  "META-INF/gradle/incremental.annotation.processors")
     }
+
+    applicationVariants.all {
+        val variant = this
+        when (variant.baseName) {
+            "$debug" -> variant.resValue("string", "app_name", "debug $versionName")
+        }
+    }
+}
+
+kapt {
+    correctErrorTypes = true
 }
 
 dependencies {
@@ -73,8 +106,4 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.ui.test.junit4)
-}
-
-kapt {
-    correctErrorTypes = true
 }

@@ -1,13 +1,13 @@
 package com.tyom.domain.usecases
 
 import com.tyom.domain.models.Instrument
-import com.tyom.domain.repository.InitRepository
+import com.tyom.domain.repository.MIDIRepository
 import javax.inject.Inject
 
 class GetWiredInstrumentsUseCase @Inject constructor(
-    private val initRepository: InitRepository
+    private val midiRepository: MIDIRepository
 ) {
     suspend fun execute(): List<Instrument> {
-        return initRepository.getWiredInstruments()
+        return midiRepository.getWiredInstruments()
     }
 }

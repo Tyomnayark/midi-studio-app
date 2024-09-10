@@ -1,7 +1,7 @@
 package com.tyom.notestudio.di
 
-import com.tyom.domain.repository.InitRepository
-import com.tyom.data.repository.InitRepositoryImpl
+import com.tyom.data.repository.MIDIRepositoryImpl
+import com.tyom.domain.repository.MIDIRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,7 +13,7 @@ import javax.inject.Singleton
 class RepositoryModule {
     @Provides
     @Singleton
-    fun provideInitRepository(initRepositoryImpl: InitRepositoryImpl): InitRepository {
-        return initRepositoryImpl
+    fun provideMidiRepository(midiRepositoryImpl: MIDIRepositoryImpl): MIDIRepository {
+        return midiRepositoryImpl
     }
 }

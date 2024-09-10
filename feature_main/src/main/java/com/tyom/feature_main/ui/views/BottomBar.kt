@@ -25,7 +25,7 @@ import com.tyom.feature_main.models.BottomNavigationItem
 import com.tyom.feature_main.models.ScreensEnum
 import com.tyom.ui_tools.extensions.FigmaLargePreview
 import com.tyom.ui_tools.widgets.ScaleAnimateContainer
-import com.tyom.utils.empty
+import com.tyom.utils.extensions.empty
 
 private const val CLICK_INITIAL_VALUE = 1f
 private const val ANIMATE_DURATION_DEFAULT = 500

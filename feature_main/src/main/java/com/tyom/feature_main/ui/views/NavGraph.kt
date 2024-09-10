@@ -19,7 +19,14 @@ fun NavGraph(
     NavHost(navController = navController, startDestination = HOME_ROUTE) {
         composable(HOME_ROUTE) {
             HomePage(
-                instruments = state.instruments
+                instruments = state.instruments,
+                notes = state.currentNotes,
+                onClickRefreshInstruments = {
+                    viewModel.onClickRefreshInstruments()
+                },
+                onClickSelectInstrument = { instrument ->
+                    viewModel.onClickSelectInstrument(instrument)
+                }
             )
         }
         composable(SETTINGS_ROUTE) {
