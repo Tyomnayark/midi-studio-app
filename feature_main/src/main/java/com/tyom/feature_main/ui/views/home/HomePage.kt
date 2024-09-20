@@ -11,9 +11,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tyom.domain.models.Instrument
+import com.tyom.feature_main.R
 import com.tyom.ui_tools.extensions.FigmaLargePreview
 import com.tyom.ui_tools.extensions.noRippleClickable
 
@@ -25,7 +27,14 @@ fun HomePage(
     onClickRefreshInstruments: () -> Unit,
     onClickSelectInstrument: (Instrument) -> Unit
 ) {
-    PianoKeyboard(notes = notes)
+    PianoKeyboard(
+        modifier = Modifier
+            .padding(
+                top = dimensionResource(R.dimen._30dp),
+                start = dimensionResource(R.dimen._10dp)
+            ),
+        notes = notes
+    )
     Column {
         Icon(imageVector = Icons.Default.Refresh, contentDescription = null, Modifier
             .size(40.dp)
