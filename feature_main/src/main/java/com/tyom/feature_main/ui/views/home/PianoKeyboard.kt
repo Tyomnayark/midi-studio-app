@@ -52,7 +52,6 @@ fun PianoKeyboard(
                 borderRadius = dimensionResource(id = R.dimen._2dp),
                 blurRadius = dimensionResource(id = R.dimen._30dp)
             )
-            .rotate(180f)
     ) {
         Column {
             (0 until WHITE_KEYS_COUNT).reversed().forEach { keyIndex ->
