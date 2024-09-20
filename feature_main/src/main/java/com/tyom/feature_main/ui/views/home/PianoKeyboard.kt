@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tyom.feature_main.R
 import com.tyom.feature_main.constants.PianoConstants.BLACK_KEYS_COUNT
@@ -29,6 +30,7 @@ import com.tyom.feature_main.ui.theme.GrayLight
 import com.tyom.feature_main.ui.theme.OrangeLight
 import com.tyom.feature_main.ui.theme.PianoShadowGray
 import com.tyom.ui_tools.extensions.DevicePreviews
+import com.tyom.ui_tools.extensions.FigmaLargePreview
 import com.tyom.ui_tools.extensions.shadow
 
 @Composable
@@ -133,7 +135,7 @@ fun PianoKeyboard(
 }
 
 @Composable
-@DevicePreviews
+@Preview
 fun PianoKeyboardPreview() {
     PianoKeyboard(notes = emptyList())
 }

@@ -1,7 +1,9 @@
 package com.tyom.feature_main.ui.views.home
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -27,14 +29,20 @@ fun HomePage(
     onClickRefreshInstruments: () -> Unit,
     onClickSelectInstrument: (Instrument) -> Unit
 ) {
-    PianoKeyboard(
+    Box(
         modifier = Modifier
-            .padding(
-                top = dimensionResource(R.dimen._30dp),
-                start = dimensionResource(R.dimen._10dp)
-            ),
-        notes = notes
-    )
+            .fillMaxSize()
+    ) {
+        PianoKeyboard(
+            modifier = Modifier
+                .padding(
+                    top = dimensionResource(R.dimen._30dp),
+                    start = dimensionResource(R.dimen._10dp)
+                ),
+            notes = notes
+        )
+
+    }
     Column {
         Icon(imageVector = Icons.Default.Refresh, contentDescription = null, Modifier
             .size(40.dp)
