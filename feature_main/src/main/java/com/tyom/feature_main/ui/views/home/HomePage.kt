@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
@@ -26,6 +27,7 @@ import com.tyom.ui_tools.extensions.noRippleClickable
 fun HomePage(
     instruments: List<Instrument>,
     notes:  List<Pair<Int, Int>>,
+    liveNotes: List<Pair<List<Int>, Int>>,
 
     onClickRefreshInstruments: () -> Unit,
     onClickSelectInstrument: (Instrument) -> Unit
@@ -36,14 +38,21 @@ fun HomePage(
     ) {
         PianoKeyboard(
             modifier = Modifier
-                .rotate(180f)
                 .padding(
                     top = dimensionResource(R.dimen._30dp),
                     start = dimensionResource(R.dimen._10dp)
-                ),
+                )
+                .rotate(180f),
             notes = notes
         )
-
+        LiveNoteString(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(
+                    vertical = dimensionResource(R.dimen._30dp)
+                ),
+            liveNotes = liveNotes
+        )
     }
     Column {
         Icon(imageVector = Icons.Default.Refresh, contentDescription = null, Modifier
@@ -79,6 +88,7 @@ fun MainMenuPreview() {
     HomePage(
         instruments = emptyList(),
         notes = emptyList(),
+        liveNotes = emptyList(),
         onClickRefreshInstruments = {},
         onClickSelectInstrument = {}
     )

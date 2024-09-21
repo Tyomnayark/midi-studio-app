@@ -12,5 +12,6 @@ data class MainUIState(
     val bluetoothDevices: List<BluetoothDevice?> = emptyList(),
     val instruments: List<Instrument> = emptyList(),
 
-    val currentNotes: List<Pair<Int, Int>> = emptyList()
+    val currentNotes: List<Pair<Int, Int>> = emptyList(),
+    val liveNotes: List<Pair<List<Int>, Int>> = emptyList()
 ): UIState

@@ -21,6 +21,7 @@ fun NavGraph(
             HomePage(
                 instruments = state.instruments,
                 notes = state.currentNotes,
+                liveNotes = state.liveNotes,
                 onClickRefreshInstruments = {
                     viewModel.onClickRefreshInstruments()
                 },

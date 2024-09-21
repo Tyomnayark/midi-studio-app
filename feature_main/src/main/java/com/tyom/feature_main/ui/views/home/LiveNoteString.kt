@@ -20,10 +20,11 @@ private const val STROKE_WIDTH = 4f
 
 @Composable
 fun LiveNoteString(
-        liveNotes: List<Pair<List<Int>, Int>>
+    modifier: Modifier = Modifier,
+    liveNotes: List<Pair<List<Int>, Int>>
 ) {
     Canvas(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxHeight()
             .width(dimensionResource(R.dimen._120dp))
     ) {
