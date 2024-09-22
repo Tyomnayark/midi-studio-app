@@ -161,4 +161,13 @@ class MainViewModel @Inject constructor(
             }
         }
     }
+
+    fun changeKeyboardVisibility() {
+        val currentState = _uiState.value.isKeyboardVisible
+        _uiState.update { state ->
+            state.copy(
+                isKeyboardVisible = !currentState
+            )
+        }
+    }
 }

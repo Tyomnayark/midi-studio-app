@@ -1,7 +1,6 @@
 package com.tyom.feature_main.ui.views.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -13,19 +12,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.tyom.feature_main.R
 import com.tyom.feature_main.constants.PianoConstants.BLACK_KEYS_COUNT
 import com.tyom.feature_main.constants.PianoConstants.WHITE_KEYS_COUNT
 import com.tyom.feature_main.models.Note
-import com.tyom.feature_main.ui.theme.GrayLight
-import com.tyom.feature_main.ui.theme.OrangeLight
+import com.tyom.feature_main.ui.theme.GrayDark
+import com.tyom.feature_main.ui.theme.GrayLightDark
+import com.tyom.feature_main.ui.theme.PianoGray
 import com.tyom.feature_main.ui.theme.PianoShadowGray
+import com.tyom.feature_main.ui.theme.Red
 import com.tyom.ui_tools.extensions.IfFalse
 import com.tyom.ui_tools.extensions.IfTrue
 import com.tyom.ui_tools.extensions.shadow
@@ -53,25 +54,44 @@ fun PianoKeyboard(
         Column {
             (0 until WHITE_KEYS_COUNT).reversed().forEach { keyIndex ->
                 Box(
-                    modifier = Modifier
-                        .height(dimensionResource(id = R.dimen._12dp))
-                        .width(dimensionResource(id = R.dimen._90dp))
-                        .background(
-                            color = Color.White, shape = keyShape
-                        )
-                        .border(width = (0.1).dp, shape = keyShape, color = GrayLight)
+                    contentAlignment = Alignment.BottomStart
                 ) {
-                    notes.forEach { note ->
-                        note.isWhiteKey.IfTrue {
-                            if (note.value == keyIndex) {
-                                Box(
-                                    modifier = Modifier
-                                        .height(dimensionResource(id = R.dimen._12dp))
-                                        .width(dimensionResource(id = R.dimen._90dp))
-                                        .background(
-                                            color = OrangeLight, shape = keyShape
-                                        )
-                                )
+                    Box(
+                        modifier = Modifier
+                            .height(dimensionResource(id = R.dimen._12dp))
+                            .width(dimensionResource(id = R.dimen._94dp))
+                            .background(
+                                color = PianoGray, shape = keyShape
+                            )
+                    )
+                    Box(
+                        modifier = Modifier
+                            .height(dimensionResource(id = R.dimen._12dp))
+                            .width(dimensionResource(id = R.dimen._92dp))
+                            .background(
+                                color = PianoShadowGray, shape = keyShape
+                            )
+                    )
+                    Box(
+                        modifier = Modifier
+                            .height(dimensionResource(id = R.dimen._11dp))
+                            .width(dimensionResource(id = R.dimen._90dp))
+                            .background(
+                                color = Color.White, shape = keyShape
+                            )
+                    ) {
+                        notes.forEach { note ->
+                            note.isWhiteKey.IfTrue {
+                                if (note.value == keyIndex) {
+                                    Box(
+                                        modifier = Modifier
+                                            .height(dimensionResource(id = R.dimen._12dp))
+                                            .width(dimensionResource(id = R.dimen._90dp))
+                                            .background(
+                                                color = Red, shape = keyShape
+                                            )
+                                    )
+                                }
                             }
                         }
                     }
@@ -87,27 +107,49 @@ fun PianoKeyboard(
                 Box(
                     modifier = Modifier
                         .offset(y = dimensionResource(id = R.dimen._4dp))
-                        .padding(top = dimensionResource(id = R.dimen._4dp))
-                        .height(dimensionResource(id = R.dimen._8dp))
-                        .width(dimensionResource(id = R.dimen._50dp))
-                        .background(
-                            color = Color.Black, shape = keyShape
-                        )
+                        .padding(top = dimensionResource(id = R.dimen._4dp)),
+                    contentAlignment = Alignment.BottomStart
                 ) {
-                    notes.forEach { note ->
-                       note.isWhiteKey.IfFalse {
-                            if (note.value == keyIndex) {
-                                Box(
-                                    modifier = Modifier
-                                        .height(dimensionResource(id = R.dimen._12dp))
-                                        .width(dimensionResource(id = R.dimen._80dp))
-                                        .background(
-                                            color = OrangeLight, shape = keyShape
-                                        )
-                                )
+                    Box(
+                        modifier = Modifier
+                            .height(dimensionResource(id = R.dimen._8dp))
+                            .width(dimensionResource(id = R.dimen._50dp))
+                            .background(
+                                color = Color.Black, shape = keyShape
+                            )
+                    ) {
+                        notes.forEach { note ->
+                            note.isWhiteKey.IfFalse {
+                                if (note.value == keyIndex) {
+                                    Box(
+                                        modifier = Modifier
+                                            .height(dimensionResource(id = R.dimen._12dp))
+                                            .width(dimensionResource(id = R.dimen._80dp))
+                                            .background(
+                                                color = Red, shape = keyShape
+                                            )
+                                    )
+                                }
                             }
                         }
                     }
+
+                    Box(
+                        modifier = Modifier
+                            .height(dimensionResource(id = R.dimen._8dp))
+                            .width(dimensionResource(id = R.dimen._48dp))
+                            .background(
+                                color = GrayLightDark, shape = keyShape
+                            )
+                    )
+                    Box(
+                        modifier = Modifier
+                            .height(dimensionResource(id = R.dimen._4dp))
+                            .width(dimensionResource(id = R.dimen._48dp))
+                            .background(
+                                color = GrayDark, shape = keyShape
+                            )
+                    )
                 }
             }
         }
@@ -124,7 +166,7 @@ fun PianoKeyboard(
                                 Color.Transparent
                             )
                         ),
-                    alpha = 0.07f
+                    alpha = 0.05f
                 )
         )
     }

@@ -19,6 +19,7 @@ fun NavGraph(
     NavHost(navController = navController, startDestination = HOME_ROUTE) {
         composable(HOME_ROUTE) {
             HomePage(
+                isKeyboardVisible = state.isKeyboardVisible,
                 instruments = state.instruments,
                 notes = state.currentNotes,
                 liveNotes = state.liveNotes,
