@@ -14,5 +14,5 @@ data class MainUIState(
     val instruments: List<Instrument> = emptyList(),
 
     val currentNotes: List<Note> = emptyList(),
-    val liveNotes: List<Pair<Note, Int>> = emptyList()
+    val liveNotes: List<Pair<List<Note>, Int>> = emptyList()
 ): UIState

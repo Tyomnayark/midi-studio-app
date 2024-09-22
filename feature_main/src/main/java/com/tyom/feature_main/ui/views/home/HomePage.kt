@@ -28,7 +28,7 @@ import com.tyom.ui_tools.extensions.noRippleClickable
 fun HomePage(
     instruments: List<Instrument>,
     notes:  List<Note>,
-    liveNotes: List<Pair<Note, Int>>,
+    liveNotes: List<Pair<List<Note>, Int>>,
 
     onClickRefreshInstruments: () -> Unit,
     onClickSelectInstrument: (Instrument) -> Unit

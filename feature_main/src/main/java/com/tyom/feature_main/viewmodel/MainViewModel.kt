@@ -12,6 +12,7 @@ import com.tyom.domain.usecases.CheckHaveConnectedInstrumentUseCase
 import com.tyom.domain.usecases.ConnectBluetoothDeviceUseCase
 import com.tyom.domain.usecases.GetMIDIInstrumentsUseCase
 import com.tyom.feature_main.models.BottomNavigationItem
+import com.tyom.feature_main.models.Note
 import com.tyom.feature_main.models.ScreensEnum
 import com.tyom.feature_main.models.toNote
 import com.tyom.feature_main.utils.hasBluetoothPermissions
@@ -56,21 +57,19 @@ class MainViewModel @Inject constructor(
             )
 
             val liveNotes = listOf(
-                listOf(60, 62) to 1,
-                listOf(61) to 2,
-                listOf(65) to 3,
-                listOf(70, 75) to 4,
-                listOf(70, 75) to 5,
-                listOf(55, 50) to 6,
-                listOf(55, 50) to 7,
-                listOf(55, 50) to 8,
-                listOf(55, 50) to 8,
+                listOf(Note(value = 9, isWhiteKey = true)) to 1,
+                listOf(Note(value = 20, isWhiteKey = true), Note(value = 10, isWhiteKey = true)) to 2,
+                listOf(Note(value = 66, isWhiteKey = true), Note(value = 1, isWhiteKey = true)) to 3,
+                listOf(Note(value = 2, isWhiteKey = true), Note(value = 0, isWhiteKey = true)) to 4,
+                listOf(Note(value = 9, isWhiteKey = true), Note(value = 4, isWhiteKey = true)) to 5,
+                listOf(Note(value = 9, isWhiteKey = true), Note(value = 4, isWhiteKey = true)) to 6
             )
 
             _uiState.update { state ->
                 state.copy(
                     selectedInstrument = instrument,
-                    bottomItems = bottomItems
+                    bottomItems = bottomItems,
+                    liveNotes = liveNotes
                 )
             }
         }

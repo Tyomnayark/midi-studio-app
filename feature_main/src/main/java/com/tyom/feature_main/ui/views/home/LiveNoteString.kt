@@ -22,7 +22,7 @@ private const val STROKE_WIDTH = 4f
 @Composable
 fun LiveNoteString(
     modifier: Modifier = Modifier,
-    liveNotes: List<Pair<Note, Int>>
+    liveNotes: List<Pair<List<Note>, Int>>
 ) {
     Canvas(
         modifier = modifier
@@ -58,7 +58,7 @@ fun DrawScope.drawMusicLines(lineCount: Int, lineColor: Color, lineSpacing: Floa
 }
 
 fun DrawScope.drawLiveNotes(
-    liveNotes: List<Pair<Note, Int>>,
+    liveNotes: List<Pair<List<Note>, Int>>,
     lineSpacing: Float
 ) {
     val startY = TOP_PADDING
@@ -77,16 +77,16 @@ fun DrawScope.drawLiveNotes(
         // Calculate the X position based on the time moment
         val xOffset = startX + timeMoment * (size.width / 10)  // assuming 10 moments
 
-//        notes.forEach { note ->
-//            // Find the Y position based on the note value
-//            val yOffset = noteToLineOffset[note] ?: 0f
-//            // Draw the note as a small circle or any other shape
-//            drawCircle(
-//                color = Color.Red,  // Change color as needed
-//                center = Offset(xOffset, startY + yOffset),
-//                radius = 10f  // Adjust radius for note size
-//            )
-//        }
+        notes.forEach { note ->
+            // Find the Y position based on the note value
+            val yOffset = noteToLineOffset[note.value] ?: 0f
+            // Draw the note as a small circle or any other shape
+            drawCircle(
+                color = Color.Red,  // Change color as needed
+                center = Offset(xOffset, startY + yOffset),
+                radius = 10f  // Adjust radius for note size
+            )
+        }
     }
 }
 
