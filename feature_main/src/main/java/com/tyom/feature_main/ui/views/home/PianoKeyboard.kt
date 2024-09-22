@@ -11,11 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
@@ -23,20 +21,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tyom.feature_main.R
 import com.tyom.feature_main.constants.PianoConstants.BLACK_KEYS_COUNT
-import com.tyom.feature_main.constants.PianoConstants.BLACK_KEY_TYPE
 import com.tyom.feature_main.constants.PianoConstants.WHITE_KEYS_COUNT
-import com.tyom.feature_main.constants.PianoConstants.WHITE_KEY_TYPE
+import com.tyom.feature_main.models.Note
 import com.tyom.feature_main.ui.theme.GrayLight
 import com.tyom.feature_main.ui.theme.OrangeLight
 import com.tyom.feature_main.ui.theme.PianoShadowGray
-import com.tyom.ui_tools.extensions.DevicePreviews
-import com.tyom.ui_tools.extensions.FigmaLargePreview
+import com.tyom.ui_tools.extensions.IfFalse
+import com.tyom.ui_tools.extensions.IfTrue
 import com.tyom.ui_tools.extensions.shadow
 
 @Composable
 fun PianoKeyboard(
     modifier: Modifier = Modifier,
-    notes: List<Pair<Int, Int>>
+    notes: List<Note>
 ) {
     val keyShape = RoundedCornerShape(
         topEnd = dimensionResource(id = R.dimen._2dp),
@@ -64,9 +61,9 @@ fun PianoKeyboard(
                         )
                         .border(width = (0.1).dp, shape = keyShape, color = GrayLight)
                 ) {
-                    notes.forEach { pair ->
-                        if (pair.second == WHITE_KEY_TYPE) {
-                            if (pair.first == keyIndex) {
+                    notes.forEach { note ->
+                        note.isWhiteKey.IfTrue {
+                            if (note.value == keyIndex) {
                                 Box(
                                     modifier = Modifier
                                         .height(dimensionResource(id = R.dimen._12dp))
@@ -97,9 +94,9 @@ fun PianoKeyboard(
                             color = Color.Black, shape = keyShape
                         )
                 ) {
-                    notes.forEach { pair ->
-                        if (pair.second == BLACK_KEY_TYPE) {
-                            if (pair.first == keyIndex) {
+                    notes.forEach { note ->
+                       note.isWhiteKey.IfFalse {
+                            if (note.value == keyIndex) {
                                 Box(
                                     modifier = Modifier
                                         .height(dimensionResource(id = R.dimen._12dp))

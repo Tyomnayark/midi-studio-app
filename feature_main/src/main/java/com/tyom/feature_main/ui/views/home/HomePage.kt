@@ -20,14 +20,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tyom.domain.models.Instrument
 import com.tyom.feature_main.R
+import com.tyom.feature_main.models.Note
 import com.tyom.ui_tools.extensions.FigmaLargePreview
 import com.tyom.ui_tools.extensions.noRippleClickable
 
 @Composable
 fun HomePage(
     instruments: List<Instrument>,
-    notes:  List<Pair<Int, Int>>,
-    liveNotes: List<Pair<List<Int>, Int>>,
+    notes:  List<Note>,
+    liveNotes: List<Pair<Note, Int>>,
 
     onClickRefreshInstruments: () -> Unit,
     onClickSelectInstrument: (Instrument) -> Unit

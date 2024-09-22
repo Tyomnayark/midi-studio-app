@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.res.dimensionResource
 import com.tyom.feature_main.R
+import com.tyom.feature_main.models.Note
 import com.tyom.ui_tools.extensions.FigmaLargePreview
 
 private const val LINE_COUNT = 5
@@ -21,7 +22,7 @@ private const val STROKE_WIDTH = 4f
 @Composable
 fun LiveNoteString(
     modifier: Modifier = Modifier,
-    liveNotes: List<Pair<List<Int>, Int>>
+    liveNotes: List<Pair<Note, Int>>
 ) {
     Canvas(
         modifier = modifier
@@ -31,6 +32,11 @@ fun LiveNoteString(
         drawMusicLines(
             lineCount = LINE_COUNT,
             lineColor = Color.Black,
+            lineSpacing = LINE_SPACING
+        )
+
+        drawLiveNotes(
+            liveNotes = liveNotes,
             lineSpacing = LINE_SPACING
         )
     }
@@ -48,6 +54,39 @@ fun DrawScope.drawMusicLines(lineCount: Int, lineColor: Color, lineSpacing: Floa
             end = Offset(xOffset, endY),
             strokeWidth = STROKE_WIDTH
         )
+    }
+}
+
+fun DrawScope.drawLiveNotes(
+    liveNotes: List<Pair<Note, Int>>,
+    lineSpacing: Float
+) {
+    val startY = TOP_PADDING
+    val startX = size.width / START_PADDING_COEFF
+
+    val noteToLineOffset = mapOf(
+        0 to 0f,  // map note 0 to first line, etc.
+        1 to lineSpacing,
+        2 to lineSpacing * 2,
+        3 to lineSpacing * 3,
+        4 to lineSpacing * 4
+    )
+
+    // Iterate through the live notes and draw each note on its corresponding line
+    liveNotes.forEach { (notes, timeMoment) ->
+        // Calculate the X position based on the time moment
+        val xOffset = startX + timeMoment * (size.width / 10)  // assuming 10 moments
+
+//        notes.forEach { note ->
+//            // Find the Y position based on the note value
+//            val yOffset = noteToLineOffset[note] ?: 0f
+//            // Draw the note as a small circle or any other shape
+//            drawCircle(
+//                color = Color.Red,  // Change color as needed
+//                center = Offset(xOffset, startY + yOffset),
+//                radius = 10f  // Adjust radius for note size
+//            )
+//        }
     }
 }
 

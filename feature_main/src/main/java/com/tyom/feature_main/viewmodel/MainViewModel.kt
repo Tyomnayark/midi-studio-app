@@ -13,9 +13,9 @@ import com.tyom.domain.usecases.ConnectBluetoothDeviceUseCase
 import com.tyom.domain.usecases.GetMIDIInstrumentsUseCase
 import com.tyom.feature_main.models.BottomNavigationItem
 import com.tyom.feature_main.models.ScreensEnum
+import com.tyom.feature_main.models.toNote
 import com.tyom.feature_main.utils.hasBluetoothPermissions
 import com.tyom.feature_main.utils.hasLocationPermissions
-import com.tyom.feature_main.utils.toPianoPair
 import com.tyom.utils.BuildConfig
 import com.tyom.utils.constants.BuildTypeConstants.DEBUG_TYPE
 import com.tyom.utils.extensions.launchOnDefault
@@ -53,6 +53,18 @@ class MainViewModel @Inject constructor(
                     screen = ScreensEnum.SETTINGS,
                     isSelected = false
                 )
+            )
+
+            val liveNotes = listOf(
+                listOf(60, 62) to 1,
+                listOf(61) to 2,
+                listOf(65) to 3,
+                listOf(70, 75) to 4,
+                listOf(70, 75) to 5,
+                listOf(55, 50) to 6,
+                listOf(55, 50) to 7,
+                listOf(55, 50) to 8,
+                listOf(55, 50) to 8,
             )
 
             _uiState.update { state ->
@@ -130,7 +142,7 @@ class MainViewModel @Inject constructor(
                                     "MIDI message: msg=$msg, offset=$offset, count=$count, timestamp=$timestamp"
                                 )
                             }
-                            val pianoPair = note.toPianoPair()
+                            val pianoPair = note.toNote()
 
                             val updatedList = _uiState.value.currentNotes.toMutableList()
                             if (updatedList.contains(pianoPair)) {
