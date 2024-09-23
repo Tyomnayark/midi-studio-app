@@ -6,4 +6,5 @@
     <string name="settings_screen">Settings</string>
 
     <string name="keyboard">Keyboard</string>
+    <string name="selected_device">Selected device</string>
 </resources>

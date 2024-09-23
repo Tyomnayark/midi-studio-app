@@ -16,5 +16,6 @@ data class MainUIState(
     val currentNotes: List<Note> = emptyList(),
     val liveNotes: List<Pair<List<Note>, Int>> = emptyList(),
 
-    val isKeyboardVisible: Boolean = false
+    val isKeyboardVisible: Boolean = false,
+    val isLoading: Boolean = false
 ): UIState

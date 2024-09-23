@@ -5,6 +5,7 @@ import android.content.Context
 import android.media.midi.MidiReceiver
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.ui.util.trace
 import androidx.lifecycle.ViewModel
 import com.tyom.domain.models.Instrument
 import com.tyom.domain.models.toInstrument
@@ -69,7 +70,8 @@ class MainViewModel @Inject constructor(
                 state.copy(
                     selectedInstrument = instrument,
                     bottomItems = bottomItems,
-                    liveNotes = liveNotes
+                    liveNotes = liveNotes,
+                    isLoading = true
                 )
             }
         }
