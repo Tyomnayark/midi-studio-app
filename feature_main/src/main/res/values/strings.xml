@@ -4,4 +4,6 @@
     <!--    Screen tab names-->
     <string name="home_screen">Home</string>
     <string name="settings_screen">Settings</string>
+
+    <string name="keyboard">Keyboard</string>
 </resources>

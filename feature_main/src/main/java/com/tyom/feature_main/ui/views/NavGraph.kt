@@ -28,6 +28,9 @@ fun NavGraph(
                 },
                 onClickSelectInstrument = { instrument ->
                     viewModel.onClickSelectInstrument(instrument)
+                },
+                onClickChangeKeyboardVisibility = {
+                    viewModel.changeKeyboardVisibility()
                 }
             )
         }

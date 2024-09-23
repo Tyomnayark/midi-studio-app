@@ -19,6 +19,7 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.Typography
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -27,24 +28,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tyom.domain.models.Instrument
 import com.tyom.feature_main.R
 import com.tyom.feature_main.models.Note
+import com.tyom.feature_main.ui.views.common.SwitchButton
 import com.tyom.ui_tools.extensions.FigmaLargePreview
 import com.tyom.ui_tools.extensions.IfTrue
 import com.tyom.ui_tools.extensions.noRippleClickable
+import com.tyom.ui_tools.text.settingsItemFont
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomePage(
     isKeyboardVisible: Boolean,
     instruments: List<Instrument>,
-    notes:  List<Note>,
+    notes: List<Note>,
     liveNotes: List<Pair<List<Note>, Int>>,
 
+    onClickChangeKeyboardVisibility: () -> Unit,
     onClickRefreshInstruments: () -> Unit,
     onClickSelectInstrument: (Instrument) -> Unit
 ) {
@@ -55,100 +59,102 @@ fun HomePage(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
-
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(dimensionResource(R.dimen._20dp))
+                ) {
+                    Text(
+                        text = stringResource(R.string.keyboard),
+                        style = settingsItemFont( size = dimensionResource(R.dimen._15sp))
+                    )
+                    SwitchButton(
+                        isChecked = isKeyboardVisible,
+                        onClick = {
+                            onClickChangeKeyboardVisibility()
+                        }
+                    )
+                }
             }
         }
     ) {
-        // Main content of the screen goes here
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text("Main Content") },
-                    navigationIcon = {
-                        IconButton(onClick = {
-                            // Open the drawer when the navigation icon is clicked
-                            scope.launch { drawerState.open() }
-                        }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Menu")
-                        }
-                    }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            IconButton(
+                modifier = Modifier.size(dimensionResource(R.dimen._30dp)),
+                onClick = {
+                    scope.launch { drawerState.open() }
+                }
+            ) {
+                Icon(
+                    Icons.Default.Menu,
+                    contentDescription = null,
+                    modifier = Modifier.size(dimensionResource(R.dimen._24dp))
                 )
             }
-        ) { innerPadding ->
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)) {
-                Text("This is the main content of the screen")
+
+            isKeyboardVisible.IfTrue {
+                PianoKeyboard(
+                    modifier = Modifier
+                        .padding(
+                            top = dimensionResource(R.dimen._30dp),
+                            start = dimensionResource(R.dimen._20dp)
+                        )
+                        .rotate(180f),
+                    notes = notes
+                )
             }
-        }
-    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        Row(
-            modifier = Modifier
-        ) {
-
-        }
-        isKeyboardVisible.IfTrue {
-            PianoKeyboard(
+            LiveNoteString(
                 modifier = Modifier
+                    .align(Alignment.CenterEnd)
                     .padding(
-                        top = dimensionResource(R.dimen._10dp),
-                        start = dimensionResource(R.dimen._5dp)
-                    )
-                    .rotate(180f),
-                notes = notes
-            )
-        }
-        LiveNoteString(
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .padding(
-                    vertical = dimensionResource(R.dimen._30dp)
-                ),
-            liveNotes = liveNotes
-        )
-    }
-    Column {
-        Icon(imageVector = Icons.Default.Refresh, contentDescription = null, Modifier
-            .size(40.dp)
-            .padding(5.dp)
-            .noRippleClickable {
-                onClickRefreshInstruments()
-            }
-        )
-        instruments.forEach { instrument ->
-            Text(
-                text = "name: ${instrument.name} address: ${instrument.address} ",
-                color = Color.Black,
-                fontSize = 20.sp,
-                modifier = Modifier.clickable {
-                    onClickSelectInstrument(instrument)
-                }
-            )
-        }
-        notes.forEach { note ->
-            Text(
-                text = "$note",
-                color = Color.Black,
-                fontSize = 20.sp
+                        vertical = dimensionResource(R.dimen._30dp)
+                    ),
+                liveNotes = liveNotes
             )
         }
     }
+
+//    Column {
+//        Icon(imageVector = Icons.Default.Refresh, contentDescription = null, Modifier
+//            .size(40.dp)
+//            .padding(5.dp)
+//            .noRippleClickable {
+//                onClickRefreshInstruments()
+//            }
+//        )
+//        instruments.forEach { instrument ->
+//            Text(
+//                text = "name: ${instrument.name} address: ${instrument.address} ",
+//                color = Color.Black,
+//                fontSize = 20.sp,
+//                modifier = Modifier.clickable {
+//                    onClickSelectInstrument(instrument)
+//                }
+//            )
+//        }
+//        notes.forEach { note ->
+//            Text(
+//                text = "$note",
+//                color = Color.Black,
+//                fontSize = 20.sp
+//            )
+//        }
+//    }
 }
 
 @FigmaLargePreview
 @Composable
 fun MainMenuPreview() {
     HomePage(
-        isKeyboardVisible = true,
+        isKeyboardVisible = false,
         instruments = emptyList(),
         notes = emptyList(),
         liveNotes = emptyList(),
         onClickRefreshInstruments = {},
-        onClickSelectInstrument = {}
+        onClickSelectInstrument = {},
+        onClickChangeKeyboardVisibility = {}
     )
 }
