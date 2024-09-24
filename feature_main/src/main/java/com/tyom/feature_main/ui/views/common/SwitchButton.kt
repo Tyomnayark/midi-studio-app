@@ -48,7 +48,7 @@ fun SwitchButton(
     )
 
     val thumbOffsetX by animateDpAsState(
-        targetValue = if (isChecked) dimensionResource(R.dimen._18dp) else dimensionResource(R.dimen._0dp),
+        targetValue = if (isChecked) dimensionResource(R.dimen._20dp) else dimensionResource(R.dimen._1dp),
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
             stiffness = Spring.StiffnessLow
@@ -58,12 +58,11 @@ fun SwitchButton(
 
     Box(
         modifier = Modifier
-            .width(dimensionResource(R.dimen._55dp))
+            .width(dimensionResource(R.dimen._53dp))
             .height(dimensionResource(R.dimen._28dp))
             .clip(RoundedCornerShape(dimensionResource(R.dimen._14dp)))
             .background(switchBackgroundColor)
-            .clickable { onClick() }
-            .padding(horizontal = dimensionResource(R.dimen._3dp)),
+            .clickable { onClick() },
         contentAlignment = Alignment.CenterStart
     ) {
         Box(

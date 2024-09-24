@@ -30,6 +30,9 @@ fun NavGraph(
                 },
                 onClickChangeKeyboardVisibility = {
                     viewModel.changeKeyboardVisibility()
+                },
+                onClickChangeAutoConnect = {
+                    viewModel.changeAutoConnect()
                 }
             )
         }

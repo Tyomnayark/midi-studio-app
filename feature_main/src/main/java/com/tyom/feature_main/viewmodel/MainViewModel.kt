@@ -1,6 +1,7 @@
 package com.tyom.feature_main.viewmodel
 
 import android.annotation.SuppressLint
+import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.media.midi.MidiReceiver
 import android.util.Log
@@ -8,6 +9,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.tyom.domain.models.Instrument
 import com.tyom.domain.models.toInstrument
+import com.tyom.domain.usecases.AddInstrumentToPreferencesUseCase
 import com.tyom.domain.usecases.CheckHaveConnectedInstrumentUseCase
 import com.tyom.domain.usecases.ConnectBluetoothDeviceUseCase
 import com.tyom.domain.usecases.GetMIDIInstrumentsUseCase
@@ -20,12 +22,12 @@ import com.tyom.feature_main.utils.hasBluetoothPermissions
 import com.tyom.feature_main.utils.hasLocationPermissions
 import com.tyom.utils.BuildConfig
 import com.tyom.utils.constants.BuildTypeConstants.DEBUG_TYPE
+import com.tyom.utils.extensions.isNotNull
 import com.tyom.utils.extensions.launchOnDefault
 import com.tyom.utils.extensions.launchOnIO
 import com.tyom.utils.extensions.launchOnMain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,6 +38,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val checkHaveConnectedInstrumentUseCase: CheckHaveConnectedInstrumentUseCase,
+    private val addInstrumentToPreferencesUseCase: AddInstrumentToPreferencesUseCase,
     private val getMIDIInstrumentsUseCase: GetMIDIInstrumentsUseCase,
     private val connectBluetoothDeviceUseCase: ConnectBluetoothDeviceUseCase
 ) : ViewModel() {
@@ -149,22 +152,23 @@ class MainViewModel @Inject constructor(
 
     fun onClickSelectInstrument(instrument: Instrument) {
         launchOnIO {
-
             val newInstrumentsList = _uiState.value.settingsState.instruments.toMutableList()
             newInstrumentsList.remove(instrument)
             val settingsState = _uiState.value.settingsState.copy(
                 instruments = newInstrumentsList,
                 selectedInstrument = instrument,
-                isTryingToConnect = true
+                isTryingToConnect = true,
+                isInstrumentsListOpened = true
             )
             _uiState.update { state ->
                 state.copy(
                     settingsState = settingsState
                 )
             }
+            addInstrumentToPreferencesUseCase.execute(instrument)
 
             _uiState.value.bluetoothDevices.find { device ->
-                device?.address == instrument.address
+                (device?.name == instrument.name) || (device?.address == instrument.address)
             }?.let { device ->
                 val receiverImpl = object : MidiReceiver() {
                     override fun onSend(msg: ByteArray, offset: Int, count: Int, timestamp: Long) {
@@ -218,6 +222,18 @@ class MainViewModel @Inject constructor(
         val isKeyboardVisible = _uiState.value.settingsState.isKeyboardVisible
         val settingsState = _uiState.value.settingsState.copy(
             isKeyboardVisible = !isKeyboardVisible
+        )
+        _uiState.update { state ->
+            state.copy(
+                settingsState = settingsState
+            )
+        }
+    }
+
+    fun changeAutoConnect() {
+        val isAutoConnect = _uiState.value.settingsState.isAutoConnect
+        val settingsState = _uiState.value.settingsState.copy(
+            isAutoConnect = !isAutoConnect
         )
         _uiState.update { state ->
             state.copy(

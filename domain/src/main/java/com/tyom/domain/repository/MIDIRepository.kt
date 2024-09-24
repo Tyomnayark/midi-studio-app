@@ -9,8 +9,8 @@ interface MIDIRepository {
 
     suspend fun scanMidiInstruments(): List<BluetoothDevice?>
 
-    suspend fun getWiredInstruments(): List<Instrument>
-
     suspend fun connectBluetoothInstrument(bluetoothDevice: BluetoothDevice, receiver: MidiReceiver): Boolean
+
+    suspend fun addInstrumentToPreferences(instrument: Instrument)
 
 }

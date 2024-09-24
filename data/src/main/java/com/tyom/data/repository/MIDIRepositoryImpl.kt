@@ -23,12 +23,12 @@ class MIDIRepositoryImpl @Inject constructor(
         return  midiProvider.scanMidiInstruments()
     }
 
-    override suspend fun getWiredInstruments(): List<Instrument> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun connectBluetoothInstrument( bluetoothDevice: BluetoothDevice, receiver: MidiReceiver): Boolean {
         return midiProvider.connectBluetoothDevice(bluetoothDevice, receiver)
+    }
+
+    override suspend fun addInstrumentToPreferences(instrument: Instrument) {
+        Preferences.putString(context, INSTRUMENT, instrument.name)
     }
 
 }

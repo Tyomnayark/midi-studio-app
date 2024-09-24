@@ -67,15 +67,16 @@ fun HomePage(
     liveNotes: List<Pair<List<Note>, Int>>,
 
     onClickChangeKeyboardVisibility: () -> Unit,
+    onClickChangeAutoConnect: () -> Unit,
     onClickRefreshInstruments: () -> Unit,
     onClickSelectInstrument: (Instrument) -> Unit
 ) {
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Open)
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val containerScrollState = rememberScrollState()
     val height by animateDpAsState(
         targetValue = when {
-            settingsState.isInstrumentsListOpened && settingsState.isLoading -> dimensionResource(R.dimen._32dp) * (settingsState.instruments.size) + dimensionResource(
+            settingsState.isLoading -> dimensionResource(R.dimen._32dp) * (settingsState.instruments.size) + dimensionResource(
                 R.dimen._20dp
             )
 
@@ -267,6 +268,18 @@ fun HomePage(
                             onClickChangeKeyboardVisibility()
                         }
                     )
+
+                    Text(
+                        text = stringResource(R.string.auto_connect),
+                        style = settingsItemFont(size = dimensionResource(R.dimen._15sp)),
+                        modifier = Modifier.padding(vertical = dimensionResource(R.dimen._10dp))
+                    )
+                    SwitchButton(
+                        isChecked = settingsState.isAutoConnect,
+                        onClick = {
+                            onClickChangeAutoConnect()
+                        }
+                    )
                 }
             }
         }
@@ -318,6 +331,7 @@ fun MainMenuPreview() {
         liveNotes = emptyList(),
         onClickRefreshInstruments = {},
         onClickSelectInstrument = {},
-        onClickChangeKeyboardVisibility = {}
+        onClickChangeKeyboardVisibility = {},
+        onClickChangeAutoConnect = {}
     )
 }

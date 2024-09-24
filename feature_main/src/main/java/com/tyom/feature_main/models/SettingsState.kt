@@ -10,6 +10,7 @@ import com.tyom.utils.extensions.isNotNull
 
 data class SettingsState(
     val isLoading: Boolean = false,
+    val isAutoConnect: Boolean = true,
     val isKeyboardVisible: Boolean = true,
     val isConnected: Boolean = false,
     val isInstrumentsListOpened: Boolean = false,
