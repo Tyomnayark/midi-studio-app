@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.tyom.ui_tools"
+    namespace = "com.tyom.core_ui"
     compileSdk = 34
 
     buildFeatures {

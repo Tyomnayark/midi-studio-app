@@ -1,7 +1,6 @@
 package com.tyom.feature_main.viewmodel
 
 import android.annotation.SuppressLint
-import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.media.midi.MidiReceiver
 import android.util.Log
@@ -14,18 +13,17 @@ import com.tyom.domain.usecases.CheckHaveConnectedInstrumentUseCase
 import com.tyom.domain.usecases.ConnectBluetoothDeviceUseCase
 import com.tyom.domain.usecases.GetMIDIInstrumentsUseCase
 import com.tyom.feature_main.models.BottomNavigationItem
-import com.tyom.feature_main.models.Note
+import com.example.feature_home.models.Note
 import com.tyom.feature_main.models.ScreensEnum
-import com.tyom.feature_main.models.SettingsState
-import com.tyom.feature_main.models.toNote
+import com.example.feature_home.models.SettingsState
+import com.example.feature_home.models.toNote
 import com.tyom.feature_main.utils.hasBluetoothPermissions
 import com.tyom.feature_main.utils.hasLocationPermissions
-import com.tyom.utils.BuildConfig
-import com.tyom.utils.constants.BuildTypeConstants.DEBUG_TYPE
-import com.tyom.utils.extensions.isNotNull
-import com.tyom.utils.extensions.launchOnDefault
-import com.tyom.utils.extensions.launchOnIO
-import com.tyom.utils.extensions.launchOnMain
+import com.tyom.core_utils.BuildConfig
+import com.tyom.core_utils.constants.BuildTypeConstants.DEBUG_TYPE
+import com.tyom.core_utils.extensions.launchOnDefault
+import com.tyom.core_utils.extensions.launchOnIO
+import com.tyom.core_utils.extensions.launchOnMain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,21 +60,30 @@ class MainViewModel @Inject constructor(
             )
 
             val liveNotes = listOf(
-                listOf(Note(value = 9, isWhiteKey = true)) to 1,
+                listOf(com.example.feature_home.models.Note(value = 9, isWhiteKey = true)) to 1,
                 listOf(
-                    Note(value = 20, isWhiteKey = true),
-                    Note(value = 10, isWhiteKey = true)
+                    com.example.feature_home.models.Note(value = 20, isWhiteKey = true),
+                    com.example.feature_home.models.Note(value = 10, isWhiteKey = true)
                 ) to 2,
                 listOf(
-                    Note(value = 66, isWhiteKey = true),
-                    Note(value = 1, isWhiteKey = true)
+                    com.example.feature_home.models.Note(value = 66, isWhiteKey = true),
+                    com.example.feature_home.models.Note(value = 1, isWhiteKey = true)
                 ) to 3,
-                listOf(Note(value = 2, isWhiteKey = true), Note(value = 0, isWhiteKey = true)) to 4,
-                listOf(Note(value = 9, isWhiteKey = true), Note(value = 4, isWhiteKey = true)) to 5,
-                listOf(Note(value = 9, isWhiteKey = true), Note(value = 4, isWhiteKey = true)) to 6
+                listOf(
+                    com.example.feature_home.models.Note(value = 2, isWhiteKey = true),
+                    com.example.feature_home.models.Note(value = 0, isWhiteKey = true)
+                ) to 4,
+                listOf(
+                    com.example.feature_home.models.Note(value = 9, isWhiteKey = true),
+                    com.example.feature_home.models.Note(value = 4, isWhiteKey = true)
+                ) to 5,
+                listOf(
+                    com.example.feature_home.models.Note(value = 9, isWhiteKey = true),
+                    com.example.feature_home.models.Note(value = 4, isWhiteKey = true)
+                ) to 6
             )
 
-            val settingsState = SettingsState(
+            val settingsState = com.example.feature_home.models.SettingsState(
                 selectedInstrument = instrument
             )
             _uiState.update { state ->

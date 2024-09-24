@@ -2,7 +2,7 @@ package com.tyom.feature_main.models
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import com.tyom.feature_main.R
+import com.tyom.core_ui.R
 import com.tyom.feature_main.models.Routes.HOME_ROUTE
 import com.tyom.feature_main.models.Routes.SETTINGS_ROUTE
 

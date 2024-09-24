@@ -1,11 +1,10 @@
 package com.tyom.feature_main.viewmodel
 
 import android.bluetooth.BluetoothDevice
-import com.tyom.domain.models.Instrument
 import com.tyom.feature_main.models.BottomNavigationItem
-import com.tyom.feature_main.models.Note
-import com.tyom.feature_main.models.SettingsState
-import com.tyom.ui_tools.interfaces.UIState
+import com.example.feature_home.models.Note
+import com.example.feature_home.models.SettingsState
+import com.tyom.core_ui.interfaces.UIState
 
 
 data class MainUIState(

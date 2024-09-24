@@ -1,7 +1,7 @@
 package com.tyom.domain.models
 
 import android.bluetooth.BluetoothDevice
-import com.tyom.utils.extensions.empty
+import com.tyom.core_utils.extensions.empty
 
 data class Instrument(
     val name: String,

@@ -15,7 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.tyom.feature_main.ui.theme.NoteStudioTheme
+import com.tyom.core_ui.theme.NoteStudioTheme
 import com.tyom.feature_main.ui.views.BottomBar
 import com.tyom.feature_main.ui.views.NavGraph
 import com.tyom.feature_main.utils.hasBluetoothPermissions

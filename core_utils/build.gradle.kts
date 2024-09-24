@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.tyom.utils"
+    namespace = "com.tyom.core_utils"
     compileSdk = 34
 
     defaultConfig {

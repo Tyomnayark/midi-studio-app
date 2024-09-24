@@ -16,9 +16,9 @@ import android.os.Handler
 import android.os.Looper
 import android.os.ParcelUuid
 import android.util.Log
-import com.tyom.utils.BuildConfig
-import com.tyom.utils.constants.BuildTypeConstants.DEBUG_TYPE
-import com.tyom.utils.extensions.isNotNull
+import com.tyom.core_utils.BuildConfig
+import com.tyom.core_utils.constants.BuildTypeConstants.DEBUG_TYPE
+import com.tyom.core_utils.extensions.isNotNull
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.nio.ByteBuffer
 import javax.inject.Singleton

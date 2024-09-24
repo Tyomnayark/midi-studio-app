@@ -35,6 +35,7 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":core_ui"))
     implementation(project(":core_utils"))
+    implementation(project(":feature_home"))
 
     kapt(libs.dagger.hilt.compiler)
     implementation(libs.dagger.hilt)
