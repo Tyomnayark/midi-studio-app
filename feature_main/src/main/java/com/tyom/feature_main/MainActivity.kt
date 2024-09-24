@@ -1,6 +1,16 @@
 package com.tyom.feature_main
 
-import android.Manifest
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.Manifest.permission.BLUETOOTH
+import android.Manifest.permission.BLUETOOTH_ADMIN
+import android.Manifest.permission.BLUETOOTH_ADVERTISE
+import android.Manifest.permission.BLUETOOTH_CONNECT
+import android.Manifest.permission.BLUETOOTH_SCAN
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.READ_MEDIA_IMAGES
+import android.Manifest.permission.READ_MEDIA_VIDEO
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
@@ -20,12 +30,12 @@ import com.tyom.feature_main.ui.views.BottomBar
 import com.tyom.feature_main.ui.views.NavGraph
 import com.tyom.feature_main.utils.hasBluetoothPermissions
 import com.tyom.feature_main.utils.hasLocationPermissions
+import com.tyom.feature_main.utils.hasStoragePermissions
 import com.tyom.feature_main.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
-private const val REQUEST_CODE_BLUETOOTH_PERMISSIONS = 1001
-private const val REQUEST_CODE_LOCATION_PERMISSIONS = 1002
+private const val REQUEST_PERMISSION_CODE = 1001
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -36,10 +46,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (!hasBluetoothPermissions(this) && !hasLocationPermissions(this)) {
-            requestBluetoothPermissions()
+        if (!hasBluetoothPermissions(this) ||
+            !hasLocationPermissions(this) ||
+            !hasStoragePermissions(this)
+        ) {
+            requestPermissions()
         }
-//        enableEdgeToEdge()
         setContent {
 
             val state = mainViewModel.uiState.collectAsStateWithLifecycle().value
@@ -83,54 +95,51 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun requestBluetoothPermissions() {
-        val permissionsBluetooth = when {
+    private fun requestPermissions() {
+        val permissions = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> arrayOf(
+                BLUETOOTH_SCAN,
+                BLUETOOTH_ADVERTISE,
+                BLUETOOTH_CONNECT,
+                READ_MEDIA_IMAGES,
+                READ_MEDIA_VIDEO,
+                ACCESS_COARSE_LOCATION,
+                ACCESS_FINE_LOCATION
+            )
+
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> arrayOf(
-                Manifest.permission.BLUETOOTH_SCAN,
-                Manifest.permission.BLUETOOTH_ADVERTISE,
-                Manifest.permission.BLUETOOTH_CONNECT
+                BLUETOOTH_SCAN,
+                BLUETOOTH_ADVERTISE,
+                BLUETOOTH_CONNECT,
+                WRITE_EXTERNAL_STORAGE,
+                READ_EXTERNAL_STORAGE,
+                ACCESS_COARSE_LOCATION,
+                ACCESS_FINE_LOCATION
             )
 
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> arrayOf(
-                Manifest.permission.BLUETOOTH,
-                Manifest.permission.BLUETOOTH_ADMIN
+                BLUETOOTH,
+                BLUETOOTH_ADMIN,
+                ACCESS_COARSE_LOCATION,
+                ACCESS_FINE_LOCATION,
+                READ_EXTERNAL_STORAGE
             )
 
             else -> arrayOf(
-                Manifest.permission.BLUETOOTH,
-                Manifest.permission.BLUETOOTH_ADMIN
+                BLUETOOTH,
+                BLUETOOTH_ADMIN,
+                ACCESS_COARSE_LOCATION,
+                ACCESS_FINE_LOCATION,
+                WRITE_EXTERNAL_STORAGE,
+                READ_EXTERNAL_STORAGE
             )
         }
 
         ActivityCompat.requestPermissions(
             this,
-            permissionsBluetooth,
-            REQUEST_CODE_BLUETOOTH_PERMISSIONS
+            permissions,
+            REQUEST_PERMISSION_CODE
         )
     }
 
-    private fun requestLocationPermissions() {
-        val permissionsLocation = arrayOf(
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-        ActivityCompat.requestPermissions(
-            this,
-            permissionsLocation,
-            REQUEST_CODE_LOCATION_PERMISSIONS
-        )
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            REQUEST_CODE_BLUETOOTH_PERMISSIONS -> {
-                requestLocationPermissions()
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
 }

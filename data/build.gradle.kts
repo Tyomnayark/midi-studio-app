@@ -32,6 +32,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.ui.test.junit4)
 
+    implementation(libs.androidx.ui.graphics)
+
     implementation(libs.com.google.code.gson)
     implementation(libs.dagger.hilt)
     implementation(libs.dagger.hilt.compiler)

@@ -5,7 +5,7 @@ import android.content.Context
 import android.media.midi.MidiReceiver
 import com.tyom.data.Preferences
 import com.tyom.data.PrefsDictionary.INSTRUMENT
-import com.tyom.data.midi.MidiProvider
+import com.tyom.data.providers.MidiProvider
 import com.tyom.domain.models.Instrument
 import com.tyom.domain.models.toInstrument
 import com.tyom.domain.repository.MIDIRepository
@@ -30,5 +30,4 @@ class MIDIRepositoryImpl @Inject constructor(
     override suspend fun addInstrumentToPreferences(instrument: Instrument) {
         Preferences.putString(context, INSTRUMENT, instrument.name)
     }
-
 }

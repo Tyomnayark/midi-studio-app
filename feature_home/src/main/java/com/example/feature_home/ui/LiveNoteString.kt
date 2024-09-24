@@ -17,22 +17,22 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import com.example.feature_home.constants.NoteConstants.A0
-import com.example.feature_home.constants.NoteConstants.A2
-import com.example.feature_home.constants.NoteConstants.A3
-import com.example.feature_home.constants.NoteConstants.B3
-import com.example.feature_home.constants.NoteConstants.C1
-import com.example.feature_home.constants.NoteConstants.C4
-import com.example.feature_home.constants.NoteConstants.C8
-import com.example.feature_home.constants.NoteConstants.D3
-import com.example.feature_home.constants.NoteConstants.D4
-import com.example.feature_home.constants.NoteConstants.D7
-import com.example.feature_home.constants.NoteConstants.E5
-import com.example.feature_home.constants.NoteConstants.F4
 import com.example.feature_home.models.Note
 import com.example.feature_home.models.PianoConfiguration
 import com.tyom.core_ui.extensions.FigmaLargePreview
 import com.tyom.core_ui.utils.drawableToImageBitmap
+import com.tyom.domain.models.NoteConstants.A0
+import com.tyom.domain.models.NoteConstants.A2
+import com.tyom.domain.models.NoteConstants.A3
+import com.tyom.domain.models.NoteConstants.B3
+import com.tyom.domain.models.NoteConstants.C1
+import com.tyom.domain.models.NoteConstants.C4
+import com.tyom.domain.models.NoteConstants.C8
+import com.tyom.domain.models.NoteConstants.D3
+import com.tyom.domain.models.NoteConstants.D4
+import com.tyom.domain.models.NoteConstants.D7
+import com.tyom.domain.models.NoteConstants.E5
+import com.tyom.domain.models.NoteConstants.F4
 
 @SuppressLint("UseCompatLoadingForDrawables")
 @Composable
@@ -172,7 +172,7 @@ fun DrawScope.drawLiveNotes(
                             pianoConfiguration.notePaddingBottom
                         }
             val cordY = timeMoment * (size.height / pianoConfiguration.noteCountWithPadding)
-            
+
             val isNeedAddLine = pianoConfiguration.needLineNotesMap.contains(note.value)
             if (isNeedAddLine) {
                 val lineCordX = if (note.value % 2 == 1) {

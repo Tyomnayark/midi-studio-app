@@ -6,18 +6,6 @@ import android.media.midi.MidiReceiver
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
-import com.example.feature_home.constants.NoteConstants.A0
-import com.example.feature_home.constants.NoteConstants.A2
-import com.example.feature_home.constants.NoteConstants.A3
-import com.example.feature_home.constants.NoteConstants.B3
-import com.example.feature_home.constants.NoteConstants.C1
-import com.example.feature_home.constants.NoteConstants.C4
-import com.example.feature_home.constants.NoteConstants.C8
-import com.example.feature_home.constants.NoteConstants.D3
-import com.example.feature_home.constants.NoteConstants.D4
-import com.example.feature_home.constants.NoteConstants.D7
-import com.example.feature_home.constants.NoteConstants.E5
-import com.example.feature_home.constants.NoteConstants.F4
 import com.tyom.domain.models.Instrument
 import com.tyom.domain.models.toInstrument
 import com.tyom.domain.usecases.AddInstrumentToPreferencesUseCase
@@ -26,6 +14,7 @@ import com.tyom.domain.usecases.ConnectBluetoothDeviceUseCase
 import com.tyom.domain.usecases.GetMIDIInstrumentsUseCase
 import com.tyom.feature_main.models.BottomNavigationItem
 import com.example.feature_home.models.Note
+import com.example.feature_home.models.PianoConfiguration
 import com.tyom.feature_main.models.ScreensEnum
 import com.example.feature_home.models.SettingsState
 import com.example.feature_home.models.toNote
@@ -36,6 +25,21 @@ import com.tyom.core_utils.constants.BuildTypeConstants.DEBUG_TYPE
 import com.tyom.core_utils.extensions.launchOnDefault
 import com.tyom.core_utils.extensions.launchOnIO
 import com.tyom.core_utils.extensions.launchOnMain
+import com.tyom.domain.models.NoteConstants.A0
+import com.tyom.domain.models.NoteConstants.A2
+import com.tyom.domain.models.NoteConstants.A3
+import com.tyom.domain.models.NoteConstants.B3
+import com.tyom.domain.models.NoteConstants.C1
+import com.tyom.domain.models.NoteConstants.C4
+import com.tyom.domain.models.NoteConstants.C8
+import com.tyom.domain.models.NoteConstants.D3
+import com.tyom.domain.models.NoteConstants.D4
+import com.tyom.domain.models.NoteConstants.D7
+import com.tyom.domain.models.NoteConstants.E5
+import com.tyom.domain.models.NoteConstants.F4
+import com.tyom.domain.models.NoteModel
+import com.tyom.domain.models.PianoSettings
+import com.tyom.domain.usecases.SaveAsA4JpegFileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,7 +54,8 @@ class MainViewModel @Inject constructor(
     private val checkHaveConnectedInstrumentUseCase: CheckHaveConnectedInstrumentUseCase,
     private val addInstrumentToPreferencesUseCase: AddInstrumentToPreferencesUseCase,
     private val getMIDIInstrumentsUseCase: GetMIDIInstrumentsUseCase,
-    private val connectBluetoothDeviceUseCase: ConnectBluetoothDeviceUseCase
+    private val connectBluetoothDeviceUseCase: ConnectBluetoothDeviceUseCase,
+//    private val saveAsA4JpegFileUseCase: SaveAsA4JpegFileUseCase
 ) : ViewModel() {
 
     val _uiState = MutableStateFlow(MainUIState())
@@ -116,6 +121,14 @@ class MainViewModel @Inject constructor(
                     Note(value = 0, isWhiteKey = true)
                 ) to 10
             )
+//            val test = liveNotes.map { list ->
+//                list.first.map { note: Note ->
+//                    NoteModel(
+//                        note.value, note.isWhiteKey
+//                    )
+//                } to list.second
+//            }
+//            saveAsA4JpegFileUseCase.execute(PianoSettings(), liveNotes = test)
 
             val settingsState = SettingsState(
                 selectedInstrument = instrument

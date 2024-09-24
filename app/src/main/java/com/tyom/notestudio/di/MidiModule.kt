@@ -1,7 +1,7 @@
 package com.tyom.notestudio.di
 
 import android.content.Context
-import com.tyom.data.midi.MidiProvider
+import com.tyom.data.providers.MidiProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
