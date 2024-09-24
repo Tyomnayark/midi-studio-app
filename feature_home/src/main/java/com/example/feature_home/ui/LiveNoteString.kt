@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import com.example.feature_home.constants.BottomLineNotesList
 import com.example.feature_home.constants.NoteConstants.A0
 import com.example.feature_home.constants.NoteConstants.A2
 import com.example.feature_home.constants.NoteConstants.A3
@@ -53,7 +52,10 @@ fun LiveNoteString(
         modifier = modifier
             .background(
                 color = pianoConfiguration.backgroundColor,
-                shape = RoundedCornerShape(pianoConfiguration.lineSpacingDp)
+                shape = RoundedCornerShape(
+                    topStart = pianoConfiguration.lineSpacingDp,
+                    bottomStart = pianoConfiguration.lineSpacingDp
+                )
             )
     ) {
         Canvas(
@@ -170,6 +172,7 @@ fun DrawScope.drawLiveNotes(
                             pianoConfiguration.notePaddingBottom
                         }
             val cordY = timeMoment * (size.height / pianoConfiguration.noteCountWithPadding)
+            
             val isNeedAddLine = pianoConfiguration.needLineNotesMap.contains(note.value)
             if (isNeedAddLine) {
                 val lineCordX = if (note.value % 2 == 1) {
@@ -178,7 +181,7 @@ fun DrawScope.drawLiveNotes(
                     cordX + pianoConfiguration.lineSpacing
                 }
                 val lineCount = pianoConfiguration.needLineNotesMap[note.value] ?: 0
-                val isBottomLines = BottomLineNotesList.contains(note.value)
+                val isBottomLines = pianoConfiguration.bottomLineNotesList.contains(note.value)
                 for (i in 0 until lineCount) {
                     val lineFinalCordX = if (isBottomLines) {
                         lineCordX + (pianoConfiguration.lineSpacing * i)
