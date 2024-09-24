@@ -20,6 +20,12 @@ annotation class FigmaSmallPreview
 )
 annotation class FigmaLargePreview
 
+@Preview(
+    name = "Android Large",
+    device = "spec:width=390dp,height=844dp,dpi=420,orientation=landscape"
+)
+annotation class FigmaLargeHorizontalPreview
+
 /**
  * Phones
  * */

@@ -35,6 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -55,6 +56,7 @@ import com.tyom.core_utils.extensions.isNotNull
 import com.tyom.core_ui.utils.getTextWidthInDp
 import kotlinx.coroutines.launch
 import com.tyom.core_ui.R
+import com.tyom.core_ui.theme.Red
 
 private const val DURATION_ANIMATION = 500
 
@@ -284,7 +286,7 @@ fun HomePage(
     ) {
         Box(
             modifier = Modifier
-                .padding(dimensionResource(R.dimen._10dp))
+                .padding(start = dimensionResource(R.dimen._10dp))
                 .fillMaxSize()
         ) {
             IconButton(
@@ -303,8 +305,9 @@ fun HomePage(
             settingsState.isKeyboardVisible.IfTrue {
                 PianoKeyboard(
                     modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .rotate(180f),
+                        .align(settingsState.keyboardAlign)
+                        .rotate(settingsState.keyboardAngle)
+                        .scale(settingsState.keyboardScale),
                     notes = notes
                 )
             }
@@ -312,7 +315,7 @@ fun HomePage(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .padding(
-                        vertical = dimensionResource(R.dimen._30dp)
+                        vertical = dimensionResource(R.dimen._50dp)
                     ),
                 liveNotes = liveNotes
             )
