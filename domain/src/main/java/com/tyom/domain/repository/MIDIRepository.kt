@@ -11,6 +11,6 @@ interface MIDIRepository {
 
     suspend fun getWiredInstruments(): List<Instrument>
 
-    suspend fun connectBluetoothInstrument(bluetoothDevice: BluetoothDevice, receiver: MidiReceiver)
+    suspend fun connectBluetoothInstrument(bluetoothDevice: BluetoothDevice, receiver: MidiReceiver): Boolean
 
 }

@@ -5,7 +5,6 @@ import android.content.Context
 import android.media.midi.MidiReceiver
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.ui.util.trace
 import androidx.lifecycle.ViewModel
 import com.tyom.domain.models.Instrument
 import com.tyom.domain.models.toInstrument
@@ -15,6 +14,7 @@ import com.tyom.domain.usecases.GetMIDIInstrumentsUseCase
 import com.tyom.feature_main.models.BottomNavigationItem
 import com.tyom.feature_main.models.Note
 import com.tyom.feature_main.models.ScreensEnum
+import com.tyom.feature_main.models.SettingsState
 import com.tyom.feature_main.models.toNote
 import com.tyom.feature_main.utils.hasBluetoothPermissions
 import com.tyom.feature_main.utils.hasLocationPermissions
@@ -25,6 +25,7 @@ import com.tyom.utils.extensions.launchOnIO
 import com.tyom.utils.extensions.launchOnMain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -59,19 +60,27 @@ class MainViewModel @Inject constructor(
 
             val liveNotes = listOf(
                 listOf(Note(value = 9, isWhiteKey = true)) to 1,
-                listOf(Note(value = 20, isWhiteKey = true), Note(value = 10, isWhiteKey = true)) to 2,
-                listOf(Note(value = 66, isWhiteKey = true), Note(value = 1, isWhiteKey = true)) to 3,
+                listOf(
+                    Note(value = 20, isWhiteKey = true),
+                    Note(value = 10, isWhiteKey = true)
+                ) to 2,
+                listOf(
+                    Note(value = 66, isWhiteKey = true),
+                    Note(value = 1, isWhiteKey = true)
+                ) to 3,
                 listOf(Note(value = 2, isWhiteKey = true), Note(value = 0, isWhiteKey = true)) to 4,
                 listOf(Note(value = 9, isWhiteKey = true), Note(value = 4, isWhiteKey = true)) to 5,
                 listOf(Note(value = 9, isWhiteKey = true), Note(value = 4, isWhiteKey = true)) to 6
             )
 
+            val settingsState = SettingsState(
+                selectedInstrument = instrument
+            )
             _uiState.update { state ->
                 state.copy(
-                    selectedInstrument = instrument,
+                    settingsState = settingsState,
                     bottomItems = bottomItems,
-                    liveNotes = liveNotes,
-                    isLoading = true
+                    liveNotes = liveNotes
                 )
             }
         }
@@ -101,27 +110,59 @@ class MainViewModel @Inject constructor(
 
     @SuppressLint("MissingPermission")
     fun onClickRefreshInstruments() {
-        launchOnMain { // TODO:  @Tyom [9/10/24] { поменять на дефолт, мешают подсказки }
-            if (hasLocationPermissions(context) && hasBluetoothPermissions(context)) {
-                val bluetoothDevices = getMIDIInstrumentsUseCase.execute()
-                val instruments = bluetoothDevices.map { bluetoothDevice ->
-                    bluetoothDevice.toInstrument()
-                }
-                _uiState.update { state ->
-                    state.copy(
-                        bluetoothDevices = bluetoothDevices,
-                        instruments = instruments
+        if (!_uiState.value.settingsState.isLoading) {
+            launchOnMain { // TODO:  @Tyom [9/10/24] { поменять на дефолт, мешают подсказки }
+                if (hasLocationPermissions(context) && hasBluetoothPermissions(context)) {
+                    val settingsState = _uiState.value.settingsState.copy(
+                        isLoading = true
                     )
+                    _uiState.update { state ->
+                        state.copy(
+                            settingsState = settingsState
+                        )
+                    }
+
+                    val bluetoothDevices = getMIDIInstrumentsUseCase.execute()
+                    val instruments = bluetoothDevices.map { bluetoothDevice ->
+                        bluetoothDevice.toInstrument()
+                    }.toMutableList()
+                    instruments.remove(_uiState.value.settingsState.selectedInstrument)
+
+                    val finalSettingsState = _uiState.value.settingsState.copy(
+                        instruments = instruments,
+                        isInstrumentsListOpened = true,
+                        isLoading = false
+                    )
+                    _uiState.update { state ->
+                        state.copy(
+                            bluetoothDevices = bluetoothDevices,
+                            settingsState = finalSettingsState
+                        )
+                    }
+                } else {
+                    Toast.makeText(context, "Не все разрешения предоставлены", Toast.LENGTH_SHORT)
+                        .show()
                 }
-            } else {
-                Toast.makeText(context, "Не все разрешения предоставлены", Toast.LENGTH_SHORT)
-                    .show()
             }
         }
     }
 
     fun onClickSelectInstrument(instrument: Instrument) {
         launchOnIO {
+
+            val newInstrumentsList = _uiState.value.settingsState.instruments.toMutableList()
+            newInstrumentsList.remove(instrument)
+            val settingsState = _uiState.value.settingsState.copy(
+                instruments = newInstrumentsList,
+                selectedInstrument = instrument,
+                isTryingToConnect = true
+            )
+            _uiState.update { state ->
+                state.copy(
+                    settingsState = settingsState
+                )
+            }
+
             _uiState.value.bluetoothDevices.find { device ->
                 device?.address == instrument.address
             }?.let { device ->
@@ -159,16 +200,28 @@ class MainViewModel @Inject constructor(
                         }
                     }
                 }
-                connectBluetoothDeviceUseCase.execute(device, receiverImpl)
+                val result = connectBluetoothDeviceUseCase.execute(device, receiverImpl)
+                val finalSettingsState = _uiState.value.settingsState.copy(
+                    isTryingToConnect = false,
+                    isConnected = result
+                )
+                _uiState.update { state ->
+                    state.copy(
+                        settingsState = finalSettingsState
+                    )
+                }
             }
         }
     }
 
     fun changeKeyboardVisibility() {
-        val currentState = _uiState.value.isKeyboardVisible
+        val isKeyboardVisible = _uiState.value.settingsState.isKeyboardVisible
+        val settingsState = _uiState.value.settingsState.copy(
+            isKeyboardVisible = !isKeyboardVisible
+        )
         _uiState.update { state ->
             state.copy(
-                isKeyboardVisible = !currentState
+                settingsState = settingsState
             )
         }
     }

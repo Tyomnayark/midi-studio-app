@@ -7,4 +7,8 @@
 
     <string name="keyboard">Keyboard</string>
     <string name="selected_device">Selected device</string>
+    <string name="selected_device_hint">Click to select...</string>
+    <string name="connected">Connected</string>
+    <string name="not_connected">Connect</string>
+
 </resources>

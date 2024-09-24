@@ -8,7 +8,7 @@ import javax.inject.Inject
 class ConnectBluetoothDeviceUseCase @Inject constructor(
     private val midiRepository: MIDIRepository
 ) {
-    suspend fun execute(bluetoothDevice: BluetoothDevice, receiver: MidiReceiver) {
+    suspend fun execute(bluetoothDevice: BluetoothDevice, receiver: MidiReceiver): Boolean {
         return midiRepository.connectBluetoothInstrument(bluetoothDevice, receiver)
     }
 }

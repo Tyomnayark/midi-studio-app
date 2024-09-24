@@ -32,6 +32,7 @@ class MidiProvider(
     @ApplicationContext context: Context
 ) {
     private val TIME_FOR_SCANNING = 3000L
+    private val TIME_FOR_UPDATING = 1000L
     private val MIDI_SERVICE_UUID = "03B80E5A-EDE8-4B33-A751-6CE34EC4C700"
     private val DEFAULT_PORT_NUMBER = 0
     private val DEFAULT_CAPACITY = 3
@@ -107,26 +108,33 @@ class MidiProvider(
         }, TIME_FOR_SCANNING)
     }
 
-    suspend fun connectBluetoothDevice(device: BluetoothDevice, midiReceiver: MidiReceiver) {
-        midiManager?.run {
-            val handler = Handler(Looper.getMainLooper())
-            val deviceOpenedListener = MidiManager.OnDeviceOpenedListener { midiDevice ->
-                if (BuildConfig.BUILD_TYPE == DEBUG_TYPE) {
-                    Log.d("MidiProvider", "connectBluetoothDevice: ${midiDevice.info}")
-                }
-
-                val outputPort = midiDevice.openOutputPort(DEFAULT_PORT_NUMBER)
-                if (outputPort.isNotNull()) {
-                    outputPort.connect(midiReceiver)
-                } else {
+    suspend fun connectBluetoothDevice(device: BluetoothDevice, midiReceiver: MidiReceiver) =
+        suspendCoroutine { continuation ->
+            midiManager?.run {
+                val handler = Handler(Looper.getMainLooper())
+                val deviceOpenedListener = MidiManager.OnDeviceOpenedListener { midiDevice ->
                     if (BuildConfig.BUILD_TYPE == DEBUG_TYPE) {
-                        Log.e("MidiProvider", "Failed to open output port")
+                        Log.d("MidiProvider", "connectBluetoothDevice: ${midiDevice.info}")
+                    }
+
+                    val outputPort = midiDevice.openOutputPort(DEFAULT_PORT_NUMBER)
+                    if (outputPort.isNotNull()) {
+                        outputPort.connect(midiReceiver)
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            continuation.resume(true)
+                        }, TIME_FOR_UPDATING)
+                    } else {
+                        if (BuildConfig.BUILD_TYPE == DEBUG_TYPE) {
+                            Log.e("MidiProvider", "Failed to open output port")
+                        }
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            continuation.resume(false)
+                        }, TIME_FOR_UPDATING)
                     }
                 }
+                openBluetoothDevice(device, deviceOpenedListener, handler)
             }
-            openBluetoothDevice(device, deviceOpenedListener, handler)
         }
-    }
 
     private fun sendNoteOn(inputPort: MidiInputPort, note: Int, velocity: Int) {
         val message = ByteBuffer.allocate(DEFAULT_CAPACITY)

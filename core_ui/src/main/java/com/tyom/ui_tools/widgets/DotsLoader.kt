@@ -31,7 +31,7 @@ private const val FULL_CIRCLE = 1f
 private const val ZERO_CIRCLE = 0f
 
 @Composable
-fun Loader(
+fun DotsLoader(
     modifier: Modifier = Modifier,
     isLoading: Boolean = true,
     circleSize: Dp = 10.dp,
@@ -260,5 +260,5 @@ fun Loader(
 @FigmaLargePreview
 @Composable
 fun LoaderPreview() {
-    Loader()
+    DotsLoader()
 }

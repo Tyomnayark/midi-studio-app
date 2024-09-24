@@ -27,7 +27,7 @@ class MIDIRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun connectBluetoothInstrument( bluetoothDevice: BluetoothDevice, receiver: MidiReceiver) {
+    override suspend fun connectBluetoothInstrument( bluetoothDevice: BluetoothDevice, receiver: MidiReceiver): Boolean {
         return midiProvider.connectBluetoothDevice(bluetoothDevice, receiver)
     }
 
