@@ -41,6 +41,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.feature_home.models.Note
+import com.example.feature_home.models.PianoConfiguration
 import com.example.feature_home.models.SettingsState
 import com.tyom.domain.models.Instrument
 import com.tyom.core_ui.theme.GrayLight
@@ -56,13 +57,13 @@ import com.tyom.core_utils.extensions.isNotNull
 import com.tyom.core_ui.utils.getTextWidthInDp
 import kotlinx.coroutines.launch
 import com.tyom.core_ui.R
-import com.tyom.core_ui.theme.Red
 
 private const val DURATION_ANIMATION = 500
 
 @Composable
 fun HomePage(
     settingsState: SettingsState,
+    pianoConfiguration: PianoConfiguration,
     notes: List<Note>,
     liveNotes: List<Pair<List<Note>, Int>>,
 
@@ -317,6 +318,7 @@ fun HomePage(
                     .padding(
                         vertical = dimensionResource(R.dimen._50dp)
                     ),
+                pianoConfiguration = pianoConfiguration,
                 liveNotes = liveNotes
             )
         }
@@ -328,6 +330,7 @@ fun HomePage(
 fun MainMenuPreview() {
     HomePage(
         settingsState = SettingsState(),
+        pianoConfiguration = PianoConfiguration(),
         notes = emptyList(),
         liveNotes = emptyList(),
         onClickRefreshInstruments = {},

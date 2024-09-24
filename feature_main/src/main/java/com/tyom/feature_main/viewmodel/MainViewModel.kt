@@ -75,7 +75,6 @@ class MainViewModel @Inject constructor(
                 listOf(Note(value = C4, isWhiteKey = true)) to 1,
                 listOf(
                     Note(value = B3, isWhiteKey = true),
-                    Note(value = A3, isWhiteKey = true),
                     Note(value = D3, isWhiteKey = true),
                 ) to 2,
                 listOf(

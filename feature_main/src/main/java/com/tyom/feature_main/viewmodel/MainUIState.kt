@@ -3,12 +3,14 @@ package com.tyom.feature_main.viewmodel
 import android.bluetooth.BluetoothDevice
 import com.tyom.feature_main.models.BottomNavigationItem
 import com.example.feature_home.models.Note
+import com.example.feature_home.models.PianoConfiguration
 import com.example.feature_home.models.SettingsState
 import com.tyom.core_ui.interfaces.UIState
 
 
 data class MainUIState(
     val settingsState: SettingsState = SettingsState(),
+    val pianoConfiguration: PianoConfiguration = PianoConfiguration(),
     val bottomItems: List<BottomNavigationItem> = emptyList(),
     val bluetoothDevices: List<BluetoothDevice?> = emptyList(),
 

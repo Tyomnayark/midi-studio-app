@@ -1,40 +1,5 @@
 package com.example.feature_home.constants
 
-import com.example.feature_home.constants.NoteConstants.A0
-import com.example.feature_home.constants.NoteConstants.A2
-import com.example.feature_home.constants.NoteConstants.A3
-import com.example.feature_home.constants.NoteConstants.A5
-import com.example.feature_home.constants.NoteConstants.A6
-import com.example.feature_home.constants.NoteConstants.A7
-import com.example.feature_home.constants.NoteConstants.B0
-import com.example.feature_home.constants.NoteConstants.B2
-import com.example.feature_home.constants.NoteConstants.B3
-import com.example.feature_home.constants.NoteConstants.B5
-import com.example.feature_home.constants.NoteConstants.B6
-import com.example.feature_home.constants.NoteConstants.B7
-import com.example.feature_home.constants.NoteConstants.C1
-import com.example.feature_home.constants.NoteConstants.C2
-import com.example.feature_home.constants.NoteConstants.C4
-import com.example.feature_home.constants.NoteConstants.C6
-import com.example.feature_home.constants.NoteConstants.C7
-import com.example.feature_home.constants.NoteConstants.C8
-import com.example.feature_home.constants.NoteConstants.D1
-import com.example.feature_home.constants.NoteConstants.D2
-import com.example.feature_home.constants.NoteConstants.D6
-import com.example.feature_home.constants.NoteConstants.D7
-import com.example.feature_home.constants.NoteConstants.E1
-import com.example.feature_home.constants.NoteConstants.E2
-import com.example.feature_home.constants.NoteConstants.E6
-import com.example.feature_home.constants.NoteConstants.E7
-import com.example.feature_home.constants.NoteConstants.F1
-import com.example.feature_home.constants.NoteConstants.F2
-import com.example.feature_home.constants.NoteConstants.F6
-import com.example.feature_home.constants.NoteConstants.F7
-import com.example.feature_home.constants.NoteConstants.G1
-import com.example.feature_home.constants.NoteConstants.G2
-import com.example.feature_home.constants.NoteConstants.G6
-import com.example.feature_home.constants.NoteConstants.G7
-
 object NoteConstants {
     const val Ad0_Bb0 = 0
     const val Cd1_Db1 = 2
@@ -129,45 +94,3 @@ object NoteConstants {
 
     const val DEFAULT = 52
 }
-
-val NeedLineNotesMap = mapOf(
-    //top lines
-    B3 to 1,
-    C4 to 1,
-
-    A5 to 1,
-    B5 to 1,
-    C6 to 2,
-    D6 to 2,
-    E6 to 3,
-    F6 to 3,
-    G6 to 4,
-    A6 to 4,
-    B6 to 5,
-    C7 to 6,
-    D7 to 6,
-    E7 to 7,
-    F7 to 7,
-    G7 to 8,
-    A7 to 8,
-    B7 to 9,
-    C8 to 9,
-
-    //bottom lines
-    E2 to 1,
-    D2 to 1,
-    C2 to 2,
-    B2 to 2,
-    A2 to 3,
-    G1 to 3,
-    F1 to 4,
-    E1 to 4,
-    D1 to 5,
-    C1 to 5,
-    B0 to 6,
-    A0 to 6
-)
-
-val BottomLineNotesList = listOf(
-    B3, C4, E2, D2, C2, B2, A2, G1, F1, E1, D1, C1, B0, A0
-)

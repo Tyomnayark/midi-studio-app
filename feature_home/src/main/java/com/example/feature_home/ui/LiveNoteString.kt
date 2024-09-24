@@ -16,11 +16,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
-import com.example.feature_home.R
 import com.example.feature_home.constants.BottomLineNotesList
-import com.example.feature_home.constants.NeedLineNotesMap
 import com.example.feature_home.constants.NoteConstants.A0
 import com.example.feature_home.constants.NoteConstants.A2
 import com.example.feature_home.constants.NoteConstants.A3
@@ -34,24 +31,15 @@ import com.example.feature_home.constants.NoteConstants.D7
 import com.example.feature_home.constants.NoteConstants.E5
 import com.example.feature_home.constants.NoteConstants.F4
 import com.example.feature_home.models.Note
+import com.example.feature_home.models.PianoConfiguration
 import com.tyom.core_ui.extensions.FigmaLargePreview
 import com.tyom.core_ui.utils.drawableToImageBitmap
-
-private const val LINE_COUNT = 5
-private const val LINE_SPACING = 20f
-private const val HALF_LINE_SPACING = LINE_SPACING / 2
-private const val TOP_PADDING = 0f
-private const val STROKE_WIDTH = 4f
-private const val NOTE_COUNT = 11
-private const val PADDING = LINE_SPACING * 5
-private const val PADDING_FOR_BOTTOM_LINE = LINE_SPACING * 2
-private const val NOTE_PADDING_TOP = PADDING - (LINE_SPACING * 1.5f)
-private const val NOTE_PADDING_BOTTOM = PADDING_FOR_BOTTOM_LINE - (LINE_SPACING * 1.5f)
 
 @SuppressLint("UseCompatLoadingForDrawables")
 @Composable
 fun LiveNoteString(
     modifier: Modifier = Modifier,
+    pianoConfiguration: PianoConfiguration,
     liveNotes: List<Pair<List<Note>, Int>>
 ) {
     val context = LocalContext.current
@@ -59,136 +47,162 @@ fun LiveNoteString(
     val drawableTrebleClef = context.getDrawable(com.tyom.core_ui.R.drawable.treble_clef)
     val drawableBassClef = context.getDrawable(com.tyom.core_ui.R.drawable.bass_clef)
 
-    val widthFromStrokes = LINE_SPACING * 31
-    val width = (widthFromStrokes / LocalDensity.current.density).dp
-    val bassLinesStartX = HALF_LINE_SPACING * 5 + PADDING
-    val topLinesStartX = (HALF_LINE_SPACING * 23) + PADDING
+    val width = (pianoConfiguration.widthFromStrokes / LocalDensity.current.density).dp
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .background(
-                color = Color.White,
-                shape =  RoundedCornerShape(LINE_SPACING.dp)
+                color = pianoConfiguration.backgroundColor,
+                shape = RoundedCornerShape(pianoConfiguration.lineSpacingDp)
             )
     ) {
         Canvas(
-            modifier = modifier
-                .padding(vertical = LINE_SPACING.dp)
+            modifier = Modifier
+                .padding(vertical = pianoConfiguration.lineSpacingDp)
                 .fillMaxHeight()
                 .width(width)
         ) {
             // bass lines
             drawMusicLines(
-                startX = bassLinesStartX,
-                lineCount = LINE_COUNT,
-                lineColor = Color.Black
+                pianoConfiguration = pianoConfiguration,
+                startX = pianoConfiguration.bassLinesStartX,
+                lineColor = pianoConfiguration.color
             )
 
             // top lines
             drawMusicLines(
-                startX = topLinesStartX,
-                lineCount = LINE_COUNT,
-                lineColor = Color.Black
+                pianoConfiguration = pianoConfiguration,
+                startX = pianoConfiguration.topLinesStartX,
+                lineColor = pianoConfiguration.color
             )
 
             // edges
             drawLine(
-                color = Color.Black,
-                start = Offset(bassLinesStartX, 0f),
-                end = Offset(topLinesStartX + LINE_SPACING * 4, 0f),
-                strokeWidth = STROKE_WIDTH
+                color = pianoConfiguration.color,
+                start = Offset(
+                    pianoConfiguration.startEdgeX,
+                    pianoConfiguration.startEdgeY
+                ),
+                end = Offset(
+                    pianoConfiguration.endEdgeX,
+                    pianoConfiguration.endEdgeY
+                ),
+                strokeWidth = pianoConfiguration.strokeWidth
             )
 
             drawLine(
-                color = Color.Black,
-                start = Offset(bassLinesStartX, size.height),
-                end = Offset(topLinesStartX + LINE_SPACING * 4, size.height),
-                strokeWidth = STROKE_WIDTH
+                color = pianoConfiguration.color,
+                start = Offset(
+                    pianoConfiguration.startEdgeX,
+                    size.height
+                ),
+                end = Offset(
+                    pianoConfiguration.endEdgeX,
+                    size.height
+                ),
+                strokeWidth = pianoConfiguration.strokeWidth
             )
 
             // clefs
             drawableToImageBitmap(
                 drawable = drawableTrebleClef,
-                height = (LINE_SPACING * 12).toInt(),
-                width = (LINE_SPACING * 9).toInt(),
+                height = pianoConfiguration.trebleClefHeight,
+                width = pianoConfiguration.trebleClefWidth,
                 rotationDegrees = 90f
             )?.let { bitmap ->
                 drawImage(
                     image = bitmap,
-                    topLeft = Offset(topLinesStartX - LINE_SPACING * 2, -LINE_SPACING * 3)
+                    topLeft = pianoConfiguration.trebleClefOffset
                 )
             }
 
             drawableToImageBitmap(
                 drawable = drawableBassClef,
-                height = (LINE_SPACING * 9).toInt(),
-                width = (LINE_SPACING * 5).toInt(),
+                height = pianoConfiguration.bassClefHeight,
+                width = pianoConfiguration.bassClefWidth,
                 rotationDegrees = 90f
             )?.let { bitmap ->
                 drawImage(
                     image = bitmap,
-                    topLeft = Offset(bassLinesStartX, -LINE_SPACING)
+                    topLeft = pianoConfiguration.bassClefOffset
                 )
             }
 
             // notes
             drawLiveNotes(
+                pianoConfiguration = pianoConfiguration,
                 liveNotes = liveNotes,
             )
         }
     }
 }
 
-fun DrawScope.drawMusicLines(startX: Float, lineCount: Int, lineColor: Color) {
-    val startY = TOP_PADDING
+fun DrawScope.drawMusicLines(
+    pianoConfiguration: PianoConfiguration,
+    startX: Float,
+    lineColor: Color
+) {
+    val startY = pianoConfiguration.topPadding
     val endY = size.height
-    for (i in 0 until lineCount) {
-        val xOffset = startX + i * LINE_SPACING
+    for (i in 0 until pianoConfiguration.lineCount) {
+        val xOffset = startX + i * pianoConfiguration.lineSpacing
         drawLine(
             color = lineColor,
             start = Offset(xOffset, startY),
             end = Offset(xOffset, endY),
-            strokeWidth = STROKE_WIDTH
+            strokeWidth = pianoConfiguration.strokeWidth
         )
     }
 }
 
 fun DrawScope.drawLiveNotes(
+    pianoConfiguration: PianoConfiguration,
     liveNotes: List<Pair<List<Note>, Int>>
 ) {
     liveNotes.forEach { (notes, timeMoment) ->
 
         notes.forEach { note ->
             val cordX =
-                note.value * HALF_LINE_SPACING + if (note.value > A3) NOTE_PADDING_TOP else NOTE_PADDING_BOTTOM
-            val cordY = timeMoment * (size.height / NOTE_COUNT)
-            val isNeedAddLine = NeedLineNotesMap.contains(note.value)
+                note.value * pianoConfiguration.halfLineSpacing +
+                        if (note.value > pianoConfiguration.firstBassNote) {
+                            pianoConfiguration.notePaddingTop
+                        } else {
+                            pianoConfiguration.notePaddingBottom
+                        }
+            val cordY = timeMoment * (size.height / pianoConfiguration.noteCountWithPadding)
+            val isNeedAddLine = pianoConfiguration.needLineNotesMap.contains(note.value)
             if (isNeedAddLine) {
                 val lineCordX = if (note.value % 2 == 1) {
-                    cordX + HALF_LINE_SPACING
+                    cordX + pianoConfiguration.halfLineSpacing
                 } else {
-                    cordX + LINE_SPACING
+                    cordX + pianoConfiguration.lineSpacing
                 }
-                val lineCount = NeedLineNotesMap[note.value] ?: 0
+                val lineCount = pianoConfiguration.needLineNotesMap[note.value] ?: 0
                 val isBottomLines = BottomLineNotesList.contains(note.value)
                 for (i in 0 until lineCount) {
                     val lineFinalCordX = if (isBottomLines) {
-                        lineCordX + (LINE_SPACING * i)
+                        lineCordX + (pianoConfiguration.lineSpacing * i)
                     } else {
-                        lineCordX - (LINE_SPACING * i)
+                        lineCordX - (pianoConfiguration.lineSpacing * i)
                     }
                     drawLine(
-                        start = Offset(lineFinalCordX, cordY + 37f),
-                        end = Offset(lineFinalCordX, cordY - 7f),
-                        strokeWidth = STROKE_WIDTH,
-                        color = Color.Black,
+                        start = Offset(
+                            lineFinalCordX,
+                            cordY + pianoConfiguration.topNoteLinePadding
+                        ),
+                        end = Offset(
+                            lineFinalCordX,
+                            cordY + pianoConfiguration.bottomNoteLinePadding
+                        ),
+                        strokeWidth = pianoConfiguration.strokeWidth,
+                        color = pianoConfiguration.color,
                     )
                 }
             }
 
             drawOval(
-                color = Color.Black,
-                size = Size(LINE_SPACING, 30f),
+                color = pianoConfiguration.color,
+                size = Size(pianoConfiguration.lineSpacing, pianoConfiguration.noteWidth),
                 topLeft = Offset(
                     x = cordX,
                     y = cordY
@@ -248,6 +262,7 @@ fun LiveNoteStringPreview() {
         ) to 10
     )
     LiveNoteString(
+        pianoConfiguration = PianoConfiguration(),
         liveNotes = liveNotes
     )
 }
