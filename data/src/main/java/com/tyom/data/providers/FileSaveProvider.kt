@@ -11,9 +11,9 @@ import android.os.Build.VERSION.SDK_INT
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.graphics.drawable.toBitmap
+import com.tyom.core_ui.R
 import com.tyom.domain.models.NoteModel
 import com.tyom.domain.models.PianoSettings
-import com.tyom.core_ui.R
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.IOException
 import javax.inject.Singleton
@@ -38,24 +38,29 @@ class FileSaveProvider(
         val canvas = Canvas(bitmap)
         canvas.drawColor(Color.WHITE)
 
-        val strokeCount = 3
+        val strokeCount = 5
 
         for (i in 0..strokeCount) {
             val offsetX = pianoSettings.widthFromStrokes * i
             drawMusicLinesOnCanvas(
                 canvas,
-                startX = pianoSettings.bassLinesStartX + offsetX,
+                startX = canvas.width + pianoSettings.bassLinesStartX - offsetX,
                 pianoSettings
             )
             drawMusicLinesOnCanvas(
                 canvas,
-                startX = pianoSettings.topLinesStartX + offsetX,
+                startX = canvas.width + pianoSettings.topLinesStartX - offsetX,
                 pianoSettings
             )
-            drawClefsOnCanvas(canvas, pianoSettings, offsetX)
-            drawEdgesOnCanvas(canvas, startX = offsetX, pianoSettings)
+            drawClefsOnCanvas(canvas, pianoSettings, canvas.width - offsetX)
+            drawEdgesOnCanvas(canvas, startX = canvas.width - offsetX, pianoSettings)
+            drawLiveNotesOnCanvas(
+                startX = canvas.width - offsetX,
+                canvas = canvas,
+                pianoConfiguration = pianoSettings,
+                liveNotes = liveNotes
+            )
         }
-        drawLiveNotesOnCanvas(canvas, pianoSettings, liveNotes)
 
         val values = ContentValues()
         values.put(MediaStore.MediaColumns.DISPLAY_NAME, "IMG_" + System.currentTimeMillis())
@@ -145,12 +150,17 @@ class FileSaveProvider(
     }
 
     private fun drawLiveNotesOnCanvas(
+        startX: Float,
         canvas: Canvas,
         pianoConfiguration: PianoSettings,
         liveNotes: List<Pair<List<NoteModel>, Int>>,
     ) {
         val paint = android.graphics.Paint().apply {
             color = pianoConfiguration.color
+        }
+        val strokePaint = android.graphics.Paint().apply {
+            color = pianoConfiguration.color
+            strokeWidth = pianoConfiguration.strokeWidth
         }
 
         liveNotes.forEach { (notes, timeMoment) ->
@@ -161,18 +171,52 @@ class FileSaveProvider(
                                 pianoConfiguration.notePaddingTop
                             } else {
                                 pianoConfiguration.notePaddingBottom
-                            }
-                val cordY = timeMoment * (canvas.height / pianoConfiguration.noteCountWithPadding)
+                            } +
+                            startX
 
+                val cordY =
+                    timeMoment * (canvas.height / pianoConfiguration.noteCountWithPadding) + pianoConfiguration.a4Paddings / 2
+                val isNeedAddLine = pianoConfiguration.needLineNotesMap.contains(note.value)
+                if (isNeedAddLine) {
+                    val lineCordX = if (note.value % 2 == 1) {
+                        cordX + pianoConfiguration.halfLineSpacing
+                    } else {
+                        cordX + pianoConfiguration.lineSpacing
+                    }
+                    val lineCount = pianoConfiguration.needLineNotesMap[note.value] ?: 0
+                    val isBottomLines = pianoConfiguration.bottomLineNotesList.contains(note.value)
+                    for (i in 0 until lineCount) {
+                        val lineFinalCordX = if (isBottomLines) {
+                            lineCordX + (pianoConfiguration.lineSpacing * i)
+                        } else {
+                            lineCordX - (pianoConfiguration.lineSpacing * i)
+                        }
+                        canvas.drawLine(
+                            lineFinalCordX,
+                            cordY + pianoConfiguration.topNoteLinePadding,
+                            lineFinalCordX,
+                            cordY + pianoConfiguration.bottomNoteLinePadding,
+                            strokePaint
+                        )
+                    }
+                }
                 canvas.drawOval(
                     cordX,
-                    cordY.toFloat(),
+                    cordY,
                     cordX + pianoConfiguration.lineSpacing,
                     cordY + pianoConfiguration.noteWidth,
                     paint
                 )
             }
         }
+    }
+
+    private fun drawNameOnCanvas(
+        name: String,
+        pianoConfiguration: PianoSettings,
+        canvas: Canvas
+    ) {
+
     }
 
     private fun drawClefsOnCanvas(
