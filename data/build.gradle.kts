@@ -26,6 +26,7 @@ android {
 dependencies {
     implementation(project(":domain"))
     implementation(project(":core_utils"))
+    implementation(project(":core_ui"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

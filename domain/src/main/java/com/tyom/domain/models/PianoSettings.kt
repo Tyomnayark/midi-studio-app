@@ -41,6 +41,7 @@ data class PianoSettings(
     val lineCount: Int = 5,
     val noteCount: Int = 10,
     val firstBassNote: Int = B3,
+    val a4Paddings: Float = 100f,
 
     val noteCountWithPadding: Int = noteCount + 1,
 //    val lineSpacingDp: Dp = lineSpacing.dp,
@@ -71,10 +72,10 @@ data class PianoSettings(
     val bottomNoteLinePadding: Float = -lineSpacing * 0.2f,
     val noteWidth: Float = lineSpacing * 1.5f,
 
-    val endEdgeX: Float = topLinesStartX + lineSpacing * 4,
-    val endEdgeY: Float = 0f,
+    val endEdgeX: Float = (topLinesStartX + lineSpacing * 4),
+    val endEdgeY: Float = 0f + a4Paddings,
     val startEdgeX: Float = bassLinesStartX,
-    val startEdgeY: Float = 0f,
+    val startEdgeY: Float = 0f + a4Paddings,
 
     val needLineNotesMap: MutableMap<Int, Int> = mutableMapOf(
         //top lines

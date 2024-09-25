@@ -55,7 +55,7 @@ class MainViewModel @Inject constructor(
     private val addInstrumentToPreferencesUseCase: AddInstrumentToPreferencesUseCase,
     private val getMIDIInstrumentsUseCase: GetMIDIInstrumentsUseCase,
     private val connectBluetoothDeviceUseCase: ConnectBluetoothDeviceUseCase,
-//    private val saveAsA4JpegFileUseCase: SaveAsA4JpegFileUseCase
+    private val saveAsA4JpegFileUseCase: SaveAsA4JpegFileUseCase
 ) : ViewModel() {
 
     val _uiState = MutableStateFlow(MainUIState())
@@ -121,14 +121,14 @@ class MainViewModel @Inject constructor(
                     Note(value = 0, isWhiteKey = true)
                 ) to 10
             )
-//            val test = liveNotes.map { list ->
-//                list.first.map { note: Note ->
-//                    NoteModel(
-//                        note.value, note.isWhiteKey
-//                    )
-//                } to list.second
-//            }
-//            saveAsA4JpegFileUseCase.execute(PianoSettings(), liveNotes = test)
+            val test = liveNotes.map { list ->
+                list.first.map { note: Note ->
+                    NoteModel(
+                        note.value, note.isWhiteKey
+                    )
+                } to list.second
+            }
+            saveAsA4JpegFileUseCase.execute(PianoSettings(), liveNotes = test)
 
             val settingsState = SettingsState(
                 selectedInstrument = instrument
