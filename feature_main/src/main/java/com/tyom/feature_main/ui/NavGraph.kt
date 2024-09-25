@@ -4,9 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.tyom.feature_main.models.Routes.HOME_ROUTE
-import com.tyom.feature_main.models.Routes.SETTINGS_ROUTE
 import com.example.feature_home.ui.HomePage
+import com.tyom.feature_library.ui.LibraryPage
+import com.tyom.feature_main.models.Routes.HOME_ROUTE
+import com.tyom.feature_main.models.Routes.LIBRARY_ROUTE
 import com.tyom.feature_main.viewmodel.MainUIState
 import com.tyom.feature_main.viewmodel.MainViewModel
 
@@ -38,8 +39,8 @@ fun NavGraph(
                 }
             )
         }
-        composable(SETTINGS_ROUTE) {
-            // TODO:  @Tyom [8/26/24] { добавить позже }
+        composable(LIBRARY_ROUTE) {
+            LibraryPage()
         }
     }
 }

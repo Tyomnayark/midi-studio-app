@@ -10,10 +10,11 @@ import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Environment
 import android.provider.MediaStore
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.tyom.core_ui.R
-import com.tyom.domain.models.NoteModel
-import com.tyom.domain.models.PianoSettings
+import com.tyom.core_ui.models.Note
+import com.tyom.domain.models.NoteListConfiguration
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.IOException
 import javax.inject.Singleton
@@ -28,8 +29,8 @@ class FileSaveProvider(
 
     fun saveCanvasAsA4Image(
         context: Context,
-        pianoSettings: PianoSettings,
-        liveNotes: List<Pair<List<NoteModel>, Int>>,
+        noteListConfiguration: NoteListConfiguration,
+        liveNotes: List<Pair<List<Note>, Int>>,
     ): Boolean {
         val heightPx = (STANDARD_HEIGHT * STANDARD_DPI).toInt()
         val widthPx = (STANDARD_WIDTH * STANDARD_DPI).toInt()
@@ -41,23 +42,23 @@ class FileSaveProvider(
         val strokeCount = 5
 
         for (i in 0..strokeCount) {
-            val offsetX = pianoSettings.widthFromStrokes * i
+            val offsetX = noteListConfiguration.widthFromStrokes * i
             drawMusicLinesOnCanvas(
                 canvas,
-                startX = canvas.width + pianoSettings.bassLinesStartX - offsetX,
-                pianoSettings
+                startX = canvas.width + noteListConfiguration.bassLinesStartX - offsetX,
+                noteListConfiguration
             )
             drawMusicLinesOnCanvas(
                 canvas,
-                startX = canvas.width + pianoSettings.topLinesStartX - offsetX,
-                pianoSettings
+                startX = canvas.width + noteListConfiguration.topLinesStartX - offsetX,
+                noteListConfiguration
             )
-            drawClefsOnCanvas(canvas, pianoSettings, canvas.width - offsetX)
-            drawEdgesOnCanvas(canvas, startX = canvas.width - offsetX, pianoSettings)
+            drawClefsOnCanvas(canvas, noteListConfiguration, canvas.width - offsetX)
+            drawEdgesOnCanvas(canvas, startX = canvas.width - offsetX, noteListConfiguration)
             drawLiveNotesOnCanvas(
                 startX = canvas.width - offsetX,
                 canvas = canvas,
-                pianoConfiguration = pianoSettings,
+                pianoConfiguration = noteListConfiguration,
                 liveNotes = liveNotes
             )
         }
@@ -101,7 +102,7 @@ class FileSaveProvider(
     private fun drawMusicLinesOnCanvas(
         canvas: Canvas,
         startX: Float,
-        pianoConfiguration: PianoSettings,
+        pianoConfiguration: NoteListConfiguration,
     ) {
         val paint = android.graphics.Paint().apply {
             color = pianoConfiguration.color
@@ -125,7 +126,7 @@ class FileSaveProvider(
     private fun drawEdgesOnCanvas(
         canvas: Canvas,
         startX: Float,
-        pianoConfiguration: PianoSettings,
+        pianoConfiguration: NoteListConfiguration,
     ) {
         val paint = android.graphics.Paint().apply {
             color = pianoConfiguration.color
@@ -152,8 +153,8 @@ class FileSaveProvider(
     private fun drawLiveNotesOnCanvas(
         startX: Float,
         canvas: Canvas,
-        pianoConfiguration: PianoSettings,
-        liveNotes: List<Pair<List<NoteModel>, Int>>,
+        pianoConfiguration: NoteListConfiguration,
+        liveNotes: List<Pair<List<Note>, Int>>,
     ) {
         val paint = android.graphics.Paint().apply {
             color = pianoConfiguration.color
@@ -211,17 +212,21 @@ class FileSaveProvider(
         }
     }
 
-    private fun drawNameOnCanvas(
-        name: String,
-        pianoConfiguration: PianoSettings,
+    private fun drawTitleOnCanvas(
+        pianoConfiguration: NoteListConfiguration,
         canvas: Canvas
     ) {
+        val typefaceChoice = ResourcesCompat.getFont(context, pianoConfiguration.font.fontRes)
+        val paint = android.graphics.Paint().apply {
+            color = pianoConfiguration.color
+            typeface = typeface
+        }
 
     }
 
     private fun drawClefsOnCanvas(
         canvas: Canvas,
-        pianoConfiguration: PianoSettings,
+        pianoConfiguration: NoteListConfiguration,
         startX: Float,
     ) {
         val paint = android.graphics.Paint().apply {

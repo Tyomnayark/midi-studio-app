@@ -1,11 +1,10 @@
 package com.tyom.feature_main.viewmodel
 
 import android.bluetooth.BluetoothDevice
-import com.tyom.feature_main.models.BottomNavigationItem
-import com.example.feature_home.models.Note
-import com.example.feature_home.models.PianoConfiguration
 import com.example.feature_home.models.SettingsState
-import com.tyom.core_ui.interfaces.UIState
+import com.tyom.core_ui.models.Note
+import com.tyom.core_ui.models.PianoConfiguration
+import com.tyom.feature_main.models.BottomNavigationItem
 
 
 data class MainUIState(
@@ -16,4 +15,4 @@ data class MainUIState(
 
     val currentNotes: List<Note> = emptyList(),
     val liveNotes: List<Pair<List<Note>, Int>> = emptyList()
-) : UIState
+)

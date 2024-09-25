@@ -1,5 +1,7 @@
 <resources>
+    <!--    Common-->
     <string name="common_empty">""</string>
+    <string name="common_save">Save</string>
 
     <!--    Screen tab names-->
     <string name="home_screen">Home</string>
@@ -12,4 +14,7 @@
     <string name="connected">Connected</string>
     <string name="not_connected">Connect</string>
     <string name="auto_connect">AutoConnect</string>
+
+    <!--    Library screen-->
+
 </resources>

@@ -17,8 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.feature_home.models.Note
+import com.tyom.core_ui.models.Note
 import com.tyom.core_ui.R
 import com.tyom.core_ui.constants.PianoConstants.BLACK_KEYS_COUNT
 import com.tyom.core_ui.constants.PianoConstants.WHITE_KEYS_COUNT

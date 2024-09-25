@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.tyom.core_ui.R
 import com.tyom.feature_main.models.Routes.HOME_ROUTE
-import com.tyom.feature_main.models.Routes.SETTINGS_ROUTE
+import com.tyom.feature_main.models.Routes.LIBRARY_ROUTE
 
 
 enum class ScreensEnum(
@@ -21,7 +21,7 @@ enum class ScreensEnum(
     ),
 
     SETTINGS(
-        route = SETTINGS_ROUTE,
+        route = LIBRARY_ROUTE,
         textId = R.string.settings_screen,
         iconId = R.drawable.ic_settings,
         iconFilledId = R.drawable.ic_settings_filled

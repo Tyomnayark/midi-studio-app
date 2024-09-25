@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.dagger.hilt)
     alias(libs.plugins.jetbrains.kotlin.kapt)
+    alias(libs.plugins.realm)
 }
 val debug = "debug"
 val release = "release"
@@ -96,6 +97,8 @@ dependencies {
 
     kapt(libs.dagger.hilt.compiler)
     implementation(libs.dagger.hilt)
+
+    implementation(libs.realm)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

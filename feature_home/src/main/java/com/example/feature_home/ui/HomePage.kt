@@ -40,23 +40,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.feature_home.models.Note
-import com.example.feature_home.models.PianoConfiguration
+import com.tyom.core_ui.models.Note
+import com.tyom.core_ui.models.PianoConfiguration
 import com.example.feature_home.models.SettingsState
-import com.tyom.domain.models.Instrument
-import com.tyom.core_ui.theme.GrayLight
-import com.tyom.core_ui.theme.White
-import com.tyom.core_ui.widgets.SwitchButton
+import com.tyom.core_ui.R
 import com.tyom.core_ui.extensions.FigmaLargePreview
 import com.tyom.core_ui.extensions.IfTrue
-import com.tyom.core_ui.theme.settingsItemFont
+import com.tyom.core_ui.theme.GrayLight
+import com.tyom.core_ui.theme.White
+import com.tyom.core_ui.theme.ralewayExtraLightTextStyle
+import com.tyom.core_ui.theme.ralewayMediumTextStyle
+import com.tyom.core_ui.utils.getTextWidthInDp
 import com.tyom.core_ui.widgets.DotsLoader
+import com.tyom.core_ui.widgets.LiveNoteString
 import com.tyom.core_ui.widgets.ScaleAnimateContainer
+import com.tyom.core_ui.widgets.SwitchButton
 import com.tyom.core_utils.extensions.empty
 import com.tyom.core_utils.extensions.isNotNull
-import com.tyom.core_ui.utils.getTextWidthInDp
+import com.tyom.domain.models.Instrument
 import kotlinx.coroutines.launch
-import com.tyom.core_ui.R
 
 private const val DURATION_ANIMATION = 500
 
@@ -99,7 +101,7 @@ fun HomePage(
             settingsState.isConnectBtnEnabled ->
                 getTextWidthInDp(
                     text = stringResource(settingsState.connectBtnText),
-                    textStyle = settingsItemFont(dimensionResource(R.dimen._15sp))
+                    textStyle = ralewayMediumTextStyle(dimensionResource(R.dimen._15sp))
                 ) + dimensionResource(R.dimen._44dp)
 
             else -> dimensionResource(R.dimen._0dp)
@@ -125,7 +127,7 @@ fun HomePage(
                 ) {
                     Text(
                         text = stringResource(R.string.selected_device),
-                        style = settingsItemFont(size = dimensionResource(R.dimen._15sp)),
+                        style = ralewayMediumTextStyle(size = dimensionResource(R.dimen._15sp)),
                         modifier = Modifier.padding(bottom = dimensionResource(R.dimen._10dp))
                     )
                     Row {
@@ -147,7 +149,7 @@ fun HomePage(
                                 if (settingsState.selectedInstrument?.name.isNotNull()) {
                                     Text(
                                         text = settingsState.selectedInstrument?.name.orEmpty(),
-                                        style = settingsItemFont(size = dimensionResource(R.dimen._15sp)),
+                                        style = ralewayMediumTextStyle(size = dimensionResource(R.dimen._15sp)),
                                         modifier = Modifier.padding(
                                             horizontal = dimensionResource(R.dimen._12dp),
                                             vertical = dimensionResource(R.dimen._7dp)
@@ -156,7 +158,7 @@ fun HomePage(
                                 } else {
                                     Text(
                                         text = stringResource(R.string.selected_device_hint),
-                                        style = settingsItemFont(size = dimensionResource(R.dimen._15sp)),
+                                        style = ralewayExtraLightTextStyle(size = dimensionResource(R.dimen._15sp)),
                                         modifier = Modifier.padding(
                                             horizontal = dimensionResource(R.dimen._12dp),
                                             vertical = dimensionResource(R.dimen._7dp)
@@ -199,7 +201,7 @@ fun HomePage(
                                 } else {
                                     Text(
                                         text = stringResource(settingsState.connectBtnText),
-                                        style = settingsItemFont(size = dimensionResource(R.dimen._15sp)),
+                                        style = ralewayMediumTextStyle(size = dimensionResource(R.dimen._15sp)),
                                         modifier = Modifier.padding(
                                             horizontal = dimensionResource(R.dimen._12dp),
                                             vertical = dimensionResource(R.dimen._7dp)
@@ -241,7 +243,7 @@ fun HomePage(
                                 ) {
                                     Text(
                                         text = instrument.name,
-                                        style = settingsItemFont(size = dimensionResource(R.dimen._15sp)),
+                                        style = ralewayMediumTextStyle(size = dimensionResource(R.dimen._15sp)),
                                         modifier = Modifier.height(dimensionResource(R.dimen._32dp))
                                     )
                                 }
@@ -260,7 +262,7 @@ fun HomePage(
 
                     Text(
                         text = stringResource(R.string.keyboard),
-                        style = settingsItemFont(size = dimensionResource(R.dimen._15sp)),
+                        style = ralewayMediumTextStyle(size = dimensionResource(R.dimen._15sp)),
                         modifier = Modifier.padding(vertical = dimensionResource(R.dimen._10dp))
                     )
                     SwitchButton(
@@ -272,7 +274,7 @@ fun HomePage(
 
                     Text(
                         text = stringResource(R.string.auto_connect),
-                        style = settingsItemFont(size = dimensionResource(R.dimen._15sp)),
+                        style = ralewayMediumTextStyle(size = dimensionResource(R.dimen._15sp)),
                         modifier = Modifier.padding(vertical = dimensionResource(R.dimen._10dp))
                     )
                     SwitchButton(

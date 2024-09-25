@@ -28,9 +28,9 @@ import androidx.navigation.compose.rememberNavController
 import com.tyom.core_ui.theme.NoteStudioTheme
 import com.tyom.feature_main.ui.views.BottomBar
 import com.tyom.feature_main.ui.views.NavGraph
-import com.tyom.feature_main.utils.hasBluetoothPermissions
-import com.tyom.feature_main.utils.hasLocationPermissions
-import com.tyom.feature_main.utils.hasStoragePermissions
+import com.tyom.core_utils.utils.hasBluetoothPermissions
+import com.tyom.core_utils.utils.hasLocationPermissions
+import com.tyom.core_utils.utils.hasStoragePermissions
 import com.tyom.feature_main.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 

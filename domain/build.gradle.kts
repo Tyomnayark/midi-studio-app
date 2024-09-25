@@ -24,8 +24,9 @@ android {
 }
 
 dependencies {
-
     implementation(project(":core_utils"))
+    implementation(project(":core_ui"))
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

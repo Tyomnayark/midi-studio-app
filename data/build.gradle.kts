@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.dagger.hilt)
+    alias(libs.plugins.realm)
 }
 
 android {
@@ -27,6 +28,7 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":core_utils"))
     implementation(project(":core_ui"))
+    implementation(libs.realm)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

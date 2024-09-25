@@ -1,8 +1,8 @@
 package com.tyom.domain.repository
 
-import com.tyom.domain.models.NoteModel
-import com.tyom.domain.models.PianoSettings
+import com.tyom.core_ui.models.Note
+import com.tyom.domain.models.NoteListConfiguration
 
 interface FileSaveRepository {
-    suspend fun saveAsA4Jpeg(pianoSettings: PianoSettings, liveNotes: List<Pair<List<NoteModel>, Int>>): Boolean
+    suspend fun saveAsA4Jpeg(noteListConfiguration: NoteListConfiguration, liveNotes: List<Pair<List<Note>, Int>>): Boolean
 }
