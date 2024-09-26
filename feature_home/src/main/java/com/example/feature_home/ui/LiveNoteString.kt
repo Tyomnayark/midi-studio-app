@@ -1,4 +1,4 @@
-package com.tyom.core_ui.widgets
+package com.example.feature_home.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
@@ -18,9 +18,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.tyom.core_ui.extensions.FigmaLargePreview
-import com.tyom.core_ui.models.Note
 import com.tyom.core_ui.models.PianoConfiguration
 import com.tyom.core_ui.utils.drawableToImageBitmap
+import com.tyom.domain.models.Note
 
 @SuppressLint("UseCompatLoadingForDrawables")
 @Composable
@@ -207,7 +207,7 @@ fun DrawScope.drawLiveNotes(
 @Composable
 fun LiveNoteStringPreview() {
     val liveNotes = listOf(
-        listOf(Note(value = 10, isWhiteKey = true)) to 1,
+        listOf(Note(value = 1, isWhiteKey = true)) to 1,
         listOf(
             Note(value = 10, isWhiteKey = true),
 

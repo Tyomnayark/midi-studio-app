@@ -2,6 +2,7 @@
     <!--    Common-->
     <string name="common_empty">""</string>
     <string name="common_save">Save</string>
+    <string name="common_delete">Delete</string>
 
     <!--    Screen tab names-->
     <string name="home_screen">Home</string>
@@ -16,5 +17,6 @@
     <string name="auto_connect">AutoConnect</string>
 
     <!--    Library screen-->
-
+    <string name="library_title">Library</string>
+    <string name="click_to_change_font_style">Click to change font style</string>
 </resources>

@@ -1,6 +1,6 @@
 package com.tyom.domain.usecases
 
-import com.tyom.core_ui.models.Note
+import com.tyom.domain.models.Note
 import com.tyom.domain.models.NoteListConfiguration
 import com.tyom.domain.repository.FileSaveRepository
 import javax.inject.Inject

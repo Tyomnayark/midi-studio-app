@@ -1,7 +1,9 @@
 package com.tyom.notestudio.di
 
+import com.tyom.data.repository.DataBaseRepositoryImpl
 import com.tyom.data.repository.FileSaveRepositoryImpl
 import com.tyom.data.repository.MIDIRepositoryImpl
+import com.tyom.domain.repository.DataBaseRepository
 import com.tyom.domain.repository.FileSaveRepository
 import com.tyom.domain.repository.MIDIRepository
 import dagger.Module
@@ -23,5 +25,11 @@ class RepositoryModule {
     @Singleton
     fun provideFileSaveRepository(fileSaveRepositoryImpl: FileSaveRepositoryImpl): FileSaveRepository {
         return fileSaveRepositoryImpl
+    }
+
+    @Provides
+    @Singleton
+    fun provideDataBaseRepository(dataBaseRepositoryImpl: DataBaseRepositoryImpl): DataBaseRepository {
+        return dataBaseRepositoryImpl
     }
 }

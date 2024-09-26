@@ -97,6 +97,7 @@ dependencies {
 
     kapt(libs.dagger.hilt.compiler)
     implementation(libs.dagger.hilt)
+    implementation(libs.dagger.hilt.compose)
 
     implementation(libs.realm)
 

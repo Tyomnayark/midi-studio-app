@@ -1,7 +1,7 @@
 package com.tyom.data.repository
 
 import android.content.Context
-import com.tyom.core_ui.models.Note
+import com.tyom.domain.models.Note
 import com.tyom.data.providers.FileSaveProvider
 import com.tyom.domain.models.NoteListConfiguration
 import com.tyom.domain.repository.FileSaveRepository

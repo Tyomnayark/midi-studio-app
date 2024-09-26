@@ -40,24 +40,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.tyom.core_ui.models.Note
-import com.tyom.core_ui.models.PianoConfiguration
 import com.example.feature_home.models.SettingsState
 import com.tyom.core_ui.R
 import com.tyom.core_ui.extensions.FigmaLargePreview
 import com.tyom.core_ui.extensions.IfTrue
+import com.tyom.core_ui.models.PianoConfiguration
 import com.tyom.core_ui.theme.GrayLight
 import com.tyom.core_ui.theme.White
 import com.tyom.core_ui.theme.ralewayExtraLightTextStyle
 import com.tyom.core_ui.theme.ralewayMediumTextStyle
 import com.tyom.core_ui.utils.getTextWidthInDp
 import com.tyom.core_ui.widgets.DotsLoader
-import com.tyom.core_ui.widgets.LiveNoteString
 import com.tyom.core_ui.widgets.ScaleAnimateContainer
 import com.tyom.core_ui.widgets.SwitchButton
 import com.tyom.core_utils.extensions.empty
 import com.tyom.core_utils.extensions.isNotNull
 import com.tyom.domain.models.Instrument
+import com.tyom.domain.models.Note
 import kotlinx.coroutines.launch
 
 private const val DURATION_ANIMATION = 500

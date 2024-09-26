@@ -1,4 +1,4 @@
-package com.tyom.core_ui.models
+package com.tyom.domain.models
 
 import com.tyom.core_ui.constants.NoteConstants.A0
 import com.tyom.core_ui.constants.NoteConstants.A1

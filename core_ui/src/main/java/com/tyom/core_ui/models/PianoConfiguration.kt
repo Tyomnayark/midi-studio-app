@@ -5,11 +5,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.tyom.core_ui.constants.NoteConstants.A0
+import com.tyom.core_ui.constants.NoteConstants.A1
 import com.tyom.core_ui.constants.NoteConstants.A2
 import com.tyom.core_ui.constants.NoteConstants.A5
 import com.tyom.core_ui.constants.NoteConstants.A6
 import com.tyom.core_ui.constants.NoteConstants.A7
 import com.tyom.core_ui.constants.NoteConstants.B0
+import com.tyom.core_ui.constants.NoteConstants.B1
 import com.tyom.core_ui.constants.NoteConstants.B2
 import com.tyom.core_ui.constants.NoteConstants.B3
 import com.tyom.core_ui.constants.NoteConstants.B5
@@ -106,17 +108,19 @@ data class PianoConfiguration(
         D2 to 1,
         C2 to 2,
         B2 to 2,
-        A2 to 3,
+        A2 to 2,
+        A1 to 3,
+        B1 to 2,
         G1 to 3,
         F1 to 4,
         E1 to 4,
         D1 to 5,
         C1 to 5,
         B0 to 6,
-        A0 to 6
+        A0 to 6,
     ),
 
     val bottomLineNotesList: MutableList<Int> = mutableListOf(
-        C4, E2, D2, C2, B2, A2, G1, F1, E1, D1, C1, B0, A0
+        C4, E2, D2, C2, B2, A2, G1, F1, E1, D1, C1, B0, A0, A1, B1
     )
 )

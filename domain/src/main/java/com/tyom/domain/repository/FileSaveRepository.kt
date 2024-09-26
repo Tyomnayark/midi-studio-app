@@ -1,6 +1,6 @@
 package com.tyom.domain.repository
 
-import com.tyom.core_ui.models.Note
+import com.tyom.domain.models.Note
 import com.tyom.domain.models.NoteListConfiguration
 
 interface FileSaveRepository {

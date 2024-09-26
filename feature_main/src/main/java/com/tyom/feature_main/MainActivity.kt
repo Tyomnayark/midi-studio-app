@@ -88,7 +88,7 @@ class MainActivity : ComponentActivity() {
                     NavGraph(
                         navController = navController,
                         state = state,
-                        viewModel = mainViewModel
+                        mainViewModel = mainViewModel
                     )
                 }
             }

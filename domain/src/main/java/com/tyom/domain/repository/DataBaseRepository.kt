@@ -1,9 +1,13 @@
 package com.tyom.domain.repository
 
-import com.tyom.core_ui.models.Note
+import com.tyom.domain.models.MusicalComposition
 
 interface DataBaseRepository {
 
-    suspend fun saveMusicComposition(title: String, notes: List<Pair<List<Note>, Int>>): Boolean
+    suspend fun saveMusicComposition(musicalComposition: MusicalComposition): Boolean
+
+    suspend fun getAllMusicCompositions(): List<MusicalComposition>
+
+    suspend fun deleteMusicComposition(title: String): Boolean
 
 }

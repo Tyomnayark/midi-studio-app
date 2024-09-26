@@ -13,7 +13,7 @@ import android.provider.MediaStore
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.tyom.core_ui.R
-import com.tyom.core_ui.models.Note
+import com.tyom.domain.models.Note
 import com.tyom.domain.models.NoteListConfiguration
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.IOException
