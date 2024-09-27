@@ -91,7 +91,7 @@ fun LibraryPage(
     clickToChangeFontStyle: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Expanded,
+        initialValue = ModalBottomSheetValue.Hidden,
         skipHalfExpanded = true,
         animationSpec = tween(durationMillis = BOTTOM_SHEET_ANIM_MILLIS, easing = EaseOutCubic)
     )

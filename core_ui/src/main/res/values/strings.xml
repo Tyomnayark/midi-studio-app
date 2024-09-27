@@ -19,7 +19,7 @@
 
     <!--    Library screen-->
     <string name="click_to_change_font_style">Click to change title font style</string>
-    <string name="enter_title">Enter title</string>
+    <string name="enter_title">Title text</string>
     <string name="export_to_jpeg">Export to JPEG</string>
     <string name="export_to_pdf">Export to PDF</string>
 </resources>
