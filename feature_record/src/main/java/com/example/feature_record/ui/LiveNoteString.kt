@@ -1,4 +1,4 @@
-package com.example.feature_home.ui
+package com.example.feature_record.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas

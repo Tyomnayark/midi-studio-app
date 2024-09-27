@@ -1,4 +1,4 @@
-package com.example.feature_home.ui
+package com.example.feature_record.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

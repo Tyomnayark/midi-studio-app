@@ -3,10 +3,11 @@
     <string name="common_empty">""</string>
     <string name="common_save">Save</string>
     <string name="common_delete">Delete</string>
+    <string name="common_edit">Edit</string>
 
     <!--    Screen tab names-->
-    <string name="home_screen">Home</string>
-    <string name="settings_screen">Settings</string>
+    <string name="record_screen">Record</string>
+    <string name="library_screen">Library</string>
 
     <!--    Settings screen-->
     <string name="keyboard">Keyboard</string>
@@ -17,6 +18,8 @@
     <string name="auto_connect">AutoConnect</string>
 
     <!--    Library screen-->
-    <string name="library_title">Library</string>
-    <string name="click_to_change_font_style">Click to change font style</string>
+    <string name="click_to_change_font_style">Click to change title font style</string>
+    <string name="enter_title">Enter title</string>
+    <string name="export_to_jpeg">Export to JPEG</string>
+    <string name="export_to_pdf">Export to PDF</string>
 </resources>

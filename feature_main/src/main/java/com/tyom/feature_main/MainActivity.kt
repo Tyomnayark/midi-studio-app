@@ -17,10 +17,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -33,6 +41,7 @@ import com.tyom.core_utils.utils.hasLocationPermissions
 import com.tyom.core_utils.utils.hasStoragePermissions
 import com.tyom.feature_main.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import com.tyom.core_ui.R
 
 
 private const val REQUEST_PERMISSION_CODE = 1001
@@ -62,11 +71,17 @@ class MainActivity : ComponentActivity() {
                     backStackEntry?.destination?.route
                 }
             }
+            var isBottomBarVisible by remember { mutableStateOf(false) }
+            val animatedOffsetForBottomBar by animateDpAsState(
+                targetValue = if (isBottomBarVisible) 0.dp else dimensionResource(R.dimen._55dp)
+            )
 
             NoteStudioTheme {
                 Scaffold(
                     bottomBar = {
                         BottomBar(
+                            modifier = Modifier
+                                .offset(y = animatedOffsetForBottomBar),
                             state.bottomItems,
                             currentScreen = currentScreen,
                             onClickBottomItem = { item ->
@@ -88,7 +103,11 @@ class MainActivity : ComponentActivity() {
                     NavGraph(
                         navController = navController,
                         state = state,
-                        mainViewModel = mainViewModel
+                        mainViewModel = mainViewModel,
+
+                        onChangeModalDrawerState = { isOpened ->
+                            isBottomBarVisible = !isOpened
+                        }
                     )
                 }
             }

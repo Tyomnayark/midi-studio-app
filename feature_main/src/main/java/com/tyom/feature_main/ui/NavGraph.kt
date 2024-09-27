@@ -3,13 +3,14 @@ package com.tyom.feature_main.ui.views
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.feature_home.ui.HomePage
+import com.example.feature_record.ui.RecordPage
 import com.tyom.feature_library.ui.LibraryPage
 import com.tyom.feature_library.ui.LibraryViewModel
-import com.tyom.feature_main.models.Routes.HOME_ROUTE
+import com.tyom.feature_main.models.Routes.RECORD_ROUTE
 import com.tyom.feature_main.models.Routes.LIBRARY_ROUTE
 import com.tyom.feature_main.viewmodel.MainUIState
 import com.tyom.feature_main.viewmodel.MainViewModel
@@ -18,11 +19,12 @@ import com.tyom.feature_main.viewmodel.MainViewModel
 fun NavGraph(
     navController: NavHostController,
     state: MainUIState,
-    mainViewModel: MainViewModel
+    mainViewModel: MainViewModel,
+    onChangeModalDrawerState: (Boolean) -> Unit
 ) {
-    NavHost(navController = navController, startDestination = HOME_ROUTE) {
-        composable(HOME_ROUTE) {
-            HomePage(
+    NavHost(navController = navController, startDestination = RECORD_ROUTE) {
+        composable(RECORD_ROUTE) {
+            RecordPage(
                 pianoConfiguration = state.pianoConfiguration,
                 settingsState = state.settingsState,
                 notes = state.currentNotes,
@@ -39,6 +41,9 @@ fun NavGraph(
                 },
                 onClickChangeAutoConnect = {
                     mainViewModel.changeAutoConnect()
+                },
+                onChangeModalDrawerState = { isOpened ->
+                    onChangeModalDrawerState(isOpened)
                 }
             )
         }
@@ -67,6 +72,12 @@ fun NavGraph(
                 },
                 clickToChangeFontStyle = {
                     libraryViewModel.clickToChangeFontStyle()
+                },
+                onClickExportJpeg = { title: String ->  
+                    libraryViewModel.saveAsA4JpegFile(title)
+                },
+                onClickExportPdf = { title: String ->
+                    // TODO: add this feature later
                 }
             )
         }

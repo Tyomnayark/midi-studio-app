@@ -1,4 +1,4 @@
-package com.example.feature_home.models
+package com.example.feature_record.models
 
 import androidx.annotation.StringRes
 import androidx.compose.ui.Alignment

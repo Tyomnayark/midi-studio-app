@@ -1,4 +1,4 @@
-package com.example.feature_home
+package com.example.feature_record
 
 import org.junit.Test
 

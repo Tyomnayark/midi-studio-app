@@ -62,6 +62,7 @@ class FileSaveProvider(
                 liveNotes = liveNotes
             )
         }
+        drawTitleOnCanvas(noteListConfiguration, canvas)
 
         val values = ContentValues()
         values.put(MediaStore.MediaColumns.DISPLAY_NAME, "IMG_" + System.currentTimeMillis())
@@ -219,9 +220,26 @@ class FileSaveProvider(
         val typefaceChoice = ResourcesCompat.getFont(context, pianoConfiguration.font.fontRes)
         val paint = android.graphics.Paint().apply {
             color = pianoConfiguration.color
-            typeface = typeface
+            typeface = typefaceChoice
+            textSize = 90f
+            isAntiAlias = true
+            textAlign = android.graphics.Paint.Align.CENTER
         }
+        canvas.save()
 
+        val xPosition = canvas.width - pianoConfiguration.paddingForTitle
+        val yPosition = canvas.height / 2f
+
+        canvas.rotate(90f, xPosition, yPosition)
+
+        canvas.drawText(
+            pianoConfiguration.title,
+            xPosition,
+            yPosition,
+            paint
+        )
+
+        canvas.restore()
     }
 
     private fun drawClefsOnCanvas(

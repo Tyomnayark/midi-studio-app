@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.feature_home"
+    namespace = "com.example.feature_record"
     compileSdk = 34
 
     defaultConfig {

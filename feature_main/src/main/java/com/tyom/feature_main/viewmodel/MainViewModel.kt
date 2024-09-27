@@ -6,19 +6,7 @@ import android.media.midi.MidiReceiver
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
-import com.example.feature_home.models.SettingsState
-import com.tyom.core_ui.constants.NoteConstants.A0
-import com.tyom.core_ui.constants.NoteConstants.A2
-import com.tyom.core_ui.constants.NoteConstants.A3
-import com.tyom.core_ui.constants.NoteConstants.B3
-import com.tyom.core_ui.constants.NoteConstants.C1
-import com.tyom.core_ui.constants.NoteConstants.C4
-import com.tyom.core_ui.constants.NoteConstants.C8
-import com.tyom.core_ui.constants.NoteConstants.D3
-import com.tyom.core_ui.constants.NoteConstants.D4
-import com.tyom.core_ui.constants.NoteConstants.D7
-import com.tyom.core_ui.constants.NoteConstants.E5
-import com.tyom.core_ui.constants.NoteConstants.F4
+import com.example.feature_record.models.SettingsState
 import com.tyom.core_utils.BuildConfig
 import com.tyom.core_utils.constants.BuildTypeConstants.DEBUG_TYPE
 import com.tyom.core_utils.extensions.launchOnDefault
@@ -27,7 +15,6 @@ import com.tyom.core_utils.extensions.launchOnMain
 import com.tyom.core_utils.utils.hasBluetoothPermissions
 import com.tyom.core_utils.utils.hasLocationPermissions
 import com.tyom.domain.models.Instrument
-import com.tyom.domain.models.Note
 import com.tyom.domain.models.toInstrument
 import com.tyom.domain.models.toNote
 import com.tyom.domain.usecases.AddInstrumentToPreferencesUseCase
@@ -62,11 +49,13 @@ class MainViewModel @Inject constructor(
 
             val bottomItems = listOf(
                 BottomNavigationItem(
-                    screen = ScreensEnum.HOME,
+                    screen = ScreensEnum.RECORD,
+                    resIdString = ScreensEnum.RECORD.textId,
                     isSelected = true
                 ),
                 BottomNavigationItem(
-                    screen = ScreensEnum.SETTINGS,
+                    screen = ScreensEnum.LIBRARY,
+                    resIdString = ScreensEnum.LIBRARY.textId,
                     isSelected = false
                 )
             )

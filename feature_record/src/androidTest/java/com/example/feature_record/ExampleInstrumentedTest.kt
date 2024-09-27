@@ -1,4 +1,4 @@
-package com.example.feature_home
+package com.example.feature_record
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.example.feature_home.test", appContext.packageName)
+        assertEquals("com.example.feature_record.test", appContext.packageName)
     }
 }

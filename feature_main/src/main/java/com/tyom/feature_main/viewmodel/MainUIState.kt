@@ -1,7 +1,7 @@
 package com.tyom.feature_main.viewmodel
 
 import android.bluetooth.BluetoothDevice
-import com.example.feature_home.models.SettingsState
+import com.example.feature_record.models.SettingsState
 import com.tyom.domain.models.Note
 import com.tyom.core_ui.models.PianoConfiguration
 import com.tyom.feature_main.models.BottomNavigationItem

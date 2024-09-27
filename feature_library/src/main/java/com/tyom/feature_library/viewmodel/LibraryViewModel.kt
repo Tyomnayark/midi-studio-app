@@ -8,6 +8,7 @@ import com.tyom.core_utils.extensions.launchOnDefault
 import com.tyom.core_utils.extensions.launchOnIO
 import com.tyom.domain.models.MusicalComposition
 import com.tyom.domain.models.Note
+import com.tyom.domain.models.NoteListConfiguration
 import com.tyom.domain.models.NotePairs
 import com.tyom.domain.usecases.DeleteMusicCompositionUseCase
 import com.tyom.domain.usecases.GetAllMusicCompositionsUseCase
@@ -64,8 +65,10 @@ class LibraryViewModel @Inject constructor(
 
     fun saveCompositionToDB() {
         launchOnIO {
+            val currentTimeMillis = System.currentTimeMillis().toString()
+
             val musicalComposition = MusicalComposition(
-                title = "first composition",
+                title = currentTimeMillis,
                 notesPairs = listOf(
                     NotePairs(
                         notes = listOf(
@@ -170,6 +173,17 @@ class LibraryViewModel @Inject constructor(
             state.copy(
                 fontStyle = newFontStyle
             )
+        }
+    }
+
+    fun saveAsA4JpegFile(title: String) {
+        launchOnIO {
+            val font = _uiState.value.fontStyle
+            val noteListConfiguration = NoteListConfiguration(
+                title = title,
+                font = font
+            )
+            val result = saveAsA4JpegFileUseCase.execute(noteListConfiguration, emptyList()) // TODO: тут добавить ноты
         }
     }
 

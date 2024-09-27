@@ -1,4 +1,4 @@
-package com.example.feature_home.ui
+package com.example.feature_record.ui
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -30,6 +30,7 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -40,7 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.feature_home.models.SettingsState
+import com.example.feature_record.models.SettingsState
 import com.tyom.core_ui.R
 import com.tyom.core_ui.extensions.FigmaLargePreview
 import com.tyom.core_ui.extensions.IfTrue
@@ -62,12 +63,13 @@ import kotlinx.coroutines.launch
 private const val DURATION_ANIMATION = 500
 
 @Composable
-fun HomePage(
+fun RecordPage(
     settingsState: SettingsState,
     pianoConfiguration: PianoConfiguration,
     notes: List<Note>,
     liveNotes: List<Pair<List<Note>, Int>>,
 
+    onChangeModalDrawerState: (Boolean) -> Unit,
     onClickChangeKeyboardVisibility: () -> Unit,
     onClickChangeAutoConnect: () -> Unit,
     onClickRefreshInstruments: () -> Unit,
@@ -111,6 +113,10 @@ fun HomePage(
         ),
         label = String.empty()
     )
+
+    LaunchedEffect(drawerState.isOpen) {
+        onChangeModalDrawerState(drawerState.isOpen)
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -329,11 +335,13 @@ fun HomePage(
 @FigmaLargePreview
 @Composable
 fun MainMenuPreview() {
-    HomePage(
+    RecordPage(
         settingsState = SettingsState(),
         pianoConfiguration = PianoConfiguration(),
         notes = emptyList(),
         liveNotes = emptyList(),
+
+        onChangeModalDrawerState = {},
         onClickRefreshInstruments = {},
         onClickSelectInstrument = {},
         onClickChangeKeyboardVisibility = {},
