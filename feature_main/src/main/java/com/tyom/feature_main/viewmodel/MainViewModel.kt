@@ -5,6 +5,7 @@ import android.content.Context
 import android.media.midi.MidiReceiver
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.ui.util.trace
 import androidx.lifecycle.ViewModel
 import com.example.feature_record.models.SettingsState
 import com.tyom.core_utils.BuildConfig
@@ -25,6 +26,7 @@ import com.tyom.feature_main.models.BottomNavigationItem
 import com.tyom.feature_main.models.ScreensEnum
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -164,11 +166,7 @@ class MainViewModel @Inject constructor(
                             if (BuildConfig.BUILD_TYPE == DEBUG_TYPE) {
                                 Log.d(
                                     "MidiProvider",
-                                    "MIDI message: Status=$status, Note=$note, Velocity=$velocity"
-                                )
-                                Log.d(
-                                    "MidiProvider",
-                                    "MIDI message: msg=$msg, offset=$offset, count=$count, timestamp=$timestamp"
+                                    "MIDI message: Status=$status, Note=$note, Velocity=$velocity msg=$msg, offset=$offset, count=$count, timestamp=$timestamp"
                                 )
                             }
                             val pianoPair = note.toNote()
@@ -188,6 +186,7 @@ class MainViewModel @Inject constructor(
                     }
                 }
                 val result = connectBluetoothDeviceUseCase.execute(device, receiverImpl)
+
                 val finalSettingsState = _uiState.value.settingsState.copy(
                     isTryingToConnect = false,
                     isConnected = result
