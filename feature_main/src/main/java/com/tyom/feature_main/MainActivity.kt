@@ -56,9 +56,8 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //
-        // Init JNI for data receive callback
-        //
+
+        System.loadLibrary("native_midi")
         initNative()
         AppMidiManager.loadNativeAPI()
 
