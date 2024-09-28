@@ -16,7 +16,7 @@ android {
         kotlinCompilerExtensionVersion = "1.5.1"
     }
     defaultConfig {
-        minSdk = 24
+        minSdk = 29
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")

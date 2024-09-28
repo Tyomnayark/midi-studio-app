@@ -4,6 +4,11 @@
 *.bak
 
 .idea/
+/.cxx
+/.transforms
+/.gradle
+
+.DStore
 
 local.properties
 

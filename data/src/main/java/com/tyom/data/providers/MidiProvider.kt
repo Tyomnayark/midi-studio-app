@@ -19,6 +19,7 @@ import android.util.Log
 import com.tyom.core_utils.BuildConfig
 import com.tyom.core_utils.constants.BuildTypeConstants.DEBUG_TYPE
 import com.tyom.core_utils.extensions.isNotNull
+import com.tyom.data.nativemidi.AppMidiManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.nio.ByteBuffer
 import javax.inject.Singleton
@@ -31,6 +32,7 @@ import kotlin.coroutines.suspendCoroutine
 class MidiProvider(
     @ApplicationContext context: Context
 ) {
+
     private val TIME_FOR_SCANNING = 3000L
     private val TIME_FOR_UPDATING = 1000L
     private val MIDI_SERVICE_UUID = "03B80E5A-EDE8-4B33-A751-6CE34EC4C700"
@@ -44,12 +46,16 @@ class MidiProvider(
     private val midiManager: MidiManager? by lazy {
         context.getSystemService(Context.MIDI_SERVICE) as MidiManager
     }
+    private val mAppMidiManager: AppMidiManager  by lazy {
+        AppMidiManager(midiManager)
+    }
 
     private val bluetoothAdapter: BluetoothAdapter? by lazy {
         val bluetoothManager =
             context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothManager.adapter
     }
+
 
     @SuppressLint("MissingPermission")
     suspend fun scanMidiInstruments(): List<BluetoothDevice?> = suspendCoroutine { continuation ->

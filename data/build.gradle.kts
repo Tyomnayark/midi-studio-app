@@ -6,11 +6,18 @@ plugins {
 }
 
 android {
+    externalNativeBuild {
+        cmake {
+            path("src/main/cpp/CMakeLists.txt")
+        }
+    }
+    ndkVersion = "26.1.10909125"
+
     namespace = "com.tyom.model"
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 29
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")

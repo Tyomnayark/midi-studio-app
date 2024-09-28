@@ -18,4 +18,5 @@ object MidiModule {
     fun provideMidiProvider(@ApplicationContext context: Context): MidiProvider {
         return MidiProvider(context)
     }
+
 }
