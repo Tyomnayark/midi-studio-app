@@ -46,6 +46,7 @@ fun DisappearingAnimateContainer(
     spreadYStart: Double = -8.0,
     spreadYEnd: Double = 7.0,
     particlesCountCoeff: Float = 1.5f,
+    particleRadiusOffset: Float = 0.02f,
     alphaEasing: Easing = FastOutSlowInEasing,
 
     onAnimationEnd: () -> Unit = {}
@@ -54,8 +55,6 @@ fun DisappearingAnimateContainer(
     val widthFloat = width.dpToPx()
     val roundedBordersRadiusFloat = roundedBordersRadius.dpToPx()
     val radius = widthFloat / detailedByWidth
-    val particleRadiusOffset: Float = (10f - speedParticles.toFloat()) / 200f
-    val particleAlphaOffset:Double = (10f - speedParticles.toFloat()) / 1000.0
 
     var particles by remember {
         mutableStateOf(
@@ -100,13 +99,15 @@ fun DisappearingAnimateContainer(
                     )
                 }
                 isParticlesStarted = true
-                delay(speedAnimation * 2L)
-                isParticlesStarted = false
-                onAnimationEnd()
-                animatedParticlesAlpha.animateTo(
-                    targetValue = 0f,
-                    animationSpec = tween(durationMillis = speedAnimation.toInt() / 10)
-                )
+                launch {
+                    delay(speedAnimation)
+                    animatedParticlesAlpha.animateTo(
+                        targetValue = 0f,
+                        animationSpec = tween(durationMillis = speedAnimation.toInt() * 2)
+                    )
+                    isParticlesStarted = false
+                    onAnimationEnd()
+                }
             }
         }
     }
@@ -126,8 +127,7 @@ fun DisappearingAnimateContainer(
                 drawCircle(
                     color = particle.color,
                     radius = particle.radius,
-                    center = Offset(particle.x, particle.y),
-                    alpha = particle.alpha
+                    center = Offset(particle.x, particle.y)
                 )
             }
         }
@@ -153,14 +153,12 @@ fun DisappearingAnimateContainer(
             particles = particles.map { particle ->
                 val newX = particle.x + Random.nextDouble(spreadXStart, spreadXEnd).toFloat()
                 val newY = particle.y + Random.nextDouble(spreadYStart, spreadYEnd).toFloat()
-                val newAlpha = Random.nextDouble(0.0, particleAlphaOffset).toFloat()
 
-                if (particle.radius - particleRadiusOffset >= 0f && particle.alpha - newAlpha >= 0f) {
+                if (particle.radius - particleRadiusOffset >= 0f) {
                     particle.copy(
                         x = newX,
                         y = newY,
-                        radius = particle.radius - particleRadiusOffset,
-                        alpha = particle.alpha - newAlpha,
+                        radius = particle.radius - particleRadiusOffset
                     )
                 } else {
                     particle
@@ -175,8 +173,7 @@ data class Particle(
     val x: Float,
     val y: Float,
     val radius: Float,
-    val color: Color,
-    val alpha: Float,
+    val color: Color
 )
 
 private fun createParticles(
@@ -255,8 +252,7 @@ private fun createParticles(
                     x = centerX,
                     y = centerY,
                     radius = radius,
-                    color = color,
-                    alpha = 1f
+                    color = color
                 )
             )
         }

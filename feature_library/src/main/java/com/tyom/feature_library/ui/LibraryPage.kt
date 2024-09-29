@@ -1,6 +1,8 @@
 package com.tyom.feature_library.ui
 
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.EaseOutCubic
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -18,6 +20,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -33,6 +38,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -68,13 +75,17 @@ import com.tyom.core_ui.theme.ralewayMediumTextStyle
 import com.tyom.core_ui.theme.ralewayThinTextStyle
 import com.tyom.core_ui.widgets.DisappearingAnimateContainer
 import com.tyom.core_utils.extensions.empty
+import com.tyom.core_utils.extensions.pxToDp
 import com.tyom.domain.models.MusicalComposition
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private const val BOTTOM_SHEET_ANIM_MILLIS = 300
 private const val SHEET_HEIGHT_COEFF = 0.9f
 private const val WIDTH_COEFF = 0.8f
 private const val BUTTON_HEIGHT_COEFF = 0.333f
 private const val BUTTON_SECOND_HEIGHT_COEFF = 0.5f
+private const val DELETING_DELAY = 800L
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -99,8 +110,7 @@ fun LibraryPage(
     )
     val height = dimensionResource(R.dimen._110dp)
     val padding = dimensionResource(R.dimen._10dp)
-    val paddingForDis = dimensionResource(R.dimen._5dp)
-    val scrollState = rememberScrollState()
+    val lazyListState = rememberLazyListState()
     val scrollStateModalSheet = rememberScrollState()
     val fontSize = with(LocalDensity.current) { dimensionResource(id = R.dimen._16sp).toSp() }
     val fontSizeTitle = with(LocalDensity.current) { dimensionResource(id = R.dimen._35sp).toSp() }
@@ -108,6 +118,8 @@ fun LibraryPage(
     var isTextFocused by remember { mutableStateOf(false) }
     val keyboard = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val blockWidth =
         LocalConfiguration.current.screenWidthDp - dimensionResource(R.dimen._20dp).value
     val shapeCornerRad = dimensionResource(R.dimen._10dp)
@@ -295,197 +307,217 @@ fun LibraryPage(
     ) {
         Box {
 
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .padding(
                         top = padding,
                         start = padding,
                         end = padding
                     )
-                    .verticalScroll(scrollState)
                     .fillMaxSize(),
+                state = lazyListState,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                compositions.forEachIndexed { index, composition ->
+                itemsIndexed(compositions) { index, composition ->
                     var isClicked by remember { mutableStateOf(false) }
 
                     val animatedWidthFloat by animateFloatAsState(if (isClicked) WIDTH_COEFF else 1f)
                     val animatedButtonAlphaFloat by animateFloatAsState(if (isClicked) 1f else 0f)
+                    val animatedHeightDp = remember { Animatable(height.value) }
 
-                        Row(
+                    Row(
+                        modifier = Modifier
+                            .height(animatedHeightDp.value.dp)
+                    ) {
+                        LibraryNoteString(
                             modifier = Modifier
-                                .height(IntrinsicSize.Min)
+                                .height(height)
+                                .padding(bottom = padding)
+                                .noRippleClickable {
+                                    isClicked = !isClicked
+                                }
+                                .clip(RoundedCornerShape(shapeCornerRad))
+                                .border(
+                                    width = (0.1).dp,
+                                    color = Color.Black,
+                                    shape = RoundedCornerShape(shapeCornerRad)
+                                )
+                                .fillMaxWidth(animatedWidthFloat),
+                            notes = composition.notesPairs,
+                            pianoConfiguration = pianoConfiguration
+                        )
+
+                        Column(
+                            Modifier
+                                .padding(bottom = padding)
+                                .fillMaxHeight()
                         ) {
-                            LibraryNoteString(
+                            Box(
                                 modifier = Modifier
-                                    .height(height)
-                                    .padding(bottom = padding)
-                                    .noRippleClickable {
-                                        isClicked = !isClicked
+                                    .graphicsLayer {
+                                        alpha = animatedButtonAlphaFloat
                                     }
-                                    .clip(RoundedCornerShape(shapeCornerRad))
-                                    .border(
-                                        width = (0.1).dp,
+                                    .padding(
+                                        start = dimensionResource(id = R.dimen._5dp),
+                                        bottom = dimensionResource(id = R.dimen._5dp)
+                                    )
+                                    .fillMaxHeight(BUTTON_HEIGHT_COEFF)
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        isClicked = false
+                                        onClickSaveComposition(composition)
+                                    }
+                                    .background(
                                         color = Color.Black,
                                         shape = RoundedCornerShape(shapeCornerRad)
-                                    )
-                                    .fillMaxWidth(animatedWidthFloat),
-                                notes = composition.notesPairs,
-                                pianoConfiguration = pianoConfiguration
-                            )
-
-                            Column(
-                                Modifier
-                                    .padding(bottom = padding)
-                                    .fillMaxHeight()
+                                    ),
+                                contentAlignment = Alignment.Center
                             ) {
-                                Box(
+                                Text(
+                                    modifier = Modifier
+                                        .graphicsLayer {
+                                            scaleX = animatedButtonAlphaFloat
+                                        },
+                                    text = stringResource(id = R.string.common_save),
+                                    style = ralewayMediumTextStyle(
+                                        size = dimensionResource(id = R.dimen._12sp),
+                                        color = Color.White
+                                    )
+                                )
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .padding(
+                                        start = dimensionResource(id = R.dimen._5dp),
+                                        bottom = dimensionResource(id = R.dimen._5dp)
+                                    )
+                                    .fillMaxHeight(BUTTON_SECOND_HEIGHT_COEFF)
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        isClicked = false
+                                    }
+                                    .background(
+                                        color = Color.White,
+                                        shape = RoundedCornerShape(shapeCornerRad)
+                                    )
+                                    .border(
+                                        width = (0.1).dp, color = Color.Black,
+                                        shape = RoundedCornerShape(shapeCornerRad)
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
                                     modifier = Modifier
                                         .graphicsLayer {
                                             alpha = animatedButtonAlphaFloat
-                                        }
-                                        .padding(
-                                            start = dimensionResource(id = R.dimen._5dp),
-                                            bottom = dimensionResource(id = R.dimen._5dp)
-                                        )
-                                        .fillMaxHeight(BUTTON_HEIGHT_COEFF)
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            isClicked = false
-                                            onClickSaveComposition(composition)
-                                        }
-                                        .background(
-                                            color = Color.Black,
-                                            shape = RoundedCornerShape(shapeCornerRad)
-                                        ),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        modifier = Modifier
-                                            .graphicsLayer {
-                                                scaleX = animatedButtonAlphaFloat
-                                            },
-                                        text = stringResource(id = R.string.common_save),
-                                        style = ralewayMediumTextStyle(
-                                            size = dimensionResource(id = R.dimen._12sp),
-                                            color = Color.White
-                                        )
+                                        },
+                                    text = stringResource(id = R.string.common_edit),
+                                    style = ralewayMediumTextStyle(
+                                        size = dimensionResource(id = R.dimen._12sp),
+                                        color = Color.Black
                                     )
-                                }
-                                Box(
-                                    modifier = Modifier
-                                        .padding(
-                                            start = dimensionResource(id = R.dimen._5dp),
-                                            bottom = dimensionResource(id = R.dimen._5dp)
-                                        )
-                                        .fillMaxHeight(BUTTON_SECOND_HEIGHT_COEFF)
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            isClicked = false
-                                        }
-                                        .background(
-                                            color = Color.White,
-                                            shape = RoundedCornerShape(shapeCornerRad)
-                                        )
-                                        .border(
-                                            width = (0.1).dp, color = Color.Black,
-                                            shape = RoundedCornerShape(shapeCornerRad)
-                                        ),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        modifier = Modifier
-                                            .graphicsLayer {
-                                                alpha = animatedButtonAlphaFloat
-                                            },
-                                        text = stringResource(id = R.string.common_edit),
-                                        style = ralewayMediumTextStyle(
-                                            size = dimensionResource(id = R.dimen._12sp),
-                                            color = Color.Black
-                                        )
-                                    )
-                                }
-                                Box(
-                                    modifier = Modifier
-                                        .padding(start = dimensionResource(id = R.dimen._5dp))
-                                        .fillMaxHeight()
-                                        .fillMaxWidth()
-                                        .clickable {
+                                )
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .padding(start = dimensionResource(id = R.dimen._5dp))
+                                    .fillMaxHeight()
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        coroutineScope.launch {
                                             offsetDisappearingAnimateContainer =
-                                                index * (height)
+                                                (index - lazyListState.firstVisibleItemIndex) * (height) -
+                                                        lazyListState.firstVisibleItemScrollOffset.pxToDp(
+                                                            context
+                                                        )
                                             isClicked = false
+                                            isAnimationStarted = false
                                             isAnimationStarted = true
+                                            animatedHeightDp.animateTo(
+                                                targetValue = 0f,
+                                                animationSpec = tween(
+                                                    durationMillis = DELETING_DELAY.toInt(),
+                                                    easing = EaseOutCubic
+                                                )
+                                            )
+                                            delay(DELETING_DELAY)
+                                            animatedHeightDp.snapTo(height.value)
                                             onClickDeleteComposition(composition)
                                         }
-                                        .background(
-                                            color = Color.White,
-                                            shape = RoundedCornerShape(shapeCornerRad)
-                                        )
-                                        .border(
-                                            width = (0.1).dp, color = Red,
-                                            shape = RoundedCornerShape(shapeCornerRad)
-                                        ),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        modifier = Modifier
-                                            .graphicsLayer {
-                                                alpha = animatedButtonAlphaFloat
-                                            },
-                                        text = stringResource(id = R.string.common_delete),
-                                        style = ralewayMediumTextStyle(
-                                            size = dimensionResource(id = R.dimen._12sp),
-                                            color = Red
-                                        )
+                                    }
+                                    .background(
+                                        color = Color.White,
+                                        shape = RoundedCornerShape(shapeCornerRad)
                                     )
-                                }
+                                    .border(
+                                        width = (0.1).dp, color = Red,
+                                        shape = RoundedCornerShape(shapeCornerRad)
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    modifier = Modifier
+                                        .graphicsLayer {
+                                            alpha = animatedButtonAlphaFloat
+                                        },
+                                    text = stringResource(id = R.string.common_delete),
+                                    style = ralewayMediumTextStyle(
+                                        size = dimensionResource(id = R.dimen._12sp),
+                                        color = Red
+                                    )
+                                )
                             }
                         }
+                    }
                 }
 
-                Box(
-                    modifier = Modifier
-                        .padding(
-                            bottom = dimensionResource(id = R.dimen._5dp)
+                item {
+                    Box(
+                        modifier = Modifier
+                            .padding(
+                                bottom = dimensionResource(id = R.dimen._5dp)
+                            )
+                            .height(dimensionResource(R.dimen._30dp))
+                            .fillMaxWidth()
+                            .clickable {
+                                testSave()
+                            }
+                            .background(
+                                color = Color.Black,
+                                shape = RoundedCornerShape(shapeCornerRad)
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            modifier = Modifier,
+                            text = "add mocks",
+                            style = handjetRegularTextStyle(
+                                size = dimensionResource(id = R.dimen._20sp),
+                                color = Color.White
+                            )
                         )
-                        .height(dimensionResource(R.dimen._30dp))
-                        .fillMaxWidth()
-                        .clickable {
-                            testSave()
-                        }
-                        .background(
-                            color = Color.Black,
-                            shape = RoundedCornerShape(shapeCornerRad)
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        modifier = Modifier,
-                        text = "add mocks",
-                        style = handjetRegularTextStyle(
-                            size = dimensionResource(id = R.dimen._20sp),
-                            color = Color.White
-                        )
-                    )
+                    }
                 }
             }
 
-            Box(
-                modifier = Modifier
-                    .padding(
-                        start = padding,
-                        top = padding
-                    )
-                    .offset(y = offsetDisappearingAnimateContainer)
-            ) {
-                key(isAnimationStarted) {
+            if (isAnimationStarted) {
+                Box(
+                    modifier = Modifier
+                        .padding(
+                            start = padding,
+                            top = padding
+                        )
+                        .offset(y = offsetDisappearingAnimateContainer)
+                ) {
                     DisappearingAnimateContainer(
                         isAnimationStarted = isAnimationStarted,
                         width = blockWidth.dp,
-                        height = height,
+                        height = dimensionResource(R.dimen._100dp),
                         roundedBordersRadius = shapeCornerRad,
-                        detailedByWidth = 120,
-                        particlesCountCoeff = 1.2f,
+                        detailedByWidth = 80,
+                        particlesCountCoeff = 1f,
+                        speedParticles = 5L,
+                        particleRadiusOffset = 0.2f,
                         onAnimationEnd = {
                             isAnimationStarted = false
                         }
