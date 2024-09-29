@@ -55,7 +55,7 @@ fun DisappearingAnimateContainer(
     val roundedBordersRadiusFloat = roundedBordersRadius.dpToPx()
     val radius = widthFloat / detailedByWidth
     val particleRadiusOffset: Float = (10f - speedParticles.toFloat()) / 200f
-    val particleAlphaOffset: Float = (10f - speedParticles.toFloat()) / 1000f
+    val particleAlphaOffset:Double = (10f - speedParticles.toFloat()) / 1000.0
 
     var particles by remember {
         mutableStateOf(
@@ -102,6 +102,7 @@ fun DisappearingAnimateContainer(
                 isParticlesStarted = true
                 delay(speedAnimation * 2L)
                 isParticlesStarted = false
+                onAnimationEnd()
                 animatedParticlesAlpha.animateTo(
                     targetValue = 0f,
                     animationSpec = tween(durationMillis = speedAnimation.toInt() / 10)
@@ -152,13 +153,14 @@ fun DisappearingAnimateContainer(
             particles = particles.map { particle ->
                 val newX = particle.x + Random.nextDouble(spreadXStart, spreadXEnd).toFloat()
                 val newY = particle.y + Random.nextDouble(spreadYStart, spreadYEnd).toFloat()
+                val newAlpha = Random.nextDouble(0.0, particleAlphaOffset).toFloat()
 
-                if (particle.radius - particleRadiusOffset >= 0f && particle.alpha - particleAlphaOffset >= 0f) {
+                if (particle.radius - particleRadiusOffset >= 0f && particle.alpha - newAlpha >= 0f) {
                     particle.copy(
                         x = newX,
                         y = newY,
                         radius = particle.radius - particleRadiusOffset,
-                        alpha = particle.alpha - particleAlphaOffset,
+                        alpha = particle.alpha - newAlpha,
                     )
                 } else {
                     particle
