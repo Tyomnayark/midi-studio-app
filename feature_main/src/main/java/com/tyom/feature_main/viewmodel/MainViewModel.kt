@@ -196,6 +196,7 @@ class MainViewModel @Inject constructor(
                         settingsState = finalSettingsState
                     )
                 }
+                delay(10000)
             }
         }
     }

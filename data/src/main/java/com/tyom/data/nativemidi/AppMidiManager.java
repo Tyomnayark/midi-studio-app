@@ -17,10 +17,12 @@
 
 package com.tyom.data.nativemidi;
 
+import android.bluetooth.BluetoothDevice;
 import android.media.midi.MidiDevice;
 import android.media.midi.MidiDeviceInfo;
 import android.media.midi.MidiManager;
 import android.media.midi.MidiInputPort;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -60,6 +62,7 @@ public class AppMidiManager {
         MidiDeviceInfo[] devInfos = mMidiManager.getDevices();
         for(MidiDeviceInfo devInfo : devInfos) {
             int numInPorts = devInfo.getInputPortCount();
+            Log.d(TAG, "ScanMidiDevices: " + devInfo);
             String deviceName =
                     devInfo.getProperties().getString(MidiDeviceInfo.PROPERTY_NAME);
             if (deviceName == null) {
@@ -90,6 +93,11 @@ public class AppMidiManager {
     public void openReceiveDevice(MidiDeviceInfo devInfo) {
         mMidiManager.openDevice(devInfo, new OpenMidiReceiveDeviceListener(), null);
     }
+
+    public void openBluetoothReceiveDevice(BluetoothDevice bluetoothDevice,  MidiManager. OnDeviceOpenedListener listener) {
+        mMidiManager.openBluetoothDevice(bluetoothDevice, listener, null);
+    }
+
 
     public void closeReceiveDevice() {
         if (mReceiveDevice != null) {
