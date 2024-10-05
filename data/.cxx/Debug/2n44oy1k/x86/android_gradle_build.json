@@ -1,0 +1,38 @@
+{
+  "buildFiles": [
+    "/home/tyomnayark/projects/midi-studio-app/data/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/tyomnayark/Android/Sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/home/tyomnayark/projects/midi-studio-app/data/.cxx/Debug/2n44oy1k/x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/tyomnayark/Android/Sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/home/tyomnayark/projects/midi-studio-app/data/.cxx/Debug/2n44oy1k/x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "native_midi::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "x86",
+      "artifactName": "native_midi",
+      "output": "/home/tyomnayark/projects/midi-studio-app/data/build/intermediates/cxx/Debug/2n44oy1k/obj/x86/libnative_midi.so",
+      "runtimeFiles": []
+    }
+  },
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "/home/tyomnayark/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/linux-x86_64/bin/clang.lld",
+      "cppCompilerExecutable": "/home/tyomnayark/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++.lld"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

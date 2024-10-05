@@ -1,0 +1,4 @@
+# ninja log v5
+0	103	1728057635785465889	CMakeFiles/native_midi.dir/MainActivity.cpp.o	99b63d8474117b90
+0	798	1728057636474913163	CMakeFiles/native_midi.dir/AppMidiManager.cpp.o	b24f9ebc25ebbe5a
+800	865	1728057636544857573	/home/tyomnayark/projects/midi-studio-app/data/build/intermediates/cxx/Debug/2n44oy1k/obj/arm64-v8a/libnative_midi.so	a1b8acb39e1dc7da

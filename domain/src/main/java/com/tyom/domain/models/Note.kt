@@ -92,7 +92,8 @@ import com.tyom.core_ui.constants.NoteConstants.Gd7_Ab7
 
 data class Note(
     val value: Int,
-    val isWhiteKey: Boolean
+    val isWhiteKey: Boolean,
+    var time: Int = 0
 )
 
 fun Int.toNote(): Note {

@@ -1,0 +1,27 @@
+{
+  "buildFiles": [
+    "/home/tyomnayark/projects/midi-studio-app/data/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/tyomnayark/Android/Sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/home/tyomnayark/projects/midi-studio-app/data/.cxx/Debug/2n44oy1k/arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/tyomnayark/Android/Sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/home/tyomnayark/projects/midi-studio-app/data/.cxx/Debug/2n44oy1k/arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "native_midi::@6890427a1f51a3e7e1df": {
+      "artifactName": "native_midi",
+      "abi": "arm64-v8a",
+      "output": "/home/tyomnayark/projects/midi-studio-app/data/build/intermediates/cxx/Debug/2n44oy1k/obj/arm64-v8a/libnative_midi.so",
+      "runtimeFiles": []
+    }
+  }
+}

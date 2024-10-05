@@ -26,22 +26,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.tyom.core_ui.R
 import com.tyom.core_ui.theme.NoteStudioTheme
-import com.tyom.feature_main.ui.views.BottomBar
-import com.tyom.feature_main.ui.views.NavGraph
 import com.tyom.core_utils.utils.hasBluetoothPermissions
 import com.tyom.core_utils.utils.hasLocationPermissions
 import com.tyom.core_utils.utils.hasStoragePermissions
+import com.tyom.feature_main.ui.views.BottomBar
+import com.tyom.feature_main.ui.views.NavGraph
 import com.tyom.feature_main.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import com.tyom.core_ui.R
 
 
 private const val REQUEST_PERMISSION_CODE = 1001
@@ -61,8 +60,8 @@ class MainActivity : ComponentActivity() {
         ) {
             requestPermissions()
         }
-        setContent {
 
+        setContent {
             val state = mainViewModel.uiState.collectAsStateWithLifecycle().value
             val navController = rememberNavController()
             val backStackEntry by navController.currentBackStackEntryAsState()
@@ -75,7 +74,6 @@ class MainActivity : ComponentActivity() {
             val animatedOffsetForBottomBar by animateDpAsState(
                 targetValue = if (isBottomBarVisible) 0.dp else dimensionResource(R.dimen._55dp)
             )
-
             NoteStudioTheme {
                 Scaffold(
                     bottomBar = {

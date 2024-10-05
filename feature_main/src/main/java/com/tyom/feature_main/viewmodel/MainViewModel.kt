@@ -43,6 +43,44 @@ class MainViewModel @Inject constructor(
     val _uiState = MutableStateFlow(MainUIState())
     val uiState: StateFlow<MainUIState> = _uiState.asStateFlow()
 
+    val receiverImpl = object : MidiReceiver() {
+        override fun onSend(msg: ByteArray, offset: Int, count: Int, timestamp: Long) {
+
+            synchronized(_uiState) {
+                val status = msg[0].toInt() and 0xFF
+                val velocity = msg[1].toInt() and 0xFF
+                val note = msg[2].toInt() and 0xFF
+
+                if (BuildConfig.BUILD_TYPE == DEBUG_TYPE) {
+                    Log.d(
+                        "MidiProvider",
+                        "MIDI message: Status=$status, Note=$note, Velocity=$velocity"
+                    )
+                    Log.d(
+                        "MidiProvider",
+                        "MIDI message: msg=$msg, offset=$offset, count=$count, timestamp=$timestamp"
+                    )
+                }
+                val pianoPair = note.toNote()
+                pianoPair.time = timestamp.toInt()
+
+
+                val updatedList = _uiState.value.currentNotes.toMutableList()
+
+                if (updatedList.contains(pianoPair)) {
+                    updatedList.remove(pianoPair)
+                } else {
+                    updatedList.add(pianoPair)
+                }
+                _uiState.update { state ->
+                    state.copy(
+                        currentNotes = updatedList
+                    )
+                }
+            }
+        }
+    }
+
     init {
         launchOnDefault {
             val instrument = checkHaveConnectedInstrumentUseCase.execute()
@@ -133,6 +171,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    @SuppressLint("MissingPermission")
     fun onClickSelectInstrument(instrument: Instrument) {
         launchOnIO {
             val newInstrumentsList = _uiState.value.settingsState.instruments.toMutableList()
@@ -153,40 +192,7 @@ class MainViewModel @Inject constructor(
             _uiState.value.bluetoothDevices.find { device ->
                 (device?.name == instrument.name) || (device?.address == instrument.address)
             }?.let { device ->
-                val receiverImpl = object : MidiReceiver() {
-                    override fun onSend(msg: ByteArray, offset: Int, count: Int, timestamp: Long) {
 
-                        synchronized(_uiState) {
-                            val status = msg[0].toInt() and 0xFF
-                            val velocity = msg[1].toInt() and 0xFF
-                            val note = msg[2].toInt() and 0xFF
-
-                            if (BuildConfig.BUILD_TYPE == DEBUG_TYPE) {
-                                Log.d(
-                                    "MidiProvider",
-                                    "MIDI message: Status=$status, Note=$note, Velocity=$velocity"
-                                )
-                                Log.d(
-                                    "MidiProvider",
-                                    "MIDI message: msg=$msg, offset=$offset, count=$count, timestamp=$timestamp"
-                                )
-                            }
-                            val pianoPair = note.toNote()
-
-                            val updatedList = _uiState.value.currentNotes.toMutableList()
-                            if (updatedList.contains(pianoPair)) {
-                                updatedList.remove(pianoPair)
-                            } else {
-                                updatedList.add(pianoPair)
-                            }
-                            _uiState.update { state ->
-                                state.copy(
-                                    currentNotes = updatedList
-                                )
-                            }
-                        }
-                    }
-                }
                 val result = connectBluetoothDeviceUseCase.execute(device, receiverImpl)
                 val finalSettingsState = _uiState.value.settingsState.copy(
                     isTryingToConnect = false,
