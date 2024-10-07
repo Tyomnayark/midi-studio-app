@@ -111,9 +111,7 @@ class MidiProvider(
 
     suspend fun scanMidiInstruments(): List<MidiDeviceInfo> = suspendCoroutine { continuation ->
         val devices = midiManager?.devices?.toList().orEmpty()
-        Handler(Looper.getMainLooper()).postDelayed({
-            continuation.resume(devices)
-        }, TIME_FOR_SCANNING)
+        continuation.resume(devices)
     }
 
     suspend fun connectBluetoothDevice(device: BluetoothDevice, midiReceiver: MidiReceiver) =
