@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -38,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -47,11 +49,13 @@ import com.tyom.core_ui.extensions.FigmaLargePreview
 import com.tyom.core_ui.extensions.IfTrue
 import com.tyom.core_ui.models.PianoConfiguration
 import com.tyom.core_ui.theme.GrayLight
+import com.tyom.core_ui.theme.Red
 import com.tyom.core_ui.theme.White
 import com.tyom.core_ui.theme.ralewayExtraLightTextStyle
 import com.tyom.core_ui.theme.ralewayMediumTextStyle
 import com.tyom.core_ui.utils.getTextWidthInDp
 import com.tyom.core_ui.widgets.DotsLoader
+import com.tyom.core_ui.widgets.PulsatingCircle
 import com.tyom.core_ui.widgets.ScaleAnimateContainer
 import com.tyom.core_ui.widgets.SwitchButton
 import com.tyom.core_utils.extensions.empty
@@ -69,7 +73,9 @@ fun RecordPage(
     notes: List<Note>,
     liveNotes: Map<Int, List<Note>>,
     mapSize: Int,
+    isRecording: Boolean,
 
+    onClickRecordBtn: () -> Unit,
     onChangeModalDrawerState: (Boolean) -> Unit,
     onClickChangeKeyboardVisibility: () -> Unit,
     onClickChangeAutoConnect: () -> Unit,
@@ -92,6 +98,9 @@ fun RecordPage(
         },
         label = String.empty()
     )
+    val widthPianoStrokesBlock =
+        (pianoConfiguration.widthFromStrokes / LocalDensity.current.density).dp
+    val recordBlockBtnsPadding = widthPianoStrokesBlock - dimensionResource(id = R.dimen._35dp)
 
     val heightMidi by animateDpAsState(
         targetValue = when {
@@ -485,6 +494,7 @@ fun RecordPage(
                     notes = notes
                 )
             }
+
             LiveNoteString(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
@@ -493,8 +503,38 @@ fun RecordPage(
                     ),
                 pianoConfiguration = pianoConfiguration,
                 liveNotes = liveNotes,
-                mapSize = mapSize
+                mapSize = mapSize,
+                width = widthPianoStrokesBlock
             )
+
+            ScaleAnimateContainer(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(
+                        top = dimensionResource(id = R.dimen._55dp),
+                        end = recordBlockBtnsPadding
+                    )
+                    .size(dimensionResource(id = R.dimen._30dp)),
+                onStartClick = {
+                    onClickRecordBtn()
+                }
+            ) {
+                if (isRecording) {
+                    PulsatingCircle(
+                        color = Red,
+                        size = dimensionResource(id = R.dimen._30dp)
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .size(dimensionResource(id = R.dimen._30dp))
+                            .background(
+                                color = MaterialTheme.colorScheme.secondary,
+                                shape = CircleShape
+                            )
+                    )
+                }
+            }
         }
     }
 }
@@ -508,7 +548,9 @@ fun MainMenuPreview() {
         notes = emptyList(),
         liveNotes = emptyMap(),
         mapSize = 1,
+        isRecording = true,
 
+        onClickRecordBtn = {},
         onChangeModalDrawerState = {},
         onClickRefreshBluetoothInstruments = {},
         onClickSelectBluetoothInstrument = {},

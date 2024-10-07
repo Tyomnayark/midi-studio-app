@@ -25,6 +25,7 @@ import com.tyom.domain.usecases.ConnectBluetoothDeviceUseCase
 import com.tyom.domain.usecases.ConnectMidiDeviceUseCase
 import com.tyom.domain.usecases.GetBluetoothInstrumentsUseCase
 import com.tyom.domain.usecases.GetMidiInstrumentsUseCase
+import com.tyom.domain.usecases.SaveToDBUseCase
 import com.tyom.domain.usecases.SetAutoConnectUseCase
 import com.tyom.feature_main.models.BottomNavigationItem
 import com.tyom.feature_main.models.ScreensEnum
@@ -49,7 +50,8 @@ class MainViewModel @Inject constructor(
     private val getBluetoothInstrumentsUseCase: GetBluetoothInstrumentsUseCase,
     private val getMidiInstrumentsUseCase: GetMidiInstrumentsUseCase,
     private val connectBluetoothDeviceUseCase: ConnectBluetoothDeviceUseCase,
-    private val connectMidiDeviceUseCase: ConnectMidiDeviceUseCase
+    private val connectMidiDeviceUseCase: ConnectMidiDeviceUseCase,
+    private val saveToDBUseCase: SaveToDBUseCase,
 ) : ViewModel() {
 
     val _uiState = MutableStateFlow(MainUIState())
@@ -337,6 +339,22 @@ class MainViewModel @Inject constructor(
             _uiState.update { state ->
                 state.copy(
                     settingsState = settingsState
+                )
+            }
+        }
+    }
+
+    fun onClickRecordBtn(){
+        launchOnIO {
+            val isRecording = _uiState.value.isRecording
+            if (isRecording) {
+//                saveToDBUseCase.execute()
+            }
+            _uiState.update { state ->
+                state.copy(
+                    isRecording = !isRecording,
+                    liveNotes = emptyMap(),
+                    currentNotes = emptyList()
                 )
             }
         }
