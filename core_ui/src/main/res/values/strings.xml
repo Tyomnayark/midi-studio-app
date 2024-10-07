@@ -11,7 +11,8 @@
 
     <!--    Settings screen-->
     <string name="keyboard">Keyboard</string>
-    <string name="selected_device">Selected device</string>
+    <string name="selected_bluetooth_device">Selected bluetooth device</string>
+    <string name="selected_midi_device">Selected midi device</string>
     <string name="selected_device_hint">Click to select...</string>
     <string name="connected">Connected</string>
     <string name="not_connected">Connect</string>

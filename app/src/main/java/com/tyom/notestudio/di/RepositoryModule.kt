@@ -3,9 +3,11 @@ package com.tyom.notestudio.di
 import com.tyom.data.repository.DataBaseRepositoryImpl
 import com.tyom.data.repository.FileSaveRepositoryImpl
 import com.tyom.data.repository.MIDIRepositoryImpl
+import com.tyom.data.repository.SettingsRepositoryImpl
 import com.tyom.domain.repository.DataBaseRepository
 import com.tyom.domain.repository.FileSaveRepository
 import com.tyom.domain.repository.MIDIRepository
+import com.tyom.domain.repository.SettingsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,5 +33,11 @@ class RepositoryModule {
     @Singleton
     fun provideDataBaseRepository(dataBaseRepositoryImpl: DataBaseRepositoryImpl): DataBaseRepository {
         return dataBaseRepositoryImpl
+    }
+
+    @Provides
+    @Singleton
+    fun provideSettingsRepository(settingsRepositoryImpl: SettingsRepositoryImpl): SettingsRepository {
+        return settingsRepositoryImpl
     }
 }

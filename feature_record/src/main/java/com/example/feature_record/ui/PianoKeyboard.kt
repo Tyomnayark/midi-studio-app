@@ -17,19 +17,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
-import com.tyom.domain.models.Note
 import com.tyom.core_ui.R
-import com.tyom.core_ui.constants.PianoConstants.BLACK_KEYS_COUNT
 import com.tyom.core_ui.constants.PianoConstants.WHITE_KEYS_COUNT
 import com.tyom.core_ui.extensions.FigmaLargePreview
+import com.tyom.core_ui.extensions.IfFalse
+import com.tyom.core_ui.extensions.IfTrue
+import com.tyom.core_ui.extensions.shadow
 import com.tyom.core_ui.theme.GrayDark
 import com.tyom.core_ui.theme.GrayLightDark
 import com.tyom.core_ui.theme.PianoGray
 import com.tyom.core_ui.theme.PianoShadowGray
 import com.tyom.core_ui.theme.Red
-import com.tyom.core_ui.extensions.IfFalse
-import com.tyom.core_ui.extensions.IfTrue
-import com.tyom.core_ui.extensions.shadow
+import com.tyom.domain.models.Note
 
 @Composable
 fun PianoKeyboard(
@@ -99,28 +98,44 @@ fun PianoKeyboard(
             }
         }
         Column {
-            (0 until BLACK_KEYS_COUNT).reversed().forEach { keyIndex ->
-                val position = keyIndex % 5
-                if (position == 2 || position == 0) {
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen._12dp)))
-                }
-                Box(
-                    modifier = Modifier
-                        .offset(y = dimensionResource(id = R.dimen._5dp))
-                        .padding(top = dimensionResource(id = R.dimen._4dp)),
-                    contentAlignment = Alignment.BottomStart
-                ) {
+            (0 until WHITE_KEYS_COUNT).reversed().forEach { keyIndex ->
+                val position = keyIndex % 7
+                if (position == 1 || position == 3 || position == 4 || position == 6 || (position == 0 && keyIndex != 0) ) {
                     Box(
                         modifier = Modifier
-                            .height(dimensionResource(id = R.dimen._8dp))
-                            .width(dimensionResource(id = R.dimen._38dp))
-                            .background(
-                                color = Color.Black, shape = keyShape
-                            )
+                            .offset(y = dimensionResource(id = R.dimen._5dp))
+                            .padding(top = dimensionResource(id = R.dimen._4dp)),
+                        contentAlignment = Alignment.BottomStart
                     ) {
+                        Box(
+                            modifier = Modifier
+                                .height(dimensionResource(id = R.dimen._8dp))
+                                .width(dimensionResource(id = R.dimen._38dp))
+                                .background(
+                                    color = Color.Black, shape = keyShape
+                                )
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .height(dimensionResource(id = R.dimen._7dp))
+                                .width(dimensionResource(id = R.dimen._35dp))
+                                .background(
+                                    color = GrayLightDark, shape = keyShape
+                                )
+                        )
+                        Box(
+                            modifier = Modifier
+                                .height(dimensionResource(id = R.dimen._4dp))
+                                .width(dimensionResource(id = R.dimen._35dp))
+                                .background(
+                                    color = GrayDark, shape = keyShape
+                                )
+                        )
+
                         notes.forEach { note ->
                             note.isWhiteKey.IfFalse {
-                                if (note.value == keyIndex) {
+                                if (note.value == keyIndex - 1 ) {
                                     Box(
                                         modifier = Modifier
                                             .height(dimensionResource(id = R.dimen._8dp))
@@ -133,23 +148,8 @@ fun PianoKeyboard(
                             }
                         }
                     }
-
-                    Box(
-                        modifier = Modifier
-                            .height(dimensionResource(id = R.dimen._7dp))
-                            .width(dimensionResource(id = R.dimen._35dp))
-                            .background(
-                                color = GrayLightDark, shape = keyShape
-                            )
-                    )
-                    Box(
-                        modifier = Modifier
-                            .height(dimensionResource(id = R.dimen._4dp))
-                            .width(dimensionResource(id = R.dimen._35dp))
-                            .background(
-                                color = GrayDark, shape = keyShape
-                            )
-                    )
+                } else {
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen._12dp)))
                 }
             }
         }

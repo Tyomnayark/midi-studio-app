@@ -93,8 +93,17 @@ import com.tyom.core_ui.constants.NoteConstants.Gd7_Ab7
 data class Note(
     val value: Int,
     val isWhiteKey: Boolean,
+    var isRemoveCommand: Boolean = false,
     var time: Int = 0
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        return (this.value == (other as Note).value && this.isWhiteKey == other.isWhiteKey)
+    }
+
+    override fun hashCode(): Int {
+        return this.value.hashCode() + this.isWhiteKey.hashCode()
+    }
+}
 
 fun Int.toNote(): Note {
     return when (this) {

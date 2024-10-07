@@ -2,25 +2,30 @@ package com.tyom.feature_main.viewmodel
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.media.midi.MidiDeviceInfo
 import android.media.midi.MidiReceiver
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.example.feature_record.models.SettingsState
 import com.tyom.core_utils.BuildConfig
 import com.tyom.core_utils.constants.BuildTypeConstants.DEBUG_TYPE
 import com.tyom.core_utils.extensions.launchOnDefault
 import com.tyom.core_utils.extensions.launchOnIO
-import com.tyom.core_utils.extensions.launchOnMain
 import com.tyom.core_utils.utils.hasBluetoothPermissions
 import com.tyom.core_utils.utils.hasLocationPermissions
 import com.tyom.domain.models.Instrument
 import com.tyom.domain.models.toInstrument
 import com.tyom.domain.models.toNote
-import com.tyom.domain.usecases.AddInstrumentToPreferencesUseCase
-import com.tyom.domain.usecases.CheckHaveConnectedInstrumentUseCase
+import com.tyom.domain.usecases.AddInstrumentBluetoothToPreferencesUseCase
+import com.tyom.domain.usecases.AddInstrumentMidiToPreferencesUseCase
+import com.tyom.domain.usecases.CheckHaveConnectedInstrumentBluetoothUseCase
+import com.tyom.domain.usecases.CheckHaveConnectedInstrumentMidiUseCase
+import com.tyom.domain.usecases.CheckIsAutoConnectUseCase
 import com.tyom.domain.usecases.ConnectBluetoothDeviceUseCase
-import com.tyom.domain.usecases.GetMIDIInstrumentsUseCase
+import com.tyom.domain.usecases.ConnectMidiDeviceUseCase
+import com.tyom.domain.usecases.GetBluetoothInstrumentsUseCase
+import com.tyom.domain.usecases.GetMidiInstrumentsUseCase
+import com.tyom.domain.usecases.SetAutoConnectUseCase
 import com.tyom.feature_main.models.BottomNavigationItem
 import com.tyom.feature_main.models.ScreensEnum
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,14 +35,21 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
+import kotlin.math.absoluteValue
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val checkHaveConnectedInstrumentUseCase: CheckHaveConnectedInstrumentUseCase,
-    private val addInstrumentToPreferencesUseCase: AddInstrumentToPreferencesUseCase,
-    private val getMIDIInstrumentsUseCase: GetMIDIInstrumentsUseCase,
-    private val connectBluetoothDeviceUseCase: ConnectBluetoothDeviceUseCase
+    private val checkHaveConnectedInstrumentBluetoothUseCase: CheckHaveConnectedInstrumentBluetoothUseCase,
+    private val checkHaveConnectedInstrumentMidiUseCase: CheckHaveConnectedInstrumentMidiUseCase,
+    private val checkIsAutoConnectUseCase: CheckIsAutoConnectUseCase,
+    private val setAutoConnectUseCase: SetAutoConnectUseCase,
+    private val addInstrumentBluetoothToPreferencesUseCase: AddInstrumentBluetoothToPreferencesUseCase,
+    private val addInstrumentMidiToPreferencesUseCase: AddInstrumentMidiToPreferencesUseCase,
+    private val getBluetoothInstrumentsUseCase: GetBluetoothInstrumentsUseCase,
+    private val getMidiInstrumentsUseCase: GetMidiInstrumentsUseCase,
+    private val connectBluetoothDeviceUseCase: ConnectBluetoothDeviceUseCase,
+    private val connectMidiDeviceUseCase: ConnectMidiDeviceUseCase
 ) : ViewModel() {
 
     val _uiState = MutableStateFlow(MainUIState())
@@ -62,19 +74,31 @@ class MainViewModel @Inject constructor(
                     )
                 }
                 val pianoPair = note.toNote()
-                pianoPair.time = timestamp.toInt()
 
+                val updatedCurrentNotes = _uiState.value.currentNotes.toMutableList()
 
-                val updatedList = _uiState.value.currentNotes.toMutableList()
-
-                if (updatedList.contains(pianoPair)) {
-                    updatedList.remove(pianoPair)
+                if (updatedCurrentNotes.contains(pianoPair)) {
+                    updatedCurrentNotes.remove(pianoPair)
+                    pianoPair.isRemoveCommand = true
                 } else {
-                    updatedList.add(pianoPair)
+                    updatedCurrentNotes.add(pianoPair)
                 }
+
+                pianoPair.time = timestamp.toInt()
+                val mapSize = _uiState.value.mapSize
+                val orderNumber =
+                    if ((timestamp - _uiState.value.lastTimeStamp).absoluteValue < _uiState.value.pianoConfiguration.speed) mapSize else mapSize + 1
+                val updatedMap = _uiState.value.liveNotes.toMutableMap()
+                val listNotes = updatedMap[orderNumber]?.toMutableList() ?: mutableListOf()
+                listNotes.add(pianoPair)
+                updatedMap[orderNumber] = listNotes
+
                 _uiState.update { state ->
                     state.copy(
-                        currentNotes = updatedList
+                        currentNotes = updatedCurrentNotes,
+                        liveNotes = updatedMap,
+                        lastTimeStamp = timestamp,
+                        mapSize = orderNumber
                     )
                 }
             }
@@ -83,7 +107,10 @@ class MainViewModel @Inject constructor(
 
     init {
         launchOnDefault {
-            val instrument = checkHaveConnectedInstrumentUseCase.execute()
+            val instrumentBluetooth = checkHaveConnectedInstrumentBluetoothUseCase.execute()
+            val instrumentMidi = checkHaveConnectedInstrumentMidiUseCase.execute()
+
+            val isAutoConnect = checkIsAutoConnectUseCase.execute()
 
             val bottomItems = listOf(
                 BottomNavigationItem(
@@ -97,14 +124,25 @@ class MainViewModel @Inject constructor(
                     isSelected = false
                 )
             )
+            if (isAutoConnect) {
+                val midiDevices = getMidiInstrumentsUseCase.execute()
+
+                midiDevices.find { instrument -> instrument?.properties?.getString(MidiDeviceInfo.PROPERTY_NAME) == instrumentMidi?.name }
+                    ?.let { instrument ->
+                        connectMidiDeviceUseCase.execute(instrument, receiverImpl)
+                    }
+            }
 
             val settingsState = SettingsState(
-                selectedInstrument = instrument
+                selectedBluetoothInstrument = instrumentBluetooth,
+                selectedMidiInstrument = instrumentMidi,
+                isAutoConnect = isAutoConnect
             )
+
             _uiState.update { state ->
                 state.copy(
                     settingsState = settingsState,
-                    bottomItems = bottomItems
+                    bottomItems = bottomItems,
                 )
             }
         }
@@ -133,12 +171,12 @@ class MainViewModel @Inject constructor(
     }
 
     @SuppressLint("MissingPermission")
-    fun onClickRefreshInstruments() {
-        if (!_uiState.value.settingsState.isLoading) {
-            launchOnMain { // TODO:  @Tyom [9/10/24] { поменять на дефолт, мешают подсказки }
+    fun onClickRefreshBluetoothInstruments() {
+        if (!_uiState.value.settingsState.isBluetoothLoading) {
+            launchOnIO {
                 if (hasLocationPermissions(context) && hasBluetoothPermissions(context)) {
                     val settingsState = _uiState.value.settingsState.copy(
-                        isLoading = true
+                        isBluetoothLoading = true
                     )
                     _uiState.update { state ->
                         state.copy(
@@ -146,16 +184,16 @@ class MainViewModel @Inject constructor(
                         )
                     }
 
-                    val bluetoothDevices = getMIDIInstrumentsUseCase.execute()
+                    val bluetoothDevices = getBluetoothInstrumentsUseCase.execute()
                     val instruments = bluetoothDevices.map { bluetoothDevice ->
                         bluetoothDevice.toInstrument()
                     }.toMutableList()
-                    instruments.remove(_uiState.value.settingsState.selectedInstrument)
+                    instruments.remove(_uiState.value.settingsState.selectedBluetoothInstrument)
 
                     val finalSettingsState = _uiState.value.settingsState.copy(
-                        instruments = instruments,
-                        isInstrumentsListOpened = true,
-                        isLoading = false
+                        bluetoothInstruments = instruments,
+                        isBluetoothInstrumentsListOpened = true,
+                        isBluetoothLoading = false
                     )
                     _uiState.update { state ->
                         state.copy(
@@ -164,30 +202,63 @@ class MainViewModel @Inject constructor(
                         )
                     }
                 } else {
-                    Toast.makeText(context, "Не все разрешения предоставлены", Toast.LENGTH_SHORT)
-                        .show()
+                    // TODO:  @Tyom [10/5/24] { add permission request or hint }
+                }
+            }
+        }
+    }
+
+    fun onClickRefreshMidiInstruments() {
+        if (!_uiState.value.settingsState.isMidiLoading) {
+            launchOnIO {
+                val settingsState = _uiState.value.settingsState.copy(
+                    isMidiLoading = true
+                )
+                _uiState.update { state ->
+                    state.copy(
+                        settingsState = settingsState
+                    )
+                }
+
+                val midiDevices = getMidiInstrumentsUseCase.execute()
+                val instruments = midiDevices.map { bluetoothDevice ->
+                    bluetoothDevice.toInstrument()
+                }.toMutableList()
+                instruments.remove(_uiState.value.settingsState.selectedMidiInstrument)
+
+                val finalSettingsState = _uiState.value.settingsState.copy(
+                    midiInstruments = instruments,
+                    isMidiInstrumentsListOpened = true,
+                    isMidiLoading = false
+                )
+                _uiState.update { state ->
+                    state.copy(
+                        midiDevices = midiDevices,
+                        settingsState = finalSettingsState
+                    )
                 }
             }
         }
     }
 
     @SuppressLint("MissingPermission")
-    fun onClickSelectInstrument(instrument: Instrument) {
+    fun onClickSelectBluetoothInstrument(instrument: Instrument) {
         launchOnIO {
-            val newInstrumentsList = _uiState.value.settingsState.instruments.toMutableList()
+            val newInstrumentsList =
+                _uiState.value.settingsState.bluetoothInstruments.toMutableList()
             newInstrumentsList.remove(instrument)
             val settingsState = _uiState.value.settingsState.copy(
-                instruments = newInstrumentsList,
-                selectedInstrument = instrument,
-                isTryingToConnect = true,
-                isInstrumentsListOpened = true
+                bluetoothInstruments = newInstrumentsList,
+                selectedBluetoothInstrument = instrument,
+                isTryingToConnectBluetooth = true,
+                isBluetoothInstrumentsListOpened = true
             )
             _uiState.update { state ->
                 state.copy(
                     settingsState = settingsState
                 )
             }
-            addInstrumentToPreferencesUseCase.execute(instrument)
+            addInstrumentBluetoothToPreferencesUseCase.execute(instrument)
 
             _uiState.value.bluetoothDevices.find { device ->
                 (device?.name == instrument.name) || (device?.address == instrument.address)
@@ -195,8 +266,43 @@ class MainViewModel @Inject constructor(
 
                 val result = connectBluetoothDeviceUseCase.execute(device, receiverImpl)
                 val finalSettingsState = _uiState.value.settingsState.copy(
-                    isTryingToConnect = false,
-                    isConnected = result
+                    isTryingToConnectBluetooth = false,
+                    isBluetoothConnected = result
+                )
+                _uiState.update { state ->
+                    state.copy(
+                        settingsState = finalSettingsState
+                    )
+                }
+            }
+        }
+    }
+
+    fun onClickSelectMidiInstrument(instrument: Instrument) {
+        launchOnIO {
+            val newInstrumentsList = _uiState.value.settingsState.midiInstruments.toMutableList()
+            newInstrumentsList.remove(instrument)
+            val settingsState = _uiState.value.settingsState.copy(
+                midiInstruments = newInstrumentsList,
+                selectedMidiInstrument = instrument,
+                isTryingToConnectMidi = true,
+                isMidiInstrumentsListOpened = true
+            )
+            _uiState.update { state ->
+                state.copy(
+                    settingsState = settingsState
+                )
+            }
+            addInstrumentMidiToPreferencesUseCase.execute(instrument)
+
+            _uiState.value.midiDevices.find { device ->
+                (device?.id == instrument.id)
+            }?.let { device ->
+
+                val result = connectMidiDeviceUseCase.execute(device, receiverImpl)
+                val finalSettingsState = _uiState.value.settingsState.copy(
+                    isTryingToConnectMidi = false,
+                    isMidiConnected = result
                 )
                 _uiState.update { state ->
                     state.copy(
@@ -220,14 +326,19 @@ class MainViewModel @Inject constructor(
     }
 
     fun changeAutoConnect() {
-        val isAutoConnect = _uiState.value.settingsState.isAutoConnect
-        val settingsState = _uiState.value.settingsState.copy(
-            isAutoConnect = !isAutoConnect
-        )
-        _uiState.update { state ->
-            state.copy(
-                settingsState = settingsState
+        launchOnDefault {
+            val isAutoConnect = _uiState.value.settingsState.isAutoConnect
+            val settingsState = _uiState.value.settingsState.copy(
+                isAutoConnect = !isAutoConnect
             )
+
+            setAutoConnectUseCase.execute(!isAutoConnect)
+
+            _uiState.update { state ->
+                state.copy(
+                    settingsState = settingsState
+                )
+            }
         }
     }
 }
