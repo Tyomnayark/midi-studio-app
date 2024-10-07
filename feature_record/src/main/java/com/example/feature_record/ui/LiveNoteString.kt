@@ -20,8 +20,8 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.rotate
 import androidx.compose.ui.graphics.withSave
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.unit.Dp
 import androidx.core.content.res.ResourcesCompat
 import com.tyom.core_ui.constants.NoteConstants.C3
 import com.tyom.core_ui.constants.NoteConstants.C4
@@ -41,14 +41,13 @@ fun LiveNoteString(
     modifier: Modifier = Modifier,
     pianoConfiguration: PianoConfiguration,
     liveNotes: Map<Int, List<Note>>,
-    mapSize: Int
+    mapSize: Int,
+    width: Dp = dimensionResource(id = com.tyom.core_ui.R.dimen._200dp)
 ) {
     val context = LocalContext.current
 
     val drawableTrebleClef = context.getDrawable(com.tyom.core_ui.R.drawable.treble_clef)
     val drawableBassClef = context.getDrawable(com.tyom.core_ui.R.drawable.bass_clef)
-
-    val width = (pianoConfiguration.widthFromStrokes / LocalDensity.current.density).dp
 
     Box(
         modifier = modifier

@@ -29,7 +29,11 @@ fun NavGraph(
                 notes = state.currentNotes,
                 liveNotes = state.liveNotes,
                 mapSize = state.mapSize,
+                isRecording = state.isRecording,
 
+                onClickRecordBtn = {
+                    mainViewModel.onClickRecordBtn()
+                },
                 onClickRefreshBluetoothInstruments = {
                     mainViewModel.onClickRefreshBluetoothInstruments()
                 },

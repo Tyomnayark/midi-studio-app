@@ -19,5 +19,7 @@ data class MainUIState(
     val currentNotes: List<Note> = emptyList(),
     val liveNotes: Map<Int, List<Note>> = emptyMap(),
     val mapSize: Int = 0,
-    val lastTimeStamp: Long = 0
+    val lastTimeStamp: Long = 0,
+
+    val isRecording: Boolean = false
 )
