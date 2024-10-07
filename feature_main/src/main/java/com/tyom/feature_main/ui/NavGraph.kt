@@ -3,15 +3,14 @@ package com.tyom.feature_main.ui.views
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.feature_record.ui.RecordPage
 import com.tyom.feature_library.ui.LibraryPage
 import com.tyom.feature_library.ui.LibraryViewModel
-import com.tyom.feature_main.models.Routes.RECORD_ROUTE
 import com.tyom.feature_main.models.Routes.LIBRARY_ROUTE
+import com.tyom.feature_main.models.Routes.RECORD_ROUTE
 import com.tyom.feature_main.viewmodel.MainUIState
 import com.tyom.feature_main.viewmodel.MainViewModel
 
@@ -29,12 +28,13 @@ fun NavGraph(
                 settingsState = state.settingsState,
                 notes = state.currentNotes,
                 liveNotes = state.liveNotes,
+                mapSize = state.mapSize,
 
-                onClickRefreshInstruments = {
-                    mainViewModel.onClickRefreshInstruments()
+                onClickRefreshBluetoothInstruments = {
+                    mainViewModel.onClickRefreshBluetoothInstruments()
                 },
-                onClickSelectInstrument = { instrument ->
-                    mainViewModel.onClickSelectInstrument(instrument)
+                onClickSelectBluetoothInstrument = { instrument ->
+                    mainViewModel.onClickSelectBluetoothInstrument(instrument)
                 },
                 onClickChangeKeyboardVisibility = {
                     mainViewModel.changeKeyboardVisibility()
@@ -44,9 +44,16 @@ fun NavGraph(
                 },
                 onChangeModalDrawerState = { isOpened ->
                     onChangeModalDrawerState(isOpened)
+                },
+                onClickRefreshMidiInstruments = {
+                    mainViewModel.onClickRefreshMidiInstruments()
+                },
+                onClickSelectMidiInstrument = { instrument ->
+                    mainViewModel.onClickSelectMidiInstrument(instrument)
                 }
             )
         }
+
         composable(LIBRARY_ROUTE) {
             val libraryViewModel: LibraryViewModel = hiltViewModel()
             val state = libraryViewModel.uiState.collectAsStateWithLifecycle().value

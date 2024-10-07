@@ -3,13 +3,7 @@ package com.tyom.data.providers
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothGatt
-import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothManager
-import android.bluetooth.BluetoothProfile
-import android.bluetooth.le.AdvertiseCallback
-import android.bluetooth.le.AdvertiseData
-import android.bluetooth.le.AdvertiseSettings
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
@@ -28,7 +22,6 @@ import com.tyom.core_utils.constants.BuildTypeConstants.DEBUG_TYPE
 import com.tyom.core_utils.extensions.isNotNull
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.nio.ByteBuffer
-import java.util.UUID
 import javax.inject.Singleton
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -58,79 +51,67 @@ class MidiProvider(
         bluetoothManager.adapter
     }
 
-
-    private val bluetoothGattCallback = object : BluetoothGattCallback() {
-        override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
-            if (newState == BluetoothProfile.STATE_CONNECTED) {
-                // successfully connected to the GATT Server
-                Log.d("MidiProvider", "successfully connected to the GATT Server")
-
-            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                //
-                Log.d("MidiProvider", "disconnected from the GATT Server")
-
-            } else if (newState == BluetoothProfile.STATE_DISCONNECTING) {
-
-            } else {
-
-            }
-        }
-    }
-
-
     @SuppressLint("MissingPermission")
-    suspend fun scanMidiInstruments(): List<BluetoothDevice?> = suspendCoroutine { continuation ->
-        val bluetoothLeScanner = bluetoothAdapter?.bluetoothLeScanner
+    suspend fun scanBluetoothInstruments(): List<BluetoothDevice?> =
+        suspendCoroutine { continuation ->
+            val bluetoothLeScanner = bluetoothAdapter?.bluetoothLeScanner
 
-        val scanFilter = ScanFilter.Builder()
-            .setServiceUuid(ParcelUuid.fromString(MIDI_SERVICE_UUID))
-            .build()
+            val scanFilter = ScanFilter.Builder()
+                .setServiceUuid(ParcelUuid.fromString(MIDI_SERVICE_UUID))
+                .build()
 
-        val scanFilters = listOf(scanFilter)
+            val scanFilters = listOf(scanFilter)
 
-        val scanSettings = ScanSettings.Builder()
-            .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-            .build()
+            val scanSettings = ScanSettings.Builder()
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                .build()
 
-        val devices = mutableListOf<BluetoothDevice?>()
+            val devices = mutableListOf<BluetoothDevice?>()
 
-        val mScanCallback: ScanCallback = object : ScanCallback() {
-            override fun onScanResult(callbackType: Int, result: ScanResult) {
-                if (BuildConfig.BUILD_TYPE == DEBUG_TYPE) {
-                    Log.d("MidiProvider", "onScanResult: callbackType ${callbackType}")
-                    Log.d("MidiProvider", "onScanResult: result ${result}")
-                }
-                val btDevice: BluetoothDevice = result.device
-                if (!devices.contains(btDevice)) {
-                    devices.add(btDevice)
-                }
-            }
-
-            override fun onBatchScanResults(results: List<ScanResult?>) {
-                for (sr in results) {
+            val mScanCallback: ScanCallback = object : ScanCallback() {
+                override fun onScanResult(callbackType: Int, result: ScanResult) {
                     if (BuildConfig.BUILD_TYPE == DEBUG_TYPE) {
-                        Log.d("MidiProvider", "Scan Result - Results: ${sr}")
+                        Log.d("MidiProvider", "onScanResult: callbackType ${callbackType}")
+                        Log.d("MidiProvider", "onScanResult: result ${result}")
                     }
-                    sr?.device?.let { device ->
-                        if (!devices.contains(device)) {
-                            devices.add(device)
+                    val btDevice: BluetoothDevice = result.device
+                    if (!devices.contains(btDevice)) {
+                        devices.add(btDevice)
+                    }
+                }
+
+                override fun onBatchScanResults(results: List<ScanResult?>) {
+                    for (sr in results) {
+                        if (BuildConfig.BUILD_TYPE == DEBUG_TYPE) {
+                            Log.d("MidiProvider", "Scan Result - Results: ${sr}")
+                        }
+                        sr?.device?.let { device ->
+                            if (!devices.contains(device)) {
+                                devices.add(device)
+                            }
                         }
                     }
                 }
+
+                override fun onScanFailed(errorCode: Int) {
+                    if (BuildConfig.BUILD_TYPE == DEBUG_TYPE) {
+                        Log.d("MidiProvider Scan Failed", "Error Code: $errorCode")
+                    }
+                    continuation.resumeWithException(Exception("MidiProvider Scan failed with error code $errorCode"))
+                }
             }
 
-            override fun onScanFailed(errorCode: Int) {
-                if (BuildConfig.BUILD_TYPE == DEBUG_TYPE) {
-                    Log.d("MidiProvider Scan Failed", "Error Code: $errorCode")
-                }
-                continuation.resumeWithException(Exception("MidiProvider Scan failed with error code $errorCode"))
-            }
+            bluetoothLeScanner?.startScan(scanFilters, scanSettings, mScanCallback)
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                bluetoothLeScanner?.stopScan(mScanCallback)
+                continuation.resume(devices)
+            }, TIME_FOR_SCANNING)
         }
 
-        bluetoothLeScanner?.startScan(scanFilters, scanSettings, mScanCallback)
-
+    suspend fun scanMidiInstruments(): List<MidiDeviceInfo> = suspendCoroutine { continuation ->
+        val devices = midiManager?.devices?.toList().orEmpty()
         Handler(Looper.getMainLooper()).postDelayed({
-            bluetoothLeScanner?.stopScan(mScanCallback)
             continuation.resume(devices)
         }, TIME_FOR_SCANNING)
     }
@@ -159,6 +140,30 @@ class MidiProvider(
             }
         }
 
+    suspend fun connectMidiDevice(midiDeviceInfo: MidiDeviceInfo, midiReceiver: MidiReceiver) =
+        suspendCoroutine { continuation ->
+            midiManager?.run {
+                val deviceOpenedListener = MidiManager.OnDeviceOpenedListener { midiDevice ->
+                    if (BuildConfig.BUILD_TYPE == DEBUG_TYPE) {
+                        Log.d("MidiProvider", "connectMidiDevice: ${midiDevice.info}")
+                    }
+
+                    val outputPort = midiDevice.openOutputPort(DEFAULT_PORT_NUMBER)
+                    if (outputPort.isNotNull()) {
+                        outputPort.connect(midiReceiver)
+                        continuation.resume(true)
+                    } else {
+                        if (BuildConfig.BUILD_TYPE == DEBUG_TYPE) {
+                            Log.e("MidiProvider", "Failed to open output port")
+                        }
+                        continuation.resume(false)
+                    }
+                }
+                openDevice(midiDeviceInfo, deviceOpenedListener, null)
+            }
+        }
+
+
     private fun sendNoteOn(inputPort: MidiInputPort, note: Int, velocity: Int) {
         val message = ByteBuffer.allocate(DEFAULT_CAPACITY)
         message.put(NOTE_ON_MESSAGE.toByte())
@@ -177,46 +182,5 @@ class MidiProvider(
         message.flip()
 
         inputPort.send(message.array(), ZERO_TIMESTAMP, message.remaining())
-    }
-
-    fun startAdvertising() {
-        val bluetoothLeAdvertiser = bluetoothAdapter?.bluetoothLeAdvertiser
-
-        if (bluetoothLeAdvertiser == null) {
-            Log.e("BleAdvertiser", "BLE Advertiser is not supported on this device")
-            return
-        }
-
-        val advertiseSettings = AdvertiseSettings.Builder()
-            .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY) // Высокая частота рекламирования
-            .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH) // Высокий уровень мощности передачи
-            .setConnectable(true) // Устройство будет доступно для подключения
-            .build()
-
-        val advertiseData = AdvertiseData.Builder()
-            .setIncludeDeviceName(true) // Включить имя устройства в рекламные данные
-            .setIncludeTxPowerLevel(true) // Включить уровень мощности передачи
-            .addServiceUuid(ParcelUuid(UUID.fromString("0000180D-0000-1000-8000-00805f9b34fb"))) // Пример UUID сервиса
-            .build()
-
-        val advertiseCallback = object : AdvertiseCallback() {
-            override fun onStartSuccess(settingsInEffect: AdvertiseSettings) {
-                super.onStartSuccess(settingsInEffect)
-                Log.d("BleAdvertiser", "Advertising started successfully")
-            }
-
-            override fun onStartFailure(errorCode: Int) {
-                super.onStartFailure(errorCode)
-                Log.e("BleAdvertiser", "Advertising failed with error code: $errorCode")
-            }
-        }
-
-        bluetoothLeAdvertiser.startAdvertising(advertiseSettings, advertiseData, advertiseCallback)
-    }
-
-    fun stopAdvertising() {
-        val bluetoothLeAdvertiser = bluetoothAdapter?.bluetoothLeAdvertiser
-        bluetoothLeAdvertiser?.stopAdvertising(object : AdvertiseCallback() {})
-        Log.d("BleAdvertiser", "Advertising stopped")
     }
 }

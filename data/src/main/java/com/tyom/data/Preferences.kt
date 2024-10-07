@@ -8,7 +8,9 @@ import java.lang.reflect.Type
 
 internal object PrefsDictionary {
     const val NAME = "preferences"
-    const val INSTRUMENT = "instrument"
+    const val INSTRUMENT_BLUETOOTH = "instrument_bluetooth"
+    const val INSTRUMENT_MIDI = "instrument_midi"
+    const val AUTOCONNECT = "autoconnect"
 }
 
 object Preferences {

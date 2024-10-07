@@ -67,41 +67,64 @@ fun RecordPage(
     settingsState: SettingsState,
     pianoConfiguration: PianoConfiguration,
     notes: List<Note>,
-    liveNotes: List<Pair<List<Note>, Int>>,
+    liveNotes: Map<Int, List<Note>>,
+    mapSize: Int,
 
     onChangeModalDrawerState: (Boolean) -> Unit,
     onClickChangeKeyboardVisibility: () -> Unit,
     onClickChangeAutoConnect: () -> Unit,
-    onClickRefreshInstruments: () -> Unit,
-    onClickSelectInstrument: (Instrument) -> Unit
+    onClickRefreshBluetoothInstruments: () -> Unit,
+    onClickRefreshMidiInstruments: () -> Unit,
+    onClickSelectBluetoothInstrument: (Instrument) -> Unit,
+    onClickSelectMidiInstrument: (Instrument) -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val containerScrollState = rememberScrollState()
-    val height by animateDpAsState(
+    val heightBluetooth by animateDpAsState(
         targetValue = when {
-            settingsState.isLoading -> dimensionResource(R.dimen._32dp) * (settingsState.instruments.size) + dimensionResource(
+            settingsState.isBluetoothLoading -> dimensionResource(R.dimen._32dp) * (settingsState.bluetoothInstruments.size) + dimensionResource(
                 R.dimen._20dp
             )
 
-            settingsState.isInstrumentsListOpened -> dimensionResource(R.dimen._32dp) * (settingsState.instruments.size)
+            settingsState.isBluetoothInstrumentsListOpened -> dimensionResource(R.dimen._32dp) * (settingsState.bluetoothInstruments.size)
             else -> dimensionResource(R.dimen._0dp)
         },
         label = String.empty()
     )
-    val instrumentsListPadding by animateDpAsState(
+
+    val heightMidi by animateDpAsState(
         targetValue = when {
-            settingsState.isLoading -> dimensionResource(R.dimen._32dp)
+            settingsState.isMidiLoading -> dimensionResource(R.dimen._32dp) * (settingsState.midiInstruments.size) + dimensionResource(
+                R.dimen._20dp
+            )
+
+            settingsState.isMidiInstrumentsListOpened -> dimensionResource(R.dimen._32dp) * (settingsState.midiInstruments.size)
+            else -> dimensionResource(R.dimen._0dp)
+        },
+        label = String.empty()
+    )
+
+    val bluetoothInstrumentsListPadding by animateDpAsState(
+        targetValue = when {
+            settingsState.isBluetoothLoading -> dimensionResource(R.dimen._32dp)
+            else -> dimensionResource(R.dimen._10dp)
+        }
+    )
+
+    val midiInstrumentsListPadding by animateDpAsState(
+        targetValue = when {
+            settingsState.isMidiLoading -> dimensionResource(R.dimen._32dp)
             else -> dimensionResource(R.dimen._10dp)
         }
     )
 
     val widthAnimated = animateDpAsState(
         targetValue = when {
-            settingsState.isTryingToConnect -> dimensionResource(R.dimen._60dp)
-            settingsState.isConnectBtnEnabled ->
+            settingsState.isTryingToConnectBluetooth -> dimensionResource(R.dimen._60dp)
+            settingsState.isConnectBluetoothBtnEnabled ->
                 getTextWidthInDp(
-                    text = stringResource(settingsState.connectBtnText),
+                    text = stringResource(settingsState.connectBluetoothBtnText),
                     textStyle = ralewayMediumTextStyle(dimensionResource(R.dimen._15sp))
                 ) + dimensionResource(R.dimen._44dp)
 
@@ -131,14 +154,14 @@ fun RecordPage(
                         .padding(dimensionResource(R.dimen._20dp))
                 ) {
                     Text(
-                        text = stringResource(R.string.selected_device),
+                        text = stringResource(R.string.selected_bluetooth_device),
                         style = ralewayMediumTextStyle(size = dimensionResource(R.dimen._15sp)),
                         modifier = Modifier.padding(bottom = dimensionResource(R.dimen._10dp))
                     )
                     Row {
                         ScaleAnimateContainer(
                             onFinishClick = {
-                                onClickRefreshInstruments()
+                                onClickRefreshBluetoothInstruments()
                             }
                         ) {
                             Box(
@@ -151,9 +174,9 @@ fun RecordPage(
                                     ),
                                 contentAlignment = Alignment.CenterStart
                             ) {
-                                if (settingsState.selectedInstrument?.name.isNotNull()) {
+                                if (settingsState.selectedBluetoothInstrument?.name.isNotNull()) {
                                     Text(
-                                        text = settingsState.selectedInstrument?.name.orEmpty(),
+                                        text = settingsState.selectedBluetoothInstrument?.name.orEmpty(),
                                         style = ralewayMediumTextStyle(size = dimensionResource(R.dimen._15sp)),
                                         modifier = Modifier.padding(
                                             horizontal = dimensionResource(R.dimen._12dp),
@@ -163,7 +186,11 @@ fun RecordPage(
                                 } else {
                                     Text(
                                         text = stringResource(R.string.selected_device_hint),
-                                        style = ralewayExtraLightTextStyle(size = dimensionResource(R.dimen._15sp)),
+                                        style = ralewayExtraLightTextStyle(
+                                            size = dimensionResource(
+                                                R.dimen._15sp
+                                            )
+                                        ),
                                         modifier = Modifier.padding(
                                             horizontal = dimensionResource(R.dimen._12dp),
                                             vertical = dimensionResource(R.dimen._7dp)
@@ -177,8 +204,8 @@ fun RecordPage(
                         ScaleAnimateContainer(
                             modifier = Modifier,
                             onStartClick = {
-                                settingsState.selectedInstrument?.let { instrument ->
-                                    onClickSelectInstrument(instrument)
+                                settingsState.selectedBluetoothInstrument?.let { instrument ->
+                                    onClickSelectBluetoothInstrument(instrument)
                                 }
                             }
                         ) {
@@ -188,12 +215,12 @@ fun RecordPage(
                                     .height(dimensionResource(R.dimen._32dp))
                                     .width(widthAnimated.value)
                                     .background(
-                                        color = settingsState.connectBtnColor,
+                                        color = settingsState.connectBluetoothBtnColor,
                                         shape = RoundedCornerShape(dimensionResource(R.dimen._15dp))
                                     ),
                                 contentAlignment = Alignment.Center
                             ) {
-                                if (settingsState.isTryingToConnect) {
+                                if (settingsState.isTryingToConnectBluetooth) {
                                     DotsLoader(
                                         modifier = Modifier
                                             .padding(horizontal = dimensionResource(R.dimen._10dp)),
@@ -201,11 +228,11 @@ fun RecordPage(
                                         innerCircleSize = dimensionResource(R.dimen._7dp),
                                         padding = dimensionResource(R.dimen._1dp),
                                         color = White,
-                                        innerColor = settingsState.connectBtnColor
+                                        innerColor = settingsState.connectBluetoothBtnColor
                                     )
                                 } else {
                                     Text(
-                                        text = stringResource(settingsState.connectBtnText),
+                                        text = stringResource(settingsState.connectBluetoothBtnText),
                                         style = ralewayMediumTextStyle(size = dimensionResource(R.dimen._15sp)),
                                         modifier = Modifier.padding(
                                             horizontal = dimensionResource(R.dimen._12dp),
@@ -220,15 +247,15 @@ fun RecordPage(
 
                     Box(
                         modifier = Modifier
-                            .height(height),
+                            .height(heightBluetooth),
                     ) {
-                        settingsState.isLoading.IfTrue {
+                        settingsState.isBluetoothLoading.IfTrue {
                             DotsLoader(
                                 modifier = Modifier
                                     .padding(
                                         top = dimensionResource(R.dimen._10dp)
                                     ),
-                                isLoading = settingsState.isLoading,
+                                isLoading = settingsState.isBluetoothLoading,
                                 circleSize = dimensionResource(R.dimen._6dp),
                                 innerCircleSize = dimensionResource(R.dimen._7dp),
                                 padding = dimensionResource(R.dimen._1dp),
@@ -238,12 +265,151 @@ fun RecordPage(
                         }
                         Column(
                             modifier = Modifier
-                                .padding(top = instrumentsListPadding)
+                                .padding(top = bluetoothInstrumentsListPadding)
                         ) {
-                            settingsState.instruments.forEach { instrument: Instrument ->
+                            settingsState.bluetoothInstruments.forEach { instrument: Instrument ->
                                 ScaleAnimateContainer(
                                     onFinishClick = {
-                                        onClickSelectInstrument(instrument)
+                                        onClickSelectBluetoothInstrument(instrument)
+                                    }
+                                ) {
+                                    Text(
+                                        text = instrument.name,
+                                        style = ralewayMediumTextStyle(size = dimensionResource(R.dimen._15sp)),
+                                        modifier = Modifier.height(dimensionResource(R.dimen._32dp))
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+
+                    Spacer(
+                        modifier = Modifier
+                            .padding(top = dimensionResource(R.dimen._10dp))
+                            .height((0.5).dp)
+                            .fillMaxWidth()
+                            .background(color = Color.Black)
+                    )
+
+                    Text(
+                        text = stringResource(R.string.selected_midi_device),
+                        style = ralewayMediumTextStyle(size = dimensionResource(R.dimen._15sp)),
+                        modifier = Modifier.padding(vertical = dimensionResource(R.dimen._10dp))
+                    )
+                    Row {
+                        ScaleAnimateContainer(
+                            onFinishClick = {
+                                onClickRefreshMidiInstruments()
+                            }
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .defaultMinSize(minWidth = dimensionResource(R.dimen._150dp))
+                                    .border(
+                                        width = (0.5).dp,
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        shape = RoundedCornerShape(dimensionResource(R.dimen._15dp))
+                                    ),
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                if (settingsState.selectedMidiInstrument?.name.isNotNull()) {
+                                    Text(
+                                        text = settingsState.selectedMidiInstrument?.name.orEmpty(),
+                                        style = ralewayMediumTextStyle(size = dimensionResource(R.dimen._15sp)),
+                                        modifier = Modifier.padding(
+                                            horizontal = dimensionResource(R.dimen._12dp),
+                                            vertical = dimensionResource(R.dimen._7dp)
+                                        )
+                                    )
+                                } else {
+                                    Text(
+                                        text = stringResource(R.string.selected_device_hint),
+                                        style = ralewayExtraLightTextStyle(
+                                            size = dimensionResource(
+                                                R.dimen._15sp
+                                            )
+                                        ),
+                                        modifier = Modifier.padding(
+                                            horizontal = dimensionResource(R.dimen._12dp),
+                                            vertical = dimensionResource(R.dimen._7dp)
+                                        ),
+                                        color = GrayLight
+                                    )
+                                }
+                            }
+                        }
+
+                        ScaleAnimateContainer(
+                            modifier = Modifier,
+                            onStartClick = {
+                                settingsState.selectedMidiInstrument?.let { instrument ->
+                                    onClickSelectMidiInstrument(instrument)
+                                }
+                            }
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .padding(horizontal = dimensionResource(R.dimen._10dp))
+                                    .height(dimensionResource(R.dimen._32dp))
+                                    .width(widthAnimated.value)
+                                    .background(
+                                        color = settingsState.connectMidiBtnColor,
+                                        shape = RoundedCornerShape(dimensionResource(R.dimen._15dp))
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                if (settingsState.isTryingToConnectMidi) {
+                                    DotsLoader(
+                                        modifier = Modifier
+                                            .padding(horizontal = dimensionResource(R.dimen._10dp)),
+                                        circleSize = dimensionResource(R.dimen._6dp),
+                                        innerCircleSize = dimensionResource(R.dimen._7dp),
+                                        padding = dimensionResource(R.dimen._1dp),
+                                        color = White,
+                                        innerColor = settingsState.connectMidiBtnColor
+                                    )
+                                } else {
+                                    Text(
+                                        text = stringResource(settingsState.connectMidiBtnText),
+                                        style = ralewayMediumTextStyle(size = dimensionResource(R.dimen._15sp)),
+                                        modifier = Modifier.padding(
+                                            horizontal = dimensionResource(R.dimen._12dp),
+                                            vertical = dimensionResource(R.dimen._7dp)
+                                        ),
+                                        color = White
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .height(heightMidi),
+                    ) {
+                        settingsState.isMidiLoading.IfTrue {
+                            DotsLoader(
+                                modifier = Modifier
+                                    .padding(
+                                        top = dimensionResource(R.dimen._10dp)
+                                    ),
+                                isLoading = settingsState.isMidiLoading,
+                                circleSize = dimensionResource(R.dimen._6dp),
+                                innerCircleSize = dimensionResource(R.dimen._7dp),
+                                padding = dimensionResource(R.dimen._1dp),
+                                color = Color.Black,
+                                innerColor = White
+                            )
+                        }
+                        Column(
+                            modifier = Modifier
+                                .padding(top = midiInstrumentsListPadding)
+                        ) {
+                            settingsState.midiInstruments.forEach { instrument: Instrument ->
+                                ScaleAnimateContainer(
+                                    onFinishClick = {
+                                        onClickSelectMidiInstrument(instrument)
                                     }
                                 ) {
                                     Text(
@@ -326,7 +492,8 @@ fun RecordPage(
                         vertical = dimensionResource(R.dimen._50dp)
                     ),
                 pianoConfiguration = pianoConfiguration,
-                liveNotes = liveNotes
+                liveNotes = liveNotes,
+                mapSize = mapSize
             )
         }
     }
@@ -339,12 +506,15 @@ fun MainMenuPreview() {
         settingsState = SettingsState(),
         pianoConfiguration = PianoConfiguration(),
         notes = emptyList(),
-        liveNotes = emptyList(),
+        liveNotes = emptyMap(),
+        mapSize = 1,
 
         onChangeModalDrawerState = {},
-        onClickRefreshInstruments = {},
-        onClickSelectInstrument = {},
+        onClickRefreshBluetoothInstruments = {},
+        onClickSelectBluetoothInstrument = {},
         onClickChangeKeyboardVisibility = {},
-        onClickChangeAutoConnect = {}
+        onClickChangeAutoConnect = {},
+        onClickRefreshMidiInstruments = {},
+        onClickSelectMidiInstrument = {}
     )
 }
