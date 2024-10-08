@@ -1,3 +1,0 @@
-/home/tyomnayark/projects/midi-studio-app/data/.cxx/Debug/2n44oy1k/x86/CMakeFiles/native_midi.dir
-/home/tyomnayark/projects/midi-studio-app/data/.cxx/Debug/2n44oy1k/x86/CMakeFiles/edit_cache.dir
-/home/tyomnayark/projects/midi-studio-app/data/.cxx/Debug/2n44oy1k/x86/CMakeFiles/rebuild_cache.dir
