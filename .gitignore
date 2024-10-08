@@ -1,9 +1,10 @@
-
-*.tmp
-*.swp
 *.bak
 
 .idea/
+/.cxx
+/.transforms
+/.gradle
+
+.DS_Store
 
 local.properties
-
