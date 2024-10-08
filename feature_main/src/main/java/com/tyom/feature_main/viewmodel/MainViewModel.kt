@@ -15,6 +15,7 @@ import com.tyom.core_utils.utils.hasBluetoothPermissions
 import com.tyom.core_utils.utils.hasLocationPermissions
 import com.tyom.domain.models.Instrument
 import com.tyom.domain.models.toInstrument
+import com.tyom.domain.models.toMusicalComposition
 import com.tyom.domain.models.toNote
 import com.tyom.domain.usecases.AddInstrumentBluetoothToPreferencesUseCase
 import com.tyom.domain.usecases.AddInstrumentMidiToPreferencesUseCase
@@ -35,6 +36,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.absoluteValue
 
@@ -86,7 +90,7 @@ class MainViewModel @Inject constructor(
                     updatedCurrentNotes.add(pianoPair)
                 }
 
-                pianoPair.time = timestamp.toInt()
+                pianoPair.time = timestamp
                 val mapSize = _uiState.value.mapSize
                 val orderNumber =
                     if ((timestamp - _uiState.value.lastTimeStamp).absoluteValue < _uiState.value.pianoConfiguration.speed) mapSize else mapSize + 1
@@ -105,6 +109,10 @@ class MainViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    companion object {
+        private const val TIME_TEMPLATE = "MMMM d HH.mm.ss"
     }
 
     init {
@@ -344,12 +352,18 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun onClickRecordBtn(){
+    fun onClickRecordBtn() {
         launchOnIO {
             val isRecording = _uiState.value.isRecording
             if (isRecording) {
-//                saveToDBUseCase.execute()
+                val date = Date()
+                val formatter = SimpleDateFormat(TIME_TEMPLATE, Locale.ENGLISH)
+                val formattedDate = formatter.format(date)
+                val musicalComposition = _uiState.value.liveNotes.toMusicalComposition(formattedDate)
+
+                saveToDBUseCase.execute(musicalComposition)
             }
+
             _uiState.update { state ->
                 state.copy(
                     isRecording = !isRecording,

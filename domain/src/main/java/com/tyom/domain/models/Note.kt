@@ -94,7 +94,7 @@ data class Note(
     val value: Int,
     val isWhiteKey: Boolean,
     var isRemoveCommand: Boolean = false,
-    var time: Int = 0
+    var time: Long = 0
 ) {
     override fun equals(other: Any?): Boolean {
         return (this.value == (other as Note).value && this.isWhiteKey == other.isWhiteKey)

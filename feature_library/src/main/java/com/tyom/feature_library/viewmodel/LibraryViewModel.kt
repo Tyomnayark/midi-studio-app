@@ -54,9 +54,9 @@ class LibraryViewModel @Inject constructor(
 
     fun onClickSaveComposition(musicalComposition: MusicalComposition) {
         launchOnDefault {
-
             _uiState.update { state ->
                 state.copy(
+                    selectedComposition = musicalComposition,
                     isModalBottomSheetIsOpened = true
                 )
             }
@@ -131,10 +131,12 @@ class LibraryViewModel @Inject constructor(
             val updatedListCompositions = _uiState.value.compositions.filter { composition ->
                 composition.title != musicalComposition.title
             }
+            val isNeedToReturnElementHeight = _uiState.value.isNeedToReturnElementHeight
 
             _uiState.update { state ->
                 state.copy(
-                    compositions = updatedListCompositions
+                    compositions = updatedListCompositions,
+                    isNeedToReturnElementHeight = !isNeedToReturnElementHeight
                 )
             }
         }
@@ -183,7 +185,8 @@ class LibraryViewModel @Inject constructor(
                 title = title,
                 font = font
             )
-            val result = saveAsA4JpegFileUseCase.execute(noteListConfiguration, emptyList()) // TODO: тут добавить ноты
+            val selectedComposition = _uiState.value.selectedComposition
+            val result = saveAsA4JpegFileUseCase.execute(noteListConfiguration, selectedComposition)
         }
     }
 
