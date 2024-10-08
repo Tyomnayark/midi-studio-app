@@ -216,6 +216,162 @@ fun LiveNoteStringPreview() {
                 )
             ),
             orderNumber = 3
+        ),
+        NotePairs(
+            notes = listOf(
+                Note(
+                    value = 13,
+                    isWhiteKey = true
+                ),
+                Note(
+                    value = 25,
+                    isWhiteKey = true
+                )
+            ),
+            orderNumber = 4
+        ),
+        NotePairs(
+            notes = listOf(
+                Note(
+                    value = 13,
+                    isWhiteKey = true
+                ),
+                Note(
+                    value = 25,
+                    isWhiteKey = true
+                )
+            ),
+            orderNumber = 5
+        ),
+        NotePairs(
+            notes = listOf(
+                Note(
+                    value = 13,
+                    isWhiteKey = true
+                ),
+                Note(
+                    value = 25,
+                    isWhiteKey = true
+                )
+            ),
+            orderNumber = 6
+        ),
+        NotePairs(
+            notes = listOf(
+                Note(
+                    value = 13,
+                    isWhiteKey = true
+                ),
+                Note(
+                    value = 25,
+                    isWhiteKey = true
+                )
+            ),
+            orderNumber = 7
+        ),
+        NotePairs(
+            notes = listOf(
+                Note(
+                    value = 13,
+                    isWhiteKey = true
+                ),
+                Note(
+                    value = 25,
+                    isWhiteKey = true
+                )
+            ),
+            orderNumber = 8
+        ),
+        NotePairs(
+            notes = listOf(
+                Note(
+                    value = 13,
+                    isWhiteKey = true
+                ),
+                Note(
+                    value = 25,
+                    isWhiteKey = true
+                )
+            ),
+            orderNumber = 9
+        ),
+        NotePairs(
+            notes = listOf(
+                Note(
+                    value = 13,
+                    isWhiteKey = true
+                ),
+                Note(
+                    value = 25,
+                    isWhiteKey = true
+                )
+            ),
+            orderNumber = 10
+        ),
+        NotePairs(
+            notes = listOf(
+                Note(
+                    value = 13,
+                    isWhiteKey = true
+                ),
+                Note(
+                    value = 25,
+                    isWhiteKey = true
+                )
+            ),
+            orderNumber = 11
+        ),
+        NotePairs(
+            notes = listOf(
+                Note(
+                    value = 13,
+                    isWhiteKey = true
+                ),
+                Note(
+                    value = 25,
+                    isWhiteKey = true
+                )
+            ),
+            orderNumber = 12
+        ),
+        NotePairs(
+            notes = listOf(
+                Note(
+                    value = 13,
+                    isWhiteKey = true
+                ),
+                Note(
+                    value = 25,
+                    isWhiteKey = true
+                )
+            ),
+            orderNumber = 13
+        ),
+        NotePairs(
+            notes = listOf(
+                Note(
+                    value = 13,
+                    isWhiteKey = true
+                ),
+                Note(
+                    value = 25,
+                    isWhiteKey = true
+                )
+            ),
+            orderNumber = 14
+        ),
+        NotePairs(
+            notes = listOf(
+                Note(
+                    value = 33,
+                    isWhiteKey = true
+                ),
+                Note(
+                    value = 22,
+                    isWhiteKey = true
+                )
+            ),
+            orderNumber = 15
         )
     )
     LibraryNoteString(

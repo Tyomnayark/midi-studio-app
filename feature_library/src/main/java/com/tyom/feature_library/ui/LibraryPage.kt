@@ -2,7 +2,6 @@ package com.tyom.feature_library.ui
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.EaseOutCubic
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -10,7 +9,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -30,12 +28,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.Text
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -70,6 +67,7 @@ import com.tyom.core_ui.models.PianoConfiguration
 import com.tyom.core_ui.theme.PianoGray
 import com.tyom.core_ui.theme.Red
 import com.tyom.core_ui.theme.handjetRegularTextStyle
+import com.tyom.core_ui.theme.playwriteDegrundThinTextStyle
 import com.tyom.core_ui.theme.ralewayExtraLightItalicTextStyle
 import com.tyom.core_ui.theme.ralewayMediumTextStyle
 import com.tyom.core_ui.theme.ralewayThinTextStyle
@@ -94,6 +92,7 @@ fun LibraryPage(
     pianoConfiguration: PianoConfiguration,
     compositions: List<MusicalComposition>,
     fontStyle: FontEnum,
+    isNeedToReturnElementHeight: Boolean,
 
     testSave: () -> Unit,
     notifyBottomSheetWasClosed: () -> Unit,
@@ -325,27 +324,53 @@ fun LibraryPage(
                     val animatedButtonAlphaFloat by animateFloatAsState(if (isClicked) 1f else 0f)
                     val animatedHeightDp = remember { Animatable(height.value) }
 
+                    LaunchedEffect(isNeedToReturnElementHeight) {
+                        animatedHeightDp.snapTo(height.value)
+                    }
+
                     Row(
                         modifier = Modifier
                             .height(animatedHeightDp.value.dp)
                     ) {
-                        LibraryNoteString(
-                            modifier = Modifier
-                                .height(height)
-                                .padding(bottom = padding)
-                                .noRippleClickable {
-                                    isClicked = !isClicked
-                                }
-                                .clip(RoundedCornerShape(shapeCornerRad))
-                                .border(
-                                    width = (0.1).dp,
-                                    color = Color.Black,
-                                    shape = RoundedCornerShape(shapeCornerRad)
+                        Box {
+                            LibraryNoteString(
+                                modifier = Modifier
+                                    .height(height)
+                                    .padding(bottom = padding)
+                                    .noRippleClickable {
+                                        isClicked = !isClicked
+                                    }
+                                    .clip(RoundedCornerShape(shapeCornerRad))
+                                    .border(
+                                        width = (0.1).dp,
+                                        color = Color.Black,
+                                        shape = RoundedCornerShape(shapeCornerRad)
+                                    )
+                                    .fillMaxWidth(animatedWidthFloat),
+                                notes = composition.notesPairs,
+                                pianoConfiguration = pianoConfiguration
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .background(
+                                        color = Color.Black,
+                                        shape = RoundedCornerShape(dimensionResource(id = R.dimen._10dp))
+                                    )
+                            ) {
+                                Text(
+                                    modifier = Modifier
+                                        .padding(
+                                            horizontal = dimensionResource(id = R.dimen._10dp),
+                                            vertical = dimensionResource(id = R.dimen._3dp)
+                                        ),
+                                    text = composition.title,
+                                    style = playwriteDegrundThinTextStyle(
+                                        size = dimensionResource(id = R.dimen._12sp),
+                                        color = Color.White
+                                    )
                                 )
-                                .fillMaxWidth(animatedWidthFloat),
-                            notes = composition.notesPairs,
-                            pianoConfiguration = pianoConfiguration
-                        )
+                            }
+                        }
 
                         Column(
                             Modifier
@@ -441,7 +466,6 @@ fun LibraryPage(
                                                 )
                                             )
                                             delay(DELETING_DELAY)
-                                            animatedHeightDp.snapTo(height.value)
                                             onClickDeleteComposition(composition)
                                         }
                                     }
@@ -546,13 +570,16 @@ fun LibraryPagePreview() {
     LibraryPage(
         isModalBottomSheetIsOpened = false,
         compositions = listOf(
-            MusicalComposition(),
+            MusicalComposition(
+                title = "sssva afaf"
+            ),
             MusicalComposition()
         ),
         pianoConfiguration = PianoConfiguration(
             lineSpacing = 9f
         ),
         fontStyle = FontEnum.NUNITO_SANS_CONDENSED_EXTRA_LIGHT_ITALIC,
+        isNeedToReturnElementHeight = false,
 
         testSave = {},
         notifyBottomSheetWasClosed = {},

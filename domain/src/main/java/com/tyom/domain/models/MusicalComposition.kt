@@ -11,3 +11,16 @@ data class NotePairs (
     val notes: List<Note> = emptyList(),
     val orderNumber: Int = 0
 )
+
+fun Map<Int, List<Note>>.toMusicalComposition(title: String): MusicalComposition {
+    val listNotePairs = this.map { (orderNumber, notes) ->
+        NotePairs(
+            notes = notes,
+            orderNumber = orderNumber
+        )
+    }
+    return MusicalComposition(
+        title = title,
+        notesPairs = listNotePairs
+    )
+}

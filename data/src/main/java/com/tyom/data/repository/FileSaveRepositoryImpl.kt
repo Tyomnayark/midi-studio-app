@@ -1,8 +1,8 @@
 package com.tyom.data.repository
 
 import android.content.Context
-import com.tyom.domain.models.Note
 import com.tyom.data.providers.FileSaveProvider
+import com.tyom.domain.models.MusicalComposition
 import com.tyom.domain.models.NoteListConfiguration
 import com.tyom.domain.repository.FileSaveRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -14,12 +14,12 @@ class FileSaveRepositoryImpl @Inject constructor(
 ) : FileSaveRepository {
     override suspend fun saveAsA4Jpeg(
         noteListConfiguration: NoteListConfiguration,
-        liveNotes: List<Pair<List<Note>, Int>>,
+        musicalComposition: MusicalComposition,
     ): Boolean {
         return fileSaveProvider.saveCanvasAsA4Image(
             context = context,
             noteListConfiguration = noteListConfiguration,
-            liveNotes = liveNotes
+            musicalComposition = musicalComposition
         )
     }
 }

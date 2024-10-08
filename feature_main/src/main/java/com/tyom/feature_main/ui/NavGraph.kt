@@ -67,6 +67,7 @@ fun NavGraph(
                 compositions = state.compositions,
                 pianoConfiguration = state.pianoConfiguration,
                 fontStyle = state.fontStyle,
+                isNeedToReturnElementHeight = state.isNeedToReturnElementHeight,
 
                 testSave = {
                     libraryViewModel.saveCompositionToDB()

@@ -29,6 +29,8 @@ class DataBaseRepositoryImpl @Inject constructor(
                             NoteRealm().apply {
                                 this.value = note.value
                                 this.isWhiteKey = note.isWhiteKey
+                                this.time = note.time
+                                this.isRemoveCommand = note.isRemoveCommand
                             }
                         }.let { realmListOf(*it.toTypedArray()) }
 

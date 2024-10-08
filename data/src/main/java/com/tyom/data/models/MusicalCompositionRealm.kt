@@ -19,4 +19,6 @@ class NotePairRealm : RealmObject {
 class NoteRealm : RealmObject {
     var value: Int = DEFAULT
     var isWhiteKey: Boolean = false
+    var time: Long = 0L
+    var isRemoveCommand: Boolean = false
 }

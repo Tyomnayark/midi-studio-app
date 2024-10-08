@@ -43,16 +43,21 @@ data class NoteListConfiguration(
 
     val lineSpacing: Float = 22f,
     val lineCount: Int = 5,
-    val noteCount: Int = 15,
+    val noteCount: Int = 13,
     val firstBassNote: Int = B3,
+    val isDiez: Boolean = true,
+
     val a4Paddings: Float = 100f,
     val paddingForTitle: Float = lineSpacing * 5,
 
-    val noteCountWithPadding: Int = noteCount + 1,
+    val symbolSize: Float = if (isDiez) lineSpacing * 3 else lineSpacing * 4 ,
+    val verticalLineHeight: Float = lineSpacing * 4f,
+    val noteCountWithPadding: Int = noteCount + 2,
     val halfLineSpacing: Float = lineSpacing / 2,
     val topPadding: Float = 0f,
     val strokeWidth: Float = lineSpacing / 5,
-    val padding: Float = lineSpacing,
+    val halfStrokeWidth: Float = strokeWidth / 2,
+    val padding: Float = lineSpacing * 5,
     val paddingForBottomLine: Float = lineSpacing * 2,
     val notePaddingTop: Float = padding - (lineSpacing * 1.5f),
     val notePaddingBottom: Float = paddingForBottomLine - (lineSpacing * 1.5f),
@@ -70,9 +75,11 @@ data class NoteListConfiguration(
     val bassClefX: Float = bassLinesStartX,
     val bassClefY: Float = -lineSpacing + a4Paddings,
 
-    val topNoteLinePadding: Float = lineSpacing * 1.7f,
-    val bottomNoteLinePadding: Float = -lineSpacing * 0.2f,
+    val topNoteLinePadding: Float = lineSpacing * 1.8f,
+    val bottomNoteLinePadding: Float = -lineSpacing * 0.3f,
     val noteWidth: Float = lineSpacing * 1.5f,
+    val symbolPaddingX: Float = noteWidth * 1.6f,
+    val symbolPaddingY: Float = if (isDiez) 0f else halfLineSpacing,
 
     val endEdgeX: Float = (topLinesStartX + lineSpacing * 4),
     val endEdgeY: Float = 0f + a4Paddings,
