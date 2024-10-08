@@ -4,6 +4,8 @@
 /.cxx
 /.transforms
 /.gradle
+.cxx/
+.cxx
 
 .DS_Store
 
