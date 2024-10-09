@@ -1,4 +1,4 @@
-package com.tyom.mylibrary
+package com.tyom.feature_record
 
 import org.junit.Test
 

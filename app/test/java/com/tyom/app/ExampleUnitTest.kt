@@ -1,4 +1,4 @@
-package com.example.feature_record
+package com.tyom.app
 
 import org.junit.Test
 
