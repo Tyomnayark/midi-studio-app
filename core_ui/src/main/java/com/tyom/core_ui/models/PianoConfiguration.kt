@@ -51,7 +51,7 @@ data class PianoConfiguration(
 
     val symbolSize: Float = if (isDiez) lineSpacing * 3 else lineSpacing * 4 ,
     val verticalLineHeight: Float = lineSpacing * 4f,
-    val noteCountWithPadding: Int = noteCount + 1,
+    val noteCountWithPadding: Int = noteCount + 2,
     val lineSpacingDp: Dp = lineSpacing.dp,
     val halfLineSpacing: Float = lineSpacing / 2,
     val topPadding: Float = 0f,

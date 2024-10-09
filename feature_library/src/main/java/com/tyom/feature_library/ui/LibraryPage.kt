@@ -60,9 +60,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import com.tyom.core_ui.R
 import com.tyom.core_ui.enums.FontEnum
-import com.tyom.core_ui.extensions.FigmaLargePreview
+import com.tyom.core_ui.extensions.DevicePreviews
 import com.tyom.core_ui.extensions.IfTrue
+import com.tyom.core_ui.extensions.dpToPx
 import com.tyom.core_ui.extensions.noRippleClickable
+import com.tyom.core_ui.extensions.pxToDp
 import com.tyom.core_ui.models.PianoConfiguration
 import com.tyom.core_ui.theme.PianoGray
 import com.tyom.core_ui.theme.Red
@@ -75,8 +77,11 @@ import com.tyom.core_ui.widgets.DisappearingAnimateContainer
 import com.tyom.core_utils.extensions.empty
 import com.tyom.core_utils.extensions.pxToDp
 import com.tyom.domain.models.MusicalComposition
+import com.tyom.domain.models.Note
+import com.tyom.domain.models.NotePairs
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 private const val BOTTOM_SHEET_ANIM_MILLIS = 300
 private const val SHEET_HEIGHT_COEFF = 0.9f
@@ -102,13 +107,17 @@ fun LibraryPage(
     onClickDeleteComposition: (MusicalComposition) -> Unit,
     clickToChangeFontStyle: () -> Unit,
 ) {
+    val context = LocalContext.current
+
     val sheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         skipHalfExpanded = true,
         animationSpec = tween(durationMillis = BOTTOM_SHEET_ANIM_MILLIS, easing = EaseOutCubic)
     )
-    val height = dimensionResource(R.dimen._110dp)
+    val height = pianoConfiguration.widthFromStrokes.roundToInt().pxToDp()
+
     val padding = dimensionResource(R.dimen._10dp)
+    val heightDp = height.dpToPx() * 1.3f
     val lazyListState = rememberLazyListState()
     val scrollStateModalSheet = rememberScrollState()
     val fontSize = with(LocalDensity.current) { dimensionResource(id = R.dimen._16sp).toSp() }
@@ -117,7 +126,6 @@ fun LibraryPage(
     var isTextFocused by remember { mutableStateOf(false) }
     val keyboard = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val blockWidth =
         LocalConfiguration.current.screenWidthDp - dimensionResource(R.dimen._20dp).value
@@ -305,7 +313,6 @@ fun LibraryPage(
         }
     ) {
         Box {
-
             LazyColumn(
                 modifier = Modifier
                     .padding(
@@ -322,21 +329,24 @@ fun LibraryPage(
 
                     val animatedWidthFloat by animateFloatAsState(if (isClicked) WIDTH_COEFF else 1f)
                     val animatedButtonAlphaFloat by animateFloatAsState(if (isClicked) 1f else 0f)
-                    val animatedHeightDp = remember { Animatable(height.value) }
+                    val animatedHeightDp = remember { Animatable(heightDp) }
 
                     LaunchedEffect(isNeedToReturnElementHeight) {
-                        animatedHeightDp.snapTo(height.value)
+                        animatedHeightDp.snapTo(heightDp)
                     }
 
                     Row(
                         modifier = Modifier
-                            .height(animatedHeightDp.value.dp)
+                            .height(
+                                animatedHeightDp.value
+                                    .roundToInt()
+                                    .pxToDp()
+                            ),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box {
                             LibraryNoteString(
                                 modifier = Modifier
-                                    .height(height)
-                                    .padding(bottom = padding)
                                     .noRippleClickable {
                                         isClicked = !isClicked
                                     }
@@ -348,6 +358,7 @@ fun LibraryPage(
                                     )
                                     .fillMaxWidth(animatedWidthFloat),
                                 notes = composition.notesPairs,
+                                height = height,
                                 pianoConfiguration = pianoConfiguration
                             )
                             Box(
@@ -451,7 +462,9 @@ fun LibraryPage(
                                     .clickable {
                                         coroutineScope.launch {
                                             offsetDisappearingAnimateContainer =
-                                                (index - lazyListState.firstVisibleItemIndex) * (height) -
+                                                (index - lazyListState.firstVisibleItemIndex) * (heightDp
+                                                    .roundToInt()
+                                                    .pxToDp(context)) -
                                                         lazyListState.firstVisibleItemScrollOffset.pxToDp(
                                                             context
                                                         )
@@ -536,7 +549,7 @@ fun LibraryPage(
                     DisappearingAnimateContainer(
                         isAnimationStarted = isAnimationStarted,
                         width = blockWidth.dp,
-                        height = dimensionResource(R.dimen._100dp),
+                        height = height,
                         roundedBordersRadius = shapeCornerRad,
                         detailedByWidth = 80,
                         particlesCountCoeff = 1f,
@@ -564,14 +577,53 @@ fun LibraryPage(
     }
 }
 
-@FigmaLargePreview
+@DevicePreviews
 @Composable
 fun LibraryPagePreview() {
+    val notesPairs = listOf(
+        NotePairs(
+            notes = listOf(
+                Note(
+                    value = 23,
+                    isWhiteKey = true
+                )
+            ),
+            orderNumber = 1
+        ),
+        NotePairs(
+            notes = listOf(
+                Note(
+                    value = 32,
+                    isWhiteKey = true
+                ),
+                Note(
+                    value = 15,
+                    isWhiteKey = true
+                )
+            ),
+            orderNumber = 2
+        ),
+        NotePairs(
+            notes = listOf(
+                Note(
+                    value = 13,
+                    isWhiteKey = true
+                ),
+                Note(
+                    value = 25,
+                    isWhiteKey = true
+                )
+            ),
+            orderNumber = 3
+        )
+    )
+
     LibraryPage(
         isModalBottomSheetIsOpened = false,
         compositions = listOf(
             MusicalComposition(
-                title = "sssva afaf"
+                title = "sssva afaf",
+                notesPairs
             ),
             MusicalComposition()
         ),
