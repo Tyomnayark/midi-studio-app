@@ -15,7 +15,7 @@ class FileSaveRepositoryImpl @Inject constructor(
     override suspend fun saveAsA4Jpeg(
         noteListConfiguration: NoteListConfiguration,
         musicalComposition: MusicalComposition,
-    ): Boolean {
+    ): String {
         return fileSaveProvider.saveCanvasAsA4Image(
             context = context,
             noteListConfiguration = noteListConfiguration,

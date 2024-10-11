@@ -23,7 +23,7 @@ class AddInstrumentBluetoothToPreferencesUseCaseTest {
         addInstrumentBluetoothToPreferencesUseCase = AddInstrumentBluetoothToPreferencesUseCase(midiRepository)
     }
 
-    @kotlin.OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     @Test
     fun executeShouldCallAddInstrumentBluetoothToPreferencesOnRepository() = runTest {
         val instrument = Instrument(name = "Piano d3e2", address = String.empty())

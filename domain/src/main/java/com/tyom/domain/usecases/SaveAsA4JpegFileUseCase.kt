@@ -8,7 +8,7 @@ import javax.inject.Inject
 class SaveAsA4JpegFileUseCase @Inject constructor(
     private val fileSaveRepository: FileSaveRepository
 ) {
-    suspend fun execute(noteListConfiguration: NoteListConfiguration, musicalComposition: MusicalComposition){
-        fileSaveRepository.saveAsA4Jpeg(noteListConfiguration, musicalComposition)
+    suspend fun execute(noteListConfiguration: NoteListConfiguration, musicalComposition: MusicalComposition): String{
+        return fileSaveRepository.saveAsA4Jpeg(noteListConfiguration, musicalComposition)
     }
 }

@@ -7,5 +7,5 @@ interface FileSaveRepository {
     suspend fun saveAsA4Jpeg(
         noteListConfiguration: NoteListConfiguration,
         musicalComposition: MusicalComposition
-    ): Boolean
+    ): String
 }
