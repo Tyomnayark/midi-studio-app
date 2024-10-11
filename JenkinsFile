@@ -32,9 +32,8 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    // Используем стандартный checkout для инициализации GIT_COMMIT
                     checkout([$class: 'GitSCM',
-                              branches: [[name: '*/main']], // Укажите ветку, которую хотите клонировать
+                      branches: [[name: "*/${env.BRANCH_NAME}"]],
                               userRemoteConfigs: [[url: 'git@github.com:Tyomnayark/midi-studio-app.git', credentialsId: 'github-token-id']]
                     ])
                 env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
