@@ -15,7 +15,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class FileSaveProviderInstrumentedTest {
-    
+
     private lateinit var context: Context
     private lateinit var fileSaveProvider: FileSaveProvider
     private lateinit var noteListConfiguration: NoteListConfiguration

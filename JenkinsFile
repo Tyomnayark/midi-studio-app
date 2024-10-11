@@ -9,7 +9,7 @@ pipeline {
         stage('Setup SSH Agent') {
             steps {
                 script {
-                    sshagent(['13156436-fa59-45dc-be3b-2f2698e6be1d']) {
+                    sshagent(['7f85d9b3-5608-42dd-ba41-c3c30925cdda']) {
                         sh 'echo "SSH Agent setup complete"'
                         sh 'ssh-add -l'
                     }
@@ -37,12 +37,27 @@ pipeline {
             }
         }
         stage('Build') {
-            steps {
-                dir('midi-studio-app') {
-                    sh 'gradle build'
-                }
-            }
+              steps {
+                   dir('midi-studio-app') {
+                      sh './gradlew assembleDebug'  // Сборка приложения
+                   }
+              }
         }
+        stage('Run Unit Tests') {  // Этап для модульных тестов
+             steps {
+                   dir('midi-studio-app') {
+                       sh './gradlew test'  // Запуск модульных тестов
+                    }
+                }
+             }
+        stage('Run Instrumented Tests') {  // Этап для инструментальных тестов
+              steps {
+                    dir('midi-studio-app') {
+                        sh './gradlew connectedAndroidTest'  // Запуск инструментальных тестов на эмуляторе или устройстве
+                   }
+              }
+        }
+
     }
     post {
         success {
