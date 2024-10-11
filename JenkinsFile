@@ -35,7 +35,7 @@ pipeline {
                     // Используем стандартный checkout для инициализации GIT_COMMIT
                     checkout([$class: 'GitSCM',
                               branches: [[name: '*/main']], // Укажите ветку, которую хотите клонировать
-                              userRemoteConfigs: [[url: 'git@github.com:Tyomnayark/midi-studio-app.git', credentialsId: '7f85d9b3-5608-42dd-ba41-c3c30925cdda']]
+                              userRemoteConfigs: [[url: 'git@github.com:Tyomnayark/midi-studio-app.git', credentialsId: 'github-token-id']]
                     ])
                 env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
                 echo "GIT_COMMIT set to: ${env.GIT_COMMIT}"
