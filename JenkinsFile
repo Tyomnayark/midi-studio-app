@@ -39,21 +39,21 @@ pipeline {
         stage('Build') {
               steps {
                    dir('midi-studio-app') {
-                      sh './gradlew assembleDebug'  // Сборка приложения
+                      sh 'gradle build'  // Сборка приложения
                    }
               }
         }
         stage('Run Unit Tests') {  // Этап для модульных тестов
              steps {
                    dir('midi-studio-app') {
-                       sh './gradlew test'  // Запуск модульных тестов
+                       sh 'gradle test'  // Запуск модульных тестов
                     }
                 }
              }
         stage('Run Instrumented Tests') {  // Этап для инструментальных тестов
               steps {
                     dir('midi-studio-app') {
-                        sh './gradlew connectedAndroidTest'  // Запуск инструментальных тестов на эмуляторе или устройстве
+                        sh 'gradle connectedAndroidTest'  // Запуск инструментальных тестов на эмуляторе или устройстве
                    }
               }
         }
