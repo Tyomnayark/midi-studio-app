@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Cleanup Workspace') {
             steps {
-                cleanWs() 
+                cleanWs()
             }
         }
 
@@ -44,17 +44,17 @@ pipeline {
         }
         stage('Build') {
               steps {
-                  sh './midi-studio-app/gradlew assembleDebug'  // Сборка приложения
+                  sh './gradlew assembleDebug'  // Сборка приложения
               }
         }
         stage('Run Unit Tests') {  // Этап для модульных тестов
              steps {
-                 sh './midi-studio-app/gradlew assembleDebug'
+                 sh './gradlew assembleDebug'
                 }
              }
         stage('Run Instrumented Tests') {  // Этап для инструментальных тестов
               steps {
-                  sh './midi-studio-app/gradlew connectedAndroidTest'  // Запуск инструментальных тестов на эмуляторе или устройстве
+                  sh './gradlew connectedAndroidTest'  // Запуск инструментальных тестов на эмуляторе или устройстве
               }
         }
     }
