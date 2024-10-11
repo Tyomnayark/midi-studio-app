@@ -9,6 +9,9 @@ android {
     namespace = "com.tyom.model"
     compileSdk = 34
 
+    packagingOptions {
+        exclude("META-INF/gradle/incremental.annotation.processors")
+    }
     defaultConfig {
         minSdk = 24
 
@@ -34,6 +37,8 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    testImplementation(libs.mockk)
+    androidTestImplementation(libs.android.mockk)
 
     implementation(libs.androidx.ui.graphics)
 

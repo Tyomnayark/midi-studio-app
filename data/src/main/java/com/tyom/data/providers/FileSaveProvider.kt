@@ -42,7 +42,7 @@ class FileSaveProvider(
         context: Context,
         noteListConfiguration: NoteListConfiguration,
         musicalComposition: MusicalComposition,
-    ): Boolean {
+    ): String {
         val heightPx = (STANDARD_HEIGHT * STANDARD_DPI).toInt()
         val widthPx = (STANDARD_WIDTH * STANDARD_DPI).toInt()
 
@@ -92,8 +92,9 @@ class FileSaveProvider(
         drawTitleOnCanvas(noteListConfiguration, canvas)
 
         val values = ContentValues()
-        values.put(MediaStore.MediaColumns.DISPLAY_NAME, "IMG_" + System.currentTimeMillis())
-        values.put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
+        val fileName = changeFileName(context, "NoteStudio_${musicalComposition.title}") + ".jpeg"
+        values.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+        values.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
         if (SDK_INT >= Build.VERSION_CODES.Q) {
             values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DCIM)
         }
@@ -120,7 +121,7 @@ class FileSaveProvider(
             throw e
         }
 
-        return true
+        return fileName
     }
 
     private fun drawMusicLinesOnCanvas(
@@ -418,7 +419,35 @@ class FileSaveProvider(
         }
     }
 
-    private fun getSliceIndexes(i: Int, maxNoteCount: Int, listSize: Int): Pair<Int, Int> {
+    internal fun fileExists(context: Context, fileName: String): Boolean {
+        val projection = arrayOf(MediaStore.MediaColumns.DISPLAY_NAME)
+        val selection = "${MediaStore.MediaColumns.DISPLAY_NAME} = ?"
+        val selectionArgs = arrayOf(fileName)
+
+        val queryUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+
+        context.contentResolver.query(
+            queryUri,
+            projection,
+            selection,
+            selectionArgs,
+            null
+        ).use { cursor ->
+            return cursor?.count ?: 0 > 0
+        }
+    }
+
+    internal fun changeFileName(context: Context, name: String, number: Int = 1): String {
+        if (fileExists(context, name)){
+            return changeFileName(context, "$name ($number)", number + 1)
+        } else if (number == 1){
+            return name
+        } else {
+            return name + "$name ($number)"
+        }
+    }
+
+    internal fun getSliceIndexes(i: Int, maxNoteCount: Int, listSize: Int): Pair<Int, Int> {
         if (listSize == 0) {
             return 0 to 0
         }
@@ -430,7 +459,7 @@ class FileSaveProvider(
         return start to end
     }
 
-    private fun calculateYPadding(
+    internal fun calculateYPadding(
         notes: List<Note>,
         cordY: Float = 0f,
         note: Note,
