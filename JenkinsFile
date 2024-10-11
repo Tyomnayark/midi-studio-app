@@ -6,6 +6,12 @@ pipeline {
     }
     
     stages {
+        stage('Cleanup Workspace') {
+            steps {
+                cleanWs() 
+            }
+        }
+
         stage('Setup SSH Agent') {
             steps {
                 script {
@@ -49,7 +55,6 @@ pipeline {
         stage('Run Instrumented Tests') {  // Этап для инструментальных тестов
               steps {
                   sh './midi-studio-app/gradlew connectedAndroidTest'  // Запуск инструментальных тестов на эмуляторе или устройстве
-
               }
         }
     }
