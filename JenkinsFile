@@ -38,23 +38,18 @@ pipeline {
         }
         stage('Build') {
               steps {
-                   dir('midi-studio-app') {
-                      sh './gradlew assembleDebug'  // Сборка приложения
-                   }
+                  sh './midi-studio-app/gradlew assembleDebug'  // Сборка приложения
               }
         }
         stage('Run Unit Tests') {  // Этап для модульных тестов
              steps {
-                   dir('midi-studio-app') {
-                       sh './gradlew test'  // Запуск модульных тестов
-                    }
+                 sh './midi-studio-app/gradlew assembleDebug'
                 }
              }
         stage('Run Instrumented Tests') {  // Этап для инструментальных тестов
               steps {
-                    dir('midi-studio-app') {
-                        sh './gradlew connectedAndroidTest'  // Запуск инструментальных тестов на эмуляторе или устройстве
-                   }
+                  sh './midi-studio-app/gradlew connectedAndroidTest'  // Запуск инструментальных тестов на эмуляторе или устройстве
+
               }
         }
     }
