@@ -28,6 +28,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    packagingOptions {
+        exclude 'META-INF/gradle/incremental.annotation.processors'
+    }
 }
 
 dependencies {
