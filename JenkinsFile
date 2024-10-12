@@ -58,9 +58,26 @@ pipeline {
             }
         }
 
+        stage('Start Emulator') {
+            steps {
+                script {
+                    sh 'emulator -avd <your_avd_name> -no-snapshot -no-audio -no-window &'
+                    sh 'adb wait-for-device'
+                }
+            }
+        }
+
         stage('Run Instrumented Tests') {
             steps {
                 sh './gradlew connectedAndroidTest'
+            }
+        }
+
+        stage('Stop Emulator') {
+            steps {
+                script {
+                    sh 'adb emu kill'
+                }
             }
         }
     }
