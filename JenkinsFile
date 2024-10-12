@@ -61,7 +61,7 @@ pipeline {
         stage('Start Emulator') {
             steps {
                 script {
-                    sh 'emulator -avd my_avd -no-snapshot -no-audio -no-window &'
+                    sh 'emulator -avd emulator-5554 -no-snapshot -no-audio -no-window &'
                     sh 'adb wait-for-device'
                     sh 'adb devices'
                 }
