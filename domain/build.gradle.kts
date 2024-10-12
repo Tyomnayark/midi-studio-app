@@ -7,9 +7,10 @@ plugins {
 android {
     namespace = "com.tyom.domain"
     compileSdk = 34
-
     packagingOptions {
-        exclude("META-INF/gradle/incremental.annotation.processors")
+        resources {
+            excludes += setOf("META-INF/gradle/incremental.annotation.processors")
+        }
     }
 
     defaultConfig {

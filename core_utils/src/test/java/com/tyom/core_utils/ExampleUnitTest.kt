@@ -1,4 +1,4 @@
-package com.tyom.core_ui
+package com.tyom.core_utils
 
 import org.junit.Test
 
