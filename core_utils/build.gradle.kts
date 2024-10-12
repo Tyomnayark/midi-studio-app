@@ -21,7 +21,9 @@ android {
         jvmTarget = "1.8"
     }
     packagingOptions {
-        exclude 'META-INF/gradle/incremental.annotation.processors'
+        resources {
+            excludes += setOf("META-INF/gradle/incremental.annotation.processors")
+        }
     }
 }
 
