@@ -4,9 +4,9 @@ pipeline {
     environment {
         GITHUB_STATUS_URL = "https://api.github.com/repos/Tyomnayark/midi-studio-app/statuses/${env.GIT_COMMIT}"
         ANDROID_HOME = '/usr/local/android-sdk'
-        PATH = "${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools:${env.PATH}"
+        PATH = "${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools:${env.PATH}"
     }
-    
+
     stages {
         stage('Cleanup Workspace') {
             steps {
@@ -24,50 +24,56 @@ pipeline {
                 }
             }
         }
-        stage('Cleanup') {
+
+        stage('Setup SDK') {
             steps {
-                script {
-                    sh 'rm -rf midi-studio-app'
-                }
+                sh '''
+                    echo "sdk.dir=${ANDROID_HOME}" > local.properties
+                '''
             }
         }
+
         stage('Checkout') {
             steps {
                 script {
                     checkout([$class: 'GitSCM',
                       branches: [[name: "*/${env.BRANCH_NAME}"]],
-                              userRemoteConfigs: [[url: 'git@github.com:Tyomnayark/midi-studio-app.git', credentialsId: 'github-token-id']]
+                      userRemoteConfigs: [[url: 'git@github.com:Tyomnayark/midi-studio-app.git', credentialsId: 'github-token-id']]
                     ])
-                env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
-                echo "GIT_COMMIT set to: ${env.GIT_COMMIT}"
+                    env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+                    echo "GIT_COMMIT set to: ${env.GIT_COMMIT}"
                 }
             }
         }
+
         stage('Build') {
-              steps {
-                  sh './gradlew assembleDebug'  // Сборка приложения
-              }
+            steps {
+                sh './gradlew assembleDebug'
+            }
         }
-        stage('Run Unit Tests') {  // Этап для модульных тестов
-             steps {
-                 sh './gradlew assembleDebug'
-                }
-             }
-        stage('Run Instrumented Tests') {  // Этап для инструментальных тестов
-              steps {
-                  sh './gradlew connectedAndroidTest'  // Запуск инструментальных тестов на эмуляторе или устройстве
-              }
+
+        stage('Run Unit Tests') {
+            steps {
+                sh './gradlew test'
+            }
+        }
+
+        stage('Run Instrumented Tests') {
+            steps {
+                sh './gradlew connectedAndroidTest'
+            }
         }
     }
+
     post {
         success {
             script {
-                   echo "GIT_COMMIT: ${env.GIT_COMMIT}"
+                echo "GIT_COMMIT: ${env.GIT_COMMIT}"
                 if (env.GIT_COMMIT == null || env.GIT_COMMIT == '') {
                     echo 'Error: GIT_COMMIT is null or empty. Skipping GitHub status update.'
                 } else {
                     withCredentials([string(credentialsId: 'github-token-id', variable: 'GITHUB_TOKEN')]) {
-                        httpRequest(
+                        def response = httpRequest(
                             url: "https://api.github.com/repos/Tyomnayark/midi-studio-app/statuses/${env.GIT_COMMIT}",
                             httpMode: 'POST',
                             contentType: 'APPLICATION_JSON',
@@ -81,10 +87,32 @@ pipeline {
                             """,
                             customHeaders: [[name: 'Authorization', value: "Bearer ${GITHUB_TOKEN}"]]
                         )
+                        echo "GitHub status updated: ${response}"
                     }
+                }
+            }
+        }
+
+        failure {
+            script {
+                echo "Build failed, GIT_COMMIT: ${env.GIT_COMMIT}"
+                withCredentials([string(credentialsId: 'github-token-id', variable: 'GITHUB_TOKEN')]) {
+                    httpRequest(
+                        url: "https://api.github.com/repos/Tyomnayark/midi-studio-app/statuses/${env.GIT_COMMIT}",
+                        httpMode: 'POST',
+                        contentType: 'APPLICATION_JSON',
+                        requestBody: """
+                        {
+                            "state": "failure",
+                            "target_url": "${env.BUILD_URL}",
+                            "description": "Build failed",
+                            "context": "continuous-integration/jenkins"
+                        }
+                        """,
+                        customHeaders: [[name: 'Authorization', value: "Bearer ${GITHUB_TOKEN}"]]
+                    )
                 }
             }
         }
     }
 }
-
