@@ -58,15 +58,15 @@ pipeline {
             }
         }
 
-        stage('Start Emulator') {
-            steps {
-                script {
-                    sh 'emulator -avd emulator-5554 -no-snapshot -no-audio -no-window &'
-                    sh 'adb wait-for-device'
-                    sh 'adb devices'
-                }
-            }
-        }
+//         stage('Start Emulator') {
+//             steps {
+//                 script {
+//                     sh 'emulator -avd emulator-5554 -no-snapshot -no-audio -no-window &'
+//                     sh 'adb wait-for-device'
+//                     sh 'adb devices'
+//                 }
+//             }
+//         }
 
         stage('Run Instrumented Tests') {
             steps {
@@ -74,13 +74,13 @@ pipeline {
             }
         }
 
-        stage('Stop Emulator') {
-            steps {
-                script {
-                    sh 'adb emu kill'
-                }
-            }
-        }
+//         stage('Stop Emulator') {
+//             steps {
+//                 script {
+//                     sh 'adb emu kill'
+//                 }
+//             }
+//         }
     }
 
     post {
