@@ -37,6 +37,7 @@ class FileSaveProviderInstrumentedTest {
         val result = fileSaveProvider.saveCanvasAsA4Image(context, noteListConfiguration, musicalComposition)
         val fileExists = fileSaveProvider.fileExists(context, result)
         this.result = result
+
         assertTrue("File $result must exist in storage", fileExists)
     }
 
