@@ -65,6 +65,7 @@ class FileSaveProviderInstrumentedTest {
             selectionArgs,
             null
         )?.use { cursor ->
+            
             if (cursor.moveToFirst()) {
                 val id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID))
                 return Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id.toString())
