@@ -36,10 +36,18 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    checkout([$class: 'GitSCM',
-                      branches: [[name: "*/${env.BRANCH_NAME}"]],
-                      userRemoteConfigs: [[url: 'git@github.com:Tyomnayark/midi-studio-app.git', credentialsId: 'github-token-id']]
-                    ])
+                    if (env.BRANCH_NAME.startsWith("PR-")) {
+                        def prNumber = env.BRANCH_NAME.replaceAll("PR-", "")
+                        checkout([$class: 'GitSCM',
+                            branches: [[name: "refs/pull/${prNumber}/head"]],
+                            userRemoteConfigs: [[url: 'git@github.com:Tyomnayark/midi-studio-app.git', credentialsId: 'github-token-id']]
+                        ])
+                    } else {
+                        checkout([$class: 'GitSCM',
+                            branches: [[name: "*/${env.BRANCH_NAME}"]],
+                            userRemoteConfigs: [[url: 'git@github.com:Tyomnayark/midi-studio-app.git', credentialsId: 'github-token-id']]
+                        ])
+                    }
                     env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
                     echo "GIT_COMMIT set to: ${env.GIT_COMMIT}"
                 }
