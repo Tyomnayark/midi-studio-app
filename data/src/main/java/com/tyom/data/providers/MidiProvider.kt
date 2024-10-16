@@ -97,6 +97,7 @@ class MidiProvider(
                     if (BuildConfig.BUILD_TYPE == DEBUG_TYPE) {
                         Log.d("MidiProvider Scan Failed", "Error Code: $errorCode")
                     }
+
                     continuation.resumeWithException(Exception("MidiProvider Scan failed with error code $errorCode"))
                 }
             }

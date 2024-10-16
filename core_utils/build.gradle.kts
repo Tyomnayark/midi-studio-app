@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 android {
@@ -34,4 +35,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
 
     implementation(libs.androidx.activity.compose)
+    implementation(libs.firebase.crashlytics.ktx)
 }
