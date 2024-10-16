@@ -19,6 +19,7 @@ import com.tyom.core_ui.constants.NoteConstants.C4
 import com.tyom.core_ui.constants.NoteConstants.C5
 import com.tyom.core_ui.constants.NoteConstants.DEFAULT
 import com.tyom.core_utils.extensions.ifFalse
+import com.tyom.core_utils.utils.sendExceptionToFirebase
 import com.tyom.domain.models.MusicalComposition
 import com.tyom.domain.models.Note
 import com.tyom.domain.models.NoteListConfiguration
@@ -118,6 +119,7 @@ class FileSaveProvider(
             if (uri != null) {
                 resolver.delete(uri, null, null)
             }
+            sendExceptionToFirebase("saveCanvasAsA4Image", e)
             throw e
         }
 

@@ -1,5 +1,6 @@
 package com.tyom.data.repository
 
+import com.tyom.core_utils.utils.sendExceptionToFirebase
 import com.tyom.data.models.MusicalCompositionRealm
 import com.tyom.data.models.NotePairRealm
 import com.tyom.data.models.NoteRealm
@@ -44,7 +45,7 @@ class DataBaseRepositoryImpl @Inject constructor(
             }
             true
         } catch (e: Exception) {
-            e.printStackTrace()
+            sendExceptionToFirebase("saveMusicComposition", e)
             false
         }
     }
@@ -68,7 +69,7 @@ class DataBaseRepositoryImpl @Inject constructor(
             }
 
         } catch (e: Exception) {
-            e.printStackTrace()
+            sendExceptionToFirebase("getAllMusicCompositions", e)
             emptyList()
         }
     }
@@ -88,7 +89,7 @@ class DataBaseRepositoryImpl @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            sendExceptionToFirebase("deleteMusicComposition", e)
             false
         }
     }
