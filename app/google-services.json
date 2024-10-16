@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "866061171717",
+    "project_id": "note-studio-ca172",
+    "storage_bucket": "note-studio-ca172.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:866061171717:android:88b88cdc130b486f56706c",
+        "android_client_info": {
+          "package_name": "com.tyom.notestudio"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeZCD0X9nqObYSuiPrlnO5dvyQGVnb8LU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
