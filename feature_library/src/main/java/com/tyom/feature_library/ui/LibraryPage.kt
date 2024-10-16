@@ -58,6 +58,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import com.tyom.core_ui.BuildConfig
 import com.tyom.core_ui.R
 import com.tyom.core_ui.enums.FontEnum
 import com.tyom.core_ui.extensions.DevicePreviews
@@ -74,6 +75,8 @@ import com.tyom.core_ui.theme.ralewayExtraLightItalicTextStyle
 import com.tyom.core_ui.theme.ralewayMediumTextStyle
 import com.tyom.core_ui.theme.ralewayThinTextStyle
 import com.tyom.core_ui.widgets.DisappearingAnimateContainer
+import com.tyom.core_utils.constants.BuildTypeConstants
+import com.tyom.core_utils.constants.BuildTypeConstants.DEBUG_TYPE
 import com.tyom.core_utils.extensions.empty
 import com.tyom.core_utils.extensions.pxToDp
 import com.tyom.domain.models.MusicalComposition
@@ -508,31 +511,33 @@ fun LibraryPage(
                     }
                 }
 
-                item {
-                    Box(
-                        modifier = Modifier
-                            .padding(
-                                bottom = dimensionResource(id = R.dimen._5dp)
+                if (BuildConfig.BUILD_TYPE == DEBUG_TYPE) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .padding(
+                                    bottom = dimensionResource(id = R.dimen._5dp)
+                                )
+                                .height(dimensionResource(R.dimen._30dp))
+                                .fillMaxWidth()
+                                .clickable {
+                                    testSave()
+                                }
+                                .background(
+                                    color = Color.Black,
+                                    shape = RoundedCornerShape(shapeCornerRad)
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                modifier = Modifier,
+                                text = "add mocks",
+                                style = handjetRegularTextStyle(
+                                    size = dimensionResource(id = R.dimen._20sp),
+                                    color = Color.White
+                                )
                             )
-                            .height(dimensionResource(R.dimen._30dp))
-                            .fillMaxWidth()
-                            .clickable {
-                                testSave()
-                            }
-                            .background(
-                                color = Color.Black,
-                                shape = RoundedCornerShape(shapeCornerRad)
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            modifier = Modifier,
-                            text = "add mocks",
-                            style = handjetRegularTextStyle(
-                                size = dimensionResource(id = R.dimen._20sp),
-                                color = Color.White
-                            )
-                        )
+                        }
                     }
                 }
             }
