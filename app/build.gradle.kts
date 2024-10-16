@@ -43,16 +43,16 @@ android {
     }
     buildTypes {
         release {
-//            isMinifyEnabled = false
+            isMinifyEnabled = true
 //            postprocessing.isRemoveUnusedCode = false
 //            postprocessing.isRemoveUnusedResources = false
-//            postprocessing.isObfuscate = false
 //            postprocessing.isOptimizeCode = true
             proguardFiles("proguard-rules.pro")
             buildConfigField("String", "TYPE", "\"${release}\"")
             signingConfig = signingConfigs.getByName("for_release")
         }
         debug {
+
             isMinifyEnabled = false
             isShrinkResources = false
             isJniDebuggable = true
@@ -94,6 +94,9 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":data"))
     implementation(project(":feature_main"))
+
+    implementation(libs.firebase.common.ktx)
+    implementation(libs.play.services.measurement.api)
 
     kapt(libs.dagger.hilt.compiler)
     implementation(libs.dagger.hilt)
