@@ -37,17 +37,18 @@ pipeline {
             steps {
                 script {
                     if (env.BRANCH_NAME.startsWith("PR-")) {
-                        def prNumber = env.BRANCH_NAME.replaceAll("PR-", "")
-                        checkout([$class: 'GitSCM',
-                            branches: [[name: "refs/remotes/origin/pull/${prNumber}/merge"]],
-                            userRemoteConfigs: [[url: 'git@github.com:Tyomnayark/midi-studio-app.git', credentialsId: 'github-token-id']]
-                        ])
+                        def prNumber = env.BRANCH_NAME.replaceAll("PR-", "").replaceAll("-merge", "").replaceAll("-head", "")
+                        sh "gh pr checkout ${prNumber}"
+                        echo "Checked out PR number: ${prNumber} using gh pr checkout"
+                        echo "BRANCH_NAME in PR if-else : ${env.BRANCH_NAME}"
+                        echo "prNumber ${prNumber}"
                     } else {
                         checkout([$class: 'GitSCM',
                             branches: [[name: "*/${env.BRANCH_NAME}"]],
                             userRemoteConfigs: [[url: 'git@github.com:Tyomnayark/midi-studio-app.git', credentialsId: 'github-token-id']]
                         ])
                     }
+                    echo "BRANCH_NAME set to: ${env.BRANCH_NAME}"
                     env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
                     echo "GIT_COMMIT set to: ${env.GIT_COMMIT}"
                 }
