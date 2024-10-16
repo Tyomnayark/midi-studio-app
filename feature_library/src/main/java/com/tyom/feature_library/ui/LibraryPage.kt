@@ -58,6 +58,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import com.tyom.core_ui.BuildConfig
 import com.tyom.core_ui.R
 import com.tyom.core_ui.enums.FontEnum
 import com.tyom.core_ui.extensions.DevicePreviews
@@ -80,7 +81,6 @@ import com.tyom.core_utils.extensions.pxToDp
 import com.tyom.domain.models.MusicalComposition
 import com.tyom.domain.models.Note
 import com.tyom.domain.models.NotePairs
-import com.tyom.feature_library.BuildConfig
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
