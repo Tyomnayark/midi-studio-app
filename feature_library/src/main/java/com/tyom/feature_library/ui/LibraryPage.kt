@@ -72,8 +72,8 @@ import com.tyom.core_ui.theme.handjetRegularTextStyle
 import com.tyom.core_ui.theme.playwriteDegrundThinTextStyle
 import com.tyom.core_ui.theme.ralewayExtraLightItalicTextStyle
 import com.tyom.core_ui.theme.ralewayMediumTextStyle
-import com.tyom.core_ui.theme.ralewayThinTextStyle
 import com.tyom.core_ui.widgets.DisappearingAnimateContainer
+import com.tyom.core_ui.widgets.HoverAnimatedButton
 import com.tyom.core_utils.constants.BuildTypeConstants.DEBUG_TYPE
 import com.tyom.core_utils.extensions.empty
 import com.tyom.core_utils.extensions.pxToDp
@@ -264,52 +264,43 @@ fun LibraryPage(
                         )
                     }
 
-                    Box(
-                        modifier = Modifier
-                            .noRippleClickable {
-                                onClickExportJpeg(titleText.text)
-                            }
-                            .padding(top = padding)
-                            .border(
-                                width = (0.1).dp,
-                                color = Color.Black,
-                                shape = RoundedCornerShape(shapeCornerRad)
-                            ),
-                        contentAlignment = Alignment.Center
+                    HoverAnimatedButton(
+                        text = R.string.export_to_jpeg,
+                        height = dimensionResource(id = R.dimen._50dp),
+                        width = dimensionResource(id = R.dimen._180dp),
+                        textColor = Color.Black,
+                        hoverTextColor = Color.White,
+                        hoverColor = Color.Black,
+                        padding = padding,
+                        shapeCornerRad = shapeCornerRad
                     ) {
-                        Text(
-                            modifier = Modifier
-                                .padding(
-                                    horizontal = padding,
-                                    vertical = dimensionResource(R.dimen._5dp)
-                                ),
-                            text = stringResource(id = R.string.export_to_jpeg),
-                            style = ralewayThinTextStyle(dimensionResource(R.dimen._20dp))
-                        )
+                        onClickExportJpeg(titleText.text)
                     }
-                    Box(
-                        modifier = Modifier
-                            .noRippleClickable {
-                                onClickExportPdf(titleText.text)
-                            }
-                            .padding(top = padding)
-                            .border(
-                                width = (0.1).dp,
-                                color = Color.Black,
-                                shape = RoundedCornerShape(shapeCornerRad)
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .padding(
-                                    horizontal = padding,
-                                    vertical = dimensionResource(R.dimen._5dp)
-                                ),
-                            text = stringResource(id = R.string.export_to_pdf),
-                            style = ralewayThinTextStyle(dimensionResource(R.dimen._20dp))
-                        )
-                    }
+
+                    // TODO:  @Tyom [10/28/24] { add in next version }
+//                    Box(
+//                        modifier = Modifier
+//                            .noRippleClickable {
+//                                onClickExportPdf(titleText.text)
+//                            }
+//                            .padding(top = padding)
+//                            .border(
+//                                width = (0.1).dp,
+//                                color = Color.Black,
+//                                shape = RoundedCornerShape(shapeCornerRad)
+//                            ),
+//                        contentAlignment = Alignment.Center
+//                    ) {
+//                        Text(
+//                            modifier = Modifier
+//                                .padding(
+//                                    horizontal = padding,
+//                                    vertical = dimensionResource(R.dimen._5dp)
+//                                ),
+//                            text = stringResource(id = R.string.export_to_pdf),
+//                            style = ralewayThinTextStyle(dimensionResource(R.dimen._20dp))
+//                        )
+//                    }
                 }
             }
         }
