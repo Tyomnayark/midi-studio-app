@@ -378,7 +378,7 @@ fun LibraryPage(
 
                         Column(
                             Modifier
-                                .padding(bottom = padding)
+                                .padding(vertical = padding)
                                 .fillMaxHeight()
                         ) {
                             Box(
