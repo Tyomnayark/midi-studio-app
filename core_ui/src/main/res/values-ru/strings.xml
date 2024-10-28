@@ -4,7 +4,7 @@
     <string name="common_empty">""</string>
     <string name="common_save">Сохранить</string>
     <string name="common_delete">Удалить</string>
-    <string name="common_edit">Редактировать</string>
+    <string name="common_edit">Редактор</string>
 
     <!--    Screen tab names-->
     <string name="record_screen">Запись</string>
@@ -12,8 +12,8 @@
 
     <!--    Settings screen-->
     <string name="keyboard">Клавиатура</string>
-    <string name="selected_bluetooth_device">Выбрать bluetooth устройство</string>
-    <string name="selected_midi_device">Выбрать midi устройство</string>
+    <string name="selected_bluetooth_device">Выбрать Bluetooth устройство</string>
+    <string name="selected_midi_device">Выбрать Midi устройство</string>
     <string name="selected_device_hint">Выбрать устройство...</string>
     <string name="connected">Подключено</string>
     <string name="not_connected">Подключить</string>
@@ -22,7 +22,7 @@
     <!--    Library screen-->
     <string name="click_to_change_font_style">Выбрать шрифт</string>
     <string name="enter_title">Ввести заголовок</string>
-    <string name="export_to_jpeg">Экспортировать в JPEG</string>
-    <string name="export_to_pdf">Экспортировать в PDF</string>
+    <string name="export_to_jpeg">В JPEG</string>
+    <string name="export_to_pdf">В PDF</string>
 
 </resources>
