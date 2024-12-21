@@ -62,7 +62,6 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-		.
             val state = mainViewModel.uiState.collectAsStateWithLifecycle().value
             val navController = rememberNavController()
             val backStackEntry by navController.currentBackStackEntryAsState()
