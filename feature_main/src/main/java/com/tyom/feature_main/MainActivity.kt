@@ -74,6 +74,7 @@ class MainActivity : ComponentActivity() {
             val animatedOffsetForBottomBar by animateDpAsState(
                 targetValue = if (isBottomBarVisible) 0.dp else dimensionResource(R.dimen._55dp)
             )
+
             NoteStudioTheme {
                 Scaffold(
                     bottomBar = {
