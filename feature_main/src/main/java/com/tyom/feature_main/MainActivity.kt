@@ -109,9 +109,7 @@ class MainActivity : ComponentActivity() {
                         }
                     )
                 }
-		
 
-		
             }
         }
     }
@@ -162,5 +160,4 @@ class MainActivity : ComponentActivity() {
             REQUEST_PERMISSION_CODE
         )
     }
-
 }
